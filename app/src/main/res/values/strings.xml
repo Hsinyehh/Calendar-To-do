@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">CalendarProoo</string>
+    <string name="calendar">Calendar</string>
 </resources>
