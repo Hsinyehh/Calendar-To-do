@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="plan_list">
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:textColor">@color/black_3f3a3a</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="check_list">
+        <item name="android:layout_marginTop">6dp</item>
+        <item name="android:textColor">@color/black_3f3a3a</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+</resources>

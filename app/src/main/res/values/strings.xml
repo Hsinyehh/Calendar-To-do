@@ -1,4 +1,10 @@
 <resources>
-    <string name="app_name">CalendarProoo</string>
+    <string name="app_name">CalendarPro</string>
     <string name="calendar">Calendar</string>
+    <string name="schedule">Schedule</string>
+    <string name="todo">To-do</string>
+    <string name="done">Done</string>
+    <string name="description">Description</string>
+    <string name="location">Location</string>
+    <string name="check_list">Check List</string>
 </resources>
