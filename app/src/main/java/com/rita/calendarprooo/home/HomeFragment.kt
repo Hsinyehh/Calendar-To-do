@@ -59,6 +59,16 @@ class HomeFragment : Fragment() {
         binding.homeScheduleList.adapter = adapter
         adapter.submitList(plan_list)
 
+        //to-do adapter
+        val todoAdapter = TodoAdapter()
+        binding.homeTodoList.adapter = todoAdapter
+        todoAdapter.submitList(plan_list)
+
+        //done adapter
+        val doneAdapter = DoneAdapter()
+        binding.homeDoneList.adapter = doneAdapter
+        doneAdapter.submitList(plan_list)
+
 
         //calendar
         val collapsibleCalendar: CollapsibleCalendar = binding.calendarView
