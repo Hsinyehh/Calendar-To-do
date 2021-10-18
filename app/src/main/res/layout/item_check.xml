@@ -3,6 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="check"
+            type="com.rita.calendarprooo.data.Check" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -15,7 +21,7 @@
             android:layout_marginStart="32dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/uncheck" />
+            android:src="@{check.isDone==true? @drawable/check:@drawable/uncheck}" />
 
         <TextView
             android:id="@+id/checklist_text"
@@ -25,6 +31,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@+id/checklist_image"
             android:text="warm up"
+            app:checkTitle="@{check}"
             style="@style/check_list"/>
 
         <View

@@ -41,7 +41,7 @@
                     android:id="@+id/home_text_calendar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/calendar"
+                    android:text="@string/schedule"
                     android:textColor="@color/black_3f3a3a"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
@@ -50,7 +50,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/home_calendar_list"
+                    android:id="@+id/home_schedule_list"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -58,6 +58,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/home_text_calendar"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:itemCount="3"
                     tools:listitem="@layout/item_schedule" />
             </androidx.constraintlayout.widget.ConstraintLayout>

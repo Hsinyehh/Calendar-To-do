@@ -8,7 +8,10 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import com.rita.calendarprooo.R
+import com.rita.calendarprooo.data.Check
+import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.databinding.FragmentHomeBinding
 import com.shrikanthravi.collapsiblecalendarview.widget.CollapsibleCalendar
 
@@ -29,6 +32,33 @@ class HomeFragment : Fragment() {
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+
+        //fake data
+        val check= Check(
+            title="Meeting Presentation",
+            isDone = false,
+            done_time=null,
+            owner=null,
+            doner=null,
+            id=1)
+
+        val check_List= mutableListOf<Check>(check,check)
+
+        val plan=Plan(
+            id=1,
+            title="Meeting",
+            description="for product development",
+            location="Taipei",null,null,null,null,check_List,
+            false,false,null, emptyList())
+
+        val plan_list= mutableListOf<Plan>(plan,plan)
+
+
+        //schedule adapter
+        val adapter = ScheduleAdapter()
+        binding.homeScheduleList.adapter = adapter
+        adapter.submitList(plan_list)
+
 
         //calendar
         val collapsibleCalendar: CollapsibleCalendar = binding.calendarView
