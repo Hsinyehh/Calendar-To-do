@@ -42,6 +42,14 @@ class ScheduleAdapter () : ListAdapter<Plan,
             }
             notifyDataSetChanged()
         }
+
+        holder.binding.root.setOnClickListener {
+            if(holder.binding.scheduleDetail.visibility== View.VISIBLE){
+                holder.binding.scheduleDetail.visibility= View.GONE
+            }
+            notifyDataSetChanged()
+        }
+
         holder.bind(item)
 
     }
