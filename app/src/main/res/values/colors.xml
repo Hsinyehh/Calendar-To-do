@@ -12,5 +12,7 @@
     <color name="gray_f0f0f0">#f0f0f0</color>
     <color name="gray_808080">#808080</color>
     <color name="pink_F2E5D9">#F2E5D9</color>
+    <color name="brown_F1E1D5">#F1E1D5</color>
     <color name="red_CF6E62">#CF6E62</color>
+    <color name="red_DDA098">#DDA098</color>
 </resources>
