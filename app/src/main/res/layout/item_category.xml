@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+<data>
+    <variable
+        name="category"
+        type="com.rita.calendarprooo.data.Category" />
+    <variable
+        name="viewModel"
+        type="com.rita.calendarprooo.edit.EditViewModel" />
+    <variable
+        name="view"
+        type="android.view.View" />
+</data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/categoryView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/border_round_corner_black">
+            <TextView
+                android:id="@+id/text_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/noto_sans"
+                android:textSize="14sp"
+                android:textColor="@color/black_3f3a3a"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/image_check"
+                app:layout_constraintTop_toTopOf="parent"
+                app:categoryName="@{category}"
+                tools:text="Travel"/>
+
+        <ImageView
+            android:id="@+id/image_check"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginTop="5dp"
+            app:layout_constraintStart_toEndOf="@id/text_category"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/check_list"
+            android:visibility="@{category.isSelected==true?view.VISIBLE:view.GONE}"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

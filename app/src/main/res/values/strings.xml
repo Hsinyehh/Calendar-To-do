@@ -4,7 +4,12 @@
     <string name="schedule">Schedule</string>
     <string name="todo">To-do</string>
     <string name="done">Done</string>
+    <string name="title">Title</string>
     <string name="description">Description</string>
     <string name="location">Location</string>
     <string name="check_list">Check List</string>
+    <string name="todo_list_mode">To-do-List Mode</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="category">Category</string>
 </resources>
