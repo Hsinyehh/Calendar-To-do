@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -11,28 +12,18 @@ import com.rita.calendarprooo.data.Check
 import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.databinding.ItemDoneBinding
 import com.rita.calendarprooo.databinding.ItemScheduleBinding
+import com.rita.calendarprooo.edit.EditViewModel
 
-class DoneAdapter () : ListAdapter<Plan,
+class DoneAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
         DoneAdapter.ViewHolder>(DoneDiffCallback()) {
-
-    //FAKE DATA
-    val check= Check(
-        title="Meeting Presentation",
-        isDone = false,
-        done_time=null,
-        owner=null,
-        doner=null,
-        id=1)
-
-    val check_List= mutableListOf<Check>(check,check)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
 
         //checkAdapter
-        val adapter=CheckAdapter()
+        val adapter=CheckAdapter(viewModel)
         holder.binding.scheduleCheckList.adapter=adapter
-        adapter.submitList(check_List)
+        adapter.submitList(viewModel.checkList.value)
 
         holder.binding.scheduleOverview.setOnClickListener {
             if(holder.binding.scheduleDetail.visibility== View.GONE){

@@ -52,4 +52,7 @@ dependencies {
 
     //collapsible calendar
     implementation 'com.github.shrikanth7698:Collapsible-Calendar-View-Android:v1.0.3'
+
+    //time picker
+    implementation 'com.github.florent37:singledateandtimepicker:2.2.7'
 }

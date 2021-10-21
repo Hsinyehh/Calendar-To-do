@@ -9,6 +9,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
+import com.github.florent37.singledateandtimepicker.dialog.SingleDateAndTimePickerDialog
 import com.rita.calendarprooo.R
 import com.rita.calendarprooo.data.Category
 import com.rita.calendarprooo.data.Check
@@ -46,7 +48,7 @@ class EditFragment : Fragment() {
 
 
         //checkAdapter
-        val checkAdapter= CheckAdapter()
+        val checkAdapter= CheckAdapter(viewModel)
         binding.checkList.adapter=checkAdapter
         viewModel.checkList.observe(viewLifecycleOwner, Observer {
             Log.i("Rita","viewModel.checkList.observe")
@@ -55,6 +57,18 @@ class EditFragment : Fragment() {
             viewModel.clearText()
         })
 
+
+        viewModel.newPlan.observe(viewLifecycleOwner, Observer {
+            it?.let{
+                view?.findNavController()?.navigate(R.id.navigate_to_home_fragment)
+                viewModel.doneNavigated()
+            }
+        })
+
+        //cancel button
+        binding.buttonCancel.setOnClickListener { view: View ->
+            view.findNavController().popBackStack()
+        }
 
 
         return  binding.root

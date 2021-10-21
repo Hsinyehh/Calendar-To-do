@@ -10,28 +10,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.rita.calendarprooo.data.Check
 import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.databinding.ItemScheduleBinding
+import com.rita.calendarprooo.edit.EditViewModel
 
-class ScheduleAdapter () : ListAdapter<Plan,
+class ScheduleAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
         ScheduleAdapter.ViewHolder>(ScheduleDiffCallback()) {
 
-    //FAKE DATA
-    val check= Check(
-        title="Meeting Presentation",
-        isDone = false,
-        done_time=null,
-        owner=null,
-        doner=null,
-        id=1)
-
-    val check_List= mutableListOf<Check>(check,check)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
 
         //checkAdapter
-        val adapter=CheckAdapter()
+        val adapter=CheckAdapter(viewModel)
         holder.binding.scheduleCheckList.adapter=adapter
-        adapter.submitList(check_List)
+        adapter.submitList(viewModel.checkList.value)
 
         holder.binding.scheduleOverview.setOnClickListener {
             if(holder.binding.scheduleDetail.visibility== View.GONE){

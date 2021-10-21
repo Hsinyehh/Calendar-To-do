@@ -16,6 +16,7 @@ import com.rita.calendarprooo.R
 import com.rita.calendarprooo.data.Check
 import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.databinding.FragmentHomeBinding
+import com.rita.calendarprooo.edit.EditViewModel
 import com.shrikanthravi.collapsiblecalendarview.widget.CollapsibleCalendar
 import java.util.*
 
@@ -37,56 +38,30 @@ class HomeFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        //fake data
-        val check= Check(
-            title="Meeting Presentation",
-            isDone = false,
-            done_time=null,
-            owner=null,
-            doner=null,
-            id=1)
-
-        val check_List= mutableListOf<Check>(check,check)
-
-        val plan=Plan(
-            id=1,
-            title="Meeting",
-            description="for product development",
-            location="Taipei",null,null,null,null,check_List,
-            false,false,null, emptyList())
-
-        val plan2=Plan(
-            id=1,
-            title="Jogging",
-            description="for Health",
-            location="Taipei",null,null,null,null,check_List,
-            false,false,null, emptyList())
-
-        val plan3=Plan(
-            id=1,
-            title="Reading",
-            description="for Leisure",
-            location="Taipei",null,null,null,null,check_List,
-            false,false,null, emptyList())
-
-        val plan_list= mutableListOf<Plan>(plan,plan)
-        val todo_list= mutableListOf<Plan>(plan2,plan3)
 
 
         //schedule adapter
-        val adapter = ScheduleAdapter()
+        val adapter = ScheduleAdapter(viewModel)
         binding.homeScheduleList.adapter = adapter
-        adapter.submitList(plan_list)
+        viewModel.planList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            adapter.submitList(it)
+        })
+
 
         //to-do adapter
-        val todoAdapter = TodoAdapter()
+        val todoAdapter = TodoAdapter(viewModel)
         binding.homeTodoList.adapter = todoAdapter
-        todoAdapter.submitList(todo_list)
+        viewModel.todoList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            todoAdapter.submitList(it)
+        })
 
         //done adapter
-        val doneAdapter = DoneAdapter()
+        val doneAdapter = DoneAdapter(viewModel)
         binding.homeDoneList.adapter = doneAdapter
-        doneAdapter.submitList(todo_list)
+        viewModel.todoList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            doneAdapter.submitList(it)
+        })
+
 
 
         //to-do adapter drag item
@@ -108,10 +83,12 @@ class HomeFragment : Fragment() {
                 viewHolder: RecyclerView.ViewHolder,
                 target: RecyclerView.ViewHolder
             ): Boolean {
-                var startDestination = viewHolder.adapterPosition
+                var startPosition = viewHolder.adapterPosition
                 var endPosition = target.adapterPosition
-                Collections.swap(todo_list,startDestination,endPosition)
-                recyclerView.adapter?.notifyItemMoved(startDestination,endPosition)
+
+                //swap position
+                viewModel.swapCheckListItem(startPosition,endPosition)
+                recyclerView.adapter?.notifyItemMoved(startPosition,endPosition)
                 return true
             }
 
@@ -137,6 +114,7 @@ class HomeFragment : Fragment() {
         viewModel.navigateToEdit.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             it?.let{
                 view?.findNavController()?.navigate(R.id.navigate_to_edit_fragment)
+                viewModel.doneNavigated()
             }
         })
 

@@ -23,7 +23,7 @@ fun TextView.bindDescription(item: Plan) {
 @BindingAdapter("location")
 fun TextView.bindLocation(item: Plan) {
     item?.let{
-        text="${it.title}"
+        text="${it.location}"
     }
 }
 

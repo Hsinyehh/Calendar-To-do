@@ -1,18 +1,17 @@
-package com.rita.calendarprooo.home
+package com.rita.calendarprooo.edit
+
 
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.rita.calendarprooo.data.Check
 import com.rita.calendarprooo.databinding.ItemCheckBinding
-import com.rita.calendarprooo.databinding.ItemScheduleBinding
 import com.rita.calendarprooo.edit.EditViewModel
 
-class CheckAdapter (val viewModel: HomeViewModel) : ListAdapter<Check,
+class CheckAdapter (val viewModel: EditViewModel) : ListAdapter<Check,
         CheckAdapter.ViewHolder>(CheckDiffCallback()) {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -27,7 +26,7 @@ class CheckAdapter (val viewModel: HomeViewModel) : ListAdapter<Check,
             notifyDataSetChanged()
         }
         holder.binding.checklistBtnRemoved.setOnClickListener {
-            Log.i("Rita","home remove btn clicked")
+            Log.i("Rita","edit remove btn clicked")
             viewModel.checkListTextRemoved(position)
             notifyDataSetChanged()
         }

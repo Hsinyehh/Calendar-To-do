@@ -7,6 +7,9 @@
         <variable
             name="check"
             type="com.rita.calendarprooo.data.Check" />
+        <variable
+            name="viewModel"
+            type="com.rita.calendarprooo.edit.EditViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -33,6 +36,17 @@
             android:text="warm up"
             app:checkTitle="@{check}"
             style="@style/check_list"/>
+
+        <ImageView
+            android:id="@+id/checklist_btn_removed"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginEnd="32dp"
+            android:onClick="@{()->viewModel.checkListTextCreated()}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/delete3" />
 
         <View
             android:id="@+id/separation_line"
