@@ -24,11 +24,8 @@ import com.rita.calendarprooo.home.HomeViewModel
 import java.io.IOException
 import com.google.android.gms.maps.CameraUpdateFactory
 import androidx.core.content.ContextCompat.getSystemService
-
-
-
-
-
+import androidx.navigation.findNavController
+import com.rita.calendarprooo.NavigationDirections
 
 
 class SearchFragment : Fragment(), OnMapReadyCallback {
@@ -85,13 +82,6 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
             }
         }
 
-        //To prevent the imageView hiding from the other view
-        /*binding.btnSearch.bringToFront()
-
-        binding.btnSearch.setOnClickListener {
-            Log.i("Rita","btnSearch click")
-            geoLocate()
-        }*/
 
         binding.textSearch.setOnEditorActionListener { textView, i, keyEvent ->
             if(i==EditorInfo.IME_ACTION_SEARCH||i==EditorInfo.IME_ACTION_DONE
@@ -103,6 +93,16 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
             }
                 false
         }
+
+        //Edit page navigation
+        viewModel.navigateToEdit.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            it?.let{
+                view?.findNavController()?.navigate(
+                    NavigationDirections.navigateToEditFragment(
+                    viewModel.searchResultAddress.value))
+                viewModel.doneNavigated()
+            }
+        })
 
         return binding.root
     }

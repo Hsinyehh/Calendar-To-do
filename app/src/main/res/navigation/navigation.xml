@@ -16,7 +16,12 @@
     <fragment
         android:id="@+id/editFragment"
         android:name="com.rita.calendarprooo.edit.EditFragment"
-        android:label="EditFragment" />
+        android:label="EditFragment" >
+        <argument
+            android:name="address"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
     <action
         android:id="@+id/navigate_to_edit_fragment"
         app:destination="@id/editFragment" />

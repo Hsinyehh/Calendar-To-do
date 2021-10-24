@@ -110,7 +110,7 @@ class HomeFragment : Fragment() {
         itemTouchHelper.attachToRecyclerView(toToListRecyclerView)
 
 
-        //viewModel
+        //Edit page navigation
         viewModel.navigateToEdit.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             it?.let{
                 view?.findNavController()?.navigate(R.id.navigate_to_edit_fragment)

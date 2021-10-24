@@ -37,6 +37,10 @@ class EditFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
 
+        //get safe argument from previous fragment
+        viewModel.location.value= EditFragmentArgs.fromBundle(requireArguments()).address
+
+
         //FAKE DATA
         val categoryList = mutableListOf<Category>(Category("Job",false),
             Category("Travel",false),Category("Meeting",false))
