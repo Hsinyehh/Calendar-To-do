@@ -15,6 +15,7 @@ import com.rita.calendarprooo.data.Category
 import com.rita.calendarprooo.data.Check
 import com.rita.calendarprooo.databinding.FragmentEditBinding
 import com.rita.calendarprooo.home.CheckAdapter
+import java.text.SimpleDateFormat
 
 
 class EditFragment : Fragment() {
@@ -39,6 +40,12 @@ class EditFragment : Fragment() {
         //get safe argument from previous fragment
         viewModel.location.value= EditFragmentArgs.fromBundle(requireArguments()).address
 
+        //Time&Date Picker binding
+        val startTimePicker=binding.startTimepicker
+        val startDatePicker=binding.startDatepicker
+        val endTimePicker=binding.endTimepicker
+        val endDatePicker=binding.endDatepicker
+
 
         //FAKE DATA
         val categoryList = mutableListOf<Category>(Category("Job",false),
@@ -47,7 +54,6 @@ class EditFragment : Fragment() {
         val adapter = CategoryAdapter(viewModel)
         binding.categoryList.adapter=adapter
         adapter.submitList(categoryList)
-
 
 
         //checkAdapter
@@ -60,9 +66,32 @@ class EditFragment : Fragment() {
             viewModel.clearText()
         })
 
+        //save button
+        binding.buttonSave.setOnClickListener { view: View ->
+            //StartTime
+            val startDateSelected = ""+ startDatePicker.getDayOfMonth()+
+                    "-"+ (startDatePicker.getMonth() + 1)+"-"+startDatePicker.getYear()+" "+
+                    startTimePicker.hour + ":"+startTimePicker.minute
+            viewModel.convertToStartTimeStamp(startDateSelected)
+
+            //EndTime
+            val endDateSelected = ""+ endDatePicker.getDayOfMonth()+
+                    "-"+ (endDatePicker.getMonth() + 1)+"-"+endDatePicker.getYear()+" "+
+                    endTimePicker.hour + ":"+endTimePicker.minute
+            viewModel.convertToEndTimeStamp(endDateSelected)
+        }
+
+        viewModel.end_time.observe(viewLifecycleOwner, Observer {
+            it?.let{
+                Log.i("Rita","viewModel.end_time.observe")
+                viewModel.createNewPlan()
+            }
+        })
+
 
         viewModel.newPlan.observe(viewLifecycleOwner, Observer {
             it?.let{
+                viewModel.writeNewPlan()
                 view?.findNavController()?.navigate(R.id.navigate_to_home_fragment)
                 viewModel.doneNavigated()
             }
@@ -72,6 +101,10 @@ class EditFragment : Fragment() {
         binding.buttonCancel.setOnClickListener { view: View ->
             view.findNavController().popBackStack()
         }
+
+        //TimePicker
+        binding.startTimepicker.setIs24HourView(true)
+        binding.endTimepicker.setIs24HourView(true)
 
 
         return  binding.root

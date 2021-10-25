@@ -1,11 +1,15 @@
 package com.rita.calendarprooo.edit
 
+import android.content.ContentValues
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.rita.calendarprooo.data.Category
 import com.rita.calendarprooo.data.Check
 import com.rita.calendarprooo.data.Plan
+import java.text.SimpleDateFormat
 
 
 class EditViewModel : ViewModel() {
@@ -26,32 +30,16 @@ class EditViewModel : ViewModel() {
 
     var checkList = MutableLiveData<MutableList<Check>>()
 
+    var start_time = MutableLiveData<Long>()
 
-    //FAKE DATA
-    val check= Check(
-        title="Meeting Presentation",
-        isDone = false,
-        done_time=null,
-        owner=null,
-        doner=null,
-        id=1)
+    var end_time = MutableLiveData<Long>()
 
-    val check2= Check(
-        title="Meeting Discussion",
-        isDone = false,
-        done_time=null,
-        owner=null,
-        doner=null,
-        id=2)
+    private val db = Firebase.firestore
+    val newPlanRef = db.collection("plan").document()
 
 
-    val fakeCheckList=mutableListOf<Check>(check,check2)
+    val fakeCheckList=mutableListOf<Check>()
 
-    init {
-        isTodoList.value=false
-        checkText.value=null
-        checkList.value=fakeCheckList
-    }
 
     fun toToListModeChanged(){
         isTodoList.value = isTodoList.value==false
@@ -62,7 +50,6 @@ class EditViewModel : ViewModel() {
         val newCheck=Check(checkText.value,false,0,"","",3)
         fakeCheckList.add(newCheck)
         checkList.value = fakeCheckList
-
     }
 
     fun checkListTextRemoved(position:Int){
@@ -78,21 +65,73 @@ class EditViewModel : ViewModel() {
 
     fun createNewPlan(){
         val plan = Plan(
-            id=1,
+            id=newPlanRef.id,
             title=title.value,
             description=description.value,
-            location=location.value,null,null,null,
-            categoryStatus.value?.name, emptyList(),
-            isTodoList.value,false,null, emptyList())
+            location=location.value,
+            start_time=start_time.value,
+            end_time=end_time.value,15L,
+            category=categoryStatus.value?.name, emptyList(),
+            isToDoList=isTodoList.value,
+            isToDoListDone=false,
+            owner="lisa@gmail.com", emptyList(),1)
 
         Log.i("Rita","new plan: $plan")
 
         newPlan.value=plan
+
     }
+
+    fun writeNewPlan(){
+        // Add a new document with a generated ID
+        newPlanRef
+            .set(newPlan.value!!)
+            .addOnSuccessListener { documentReference ->
+                Log.d(ContentValues.TAG, "DocumentSnapshot added with ID: $newPlanRef.id")
+            }
+            .addOnFailureListener { e ->
+                Log.w(ContentValues.TAG, "Error adding document", e)
+            }
+    }
+
+    fun convertToStartTimeStamp(dateSelected:String){
+        try {
+            val dateSelectedFormat = SimpleDateFormat("dd-MM-yyyy HH:mm").parse(dateSelected)
+            Log.i("Rita", "${dateSelectedFormat.time} ")
+            start_time.value=dateSelectedFormat.time
+        }
+        catch(e:java.text.ParseException){
+            Log.i("Rita","$e")
+        }
+    }
+
+    fun convertToEndTimeStamp(dateSelected:String){
+        try {
+            val dateSelectedFormat = SimpleDateFormat("dd-MM-yyyy HH:mm").parse(dateSelected)
+            Log.i("Rita", "${dateSelectedFormat.time} ")
+            end_time.value=dateSelectedFormat.time
+        }
+        catch(e:java.text.ParseException){
+            Log.i("Rita","$e")
+        }
+    }
+
 
     fun doneNavigated(){
         newPlan.value=null
     }
 
+    init {
+        isTodoList.value=false
+        checkText.value=null
+        checkList.value=fakeCheckList
+        categoryStatus.value= Category("",false)
+        title.value=""
+        description.value=""
+        location.value=""
+        start_time.value=null
+        end_time.value=null
+        newPlan.value=null
+    }
 
 }

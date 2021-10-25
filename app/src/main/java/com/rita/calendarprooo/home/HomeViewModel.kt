@@ -31,6 +31,10 @@ class HomeViewModel : ViewModel() {
 
     var checkList = MutableLiveData<MutableList<Check>>()
 
+    //Test for fire base
+    val db = Firebase.firestore
+
+
     //fake data
     val check= Check(
         title="Meeting Presentation",
@@ -43,25 +47,25 @@ class HomeViewModel : ViewModel() {
     private val check_List= mutableListOf<Check>(check,check)
 
     val plan= Plan(
-        id=1,
+        id="1",
         title="Meeting",
         description="for product development",
         location="Taipei",null,null,null,null,check_List,
-        false,false,null, emptyList())
+        false,false,null, emptyList(),1)
 
     val plan2= Plan(
-        id=1,
+        id="2",
         title="Jogging",
         description="for Health",
         location="Taipei",null,null,null,null,check_List,
-        false,false,null, emptyList())
+        false,false,null, emptyList(),2)
 
     val plan3= Plan(
-        id=1,
+        id="3",
         title="Reading",
         description="for Leisure",
         location="Taipei",null,null,null,null,check_List,
-        false,false,null, emptyList())
+        false,false,null, emptyList(),3)
 
     private val plan_list= mutableListOf<Plan>(plan,plan)
     private val todo_list= mutableListOf<Plan>(plan2,plan3)
@@ -89,36 +93,20 @@ class HomeViewModel : ViewModel() {
     }
 
 
-    //Test for fire base
-    val db = Firebase.firestore
 
 
-    fun writeUser(){
-        // Create a new user with a first and last name
-        val user = hashMapOf(
-            "first" to "Ada",
-            "last" to "Lovelace",
-            "born" to 1815
-        )
+    fun readPlan(){
+        val list= mutableListOf<Plan>()
 
-        // Add a new document with a generated ID
-        db.collection("users")
-            .add(user)
-            .addOnSuccessListener { documentReference ->
-                Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
-            }
-            .addOnFailureListener { e ->
-                Log.w(TAG, "Error adding document", e)
-            }
-    }
-
-    fun readUser(){
-        db.collection("users")
+        db.collection("plan")
             .get()
             .addOnSuccessListener { result ->
                 for (document in result) {
                     Log.d(TAG, "${document.id} => ${document.data}")
+                    val plan= document.toObject(Plan::class.java)
+                    list.add(plan)
                 }
+                Log.i("Rita","$list")
             }
             .addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting documents.", exception)
@@ -133,8 +121,7 @@ class HomeViewModel : ViewModel() {
         _doneList.value=todo_list
         checkList.value=check_List
 
-        writeUser()
-        readUser()
+        readPlan()
     }
 
 
