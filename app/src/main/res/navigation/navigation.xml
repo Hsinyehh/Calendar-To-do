@@ -22,10 +22,16 @@
             app:argType="string"
             app:nullable="true" />
     </fragment>
+    <fragment
+        android:id="@+id/resultFragment"
+        android:name="com.rita.calendarprooo.result.ResultFragment"
+        android:label="ResultFragment" />
+
     <action
         android:id="@+id/navigate_to_edit_fragment"
         app:destination="@id/editFragment" />
     <action
         android:id="@+id/navigate_to_home_fragment"
         app:destination="@id/homeFragment" />
+
 </navigation>

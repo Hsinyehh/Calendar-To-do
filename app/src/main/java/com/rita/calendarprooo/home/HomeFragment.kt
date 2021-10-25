@@ -12,9 +12,8 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.rita.calendarprooo.NavigationDirections
 import com.rita.calendarprooo.R
-import com.rita.calendarprooo.data.Check
-import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.databinding.FragmentHomeBinding
 import com.rita.calendarprooo.edit.EditViewModel
 import com.shrikanthravi.collapsiblecalendarview.widget.CollapsibleCalendar
@@ -110,10 +109,13 @@ class HomeFragment : Fragment() {
         itemTouchHelper.attachToRecyclerView(toToListRecyclerView)
 
 
+        val address=""
         //Edit page navigation
         viewModel.navigateToEdit.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             it?.let{
-                view?.findNavController()?.navigate(R.id.navigate_to_edit_fragment)
+                view?.findNavController()?.navigate(
+                    NavigationDirections.navigateToEditFragment(
+                        address))
                 viewModel.doneNavigated()
             }
         })

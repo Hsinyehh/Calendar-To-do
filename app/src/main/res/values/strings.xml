@@ -16,5 +16,6 @@
     <string name="end_time">End Time</string>
     <string name="set">Set</string>
     <string name="clear">Clear</string>
-    <string name="search">Search</string>
+    <string name="search">GoogleMap Search</string>
+    <string name="result">Result and Profile</string>
 </resources>

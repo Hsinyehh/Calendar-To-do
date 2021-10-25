@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "957150290958",
+    "project_id": "calendar-pro-fed69",
+    "storage_bucket": "calendar-pro-fed69.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:957150290958:android:66e022065e12961cb9085f",
+        "android_client_info": {
+          "package_name": "com.rita.calendarprooo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "957150290958-li3fimbev0ekk9lf8usvrgqjnku9gr9p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-RWlef1W1va_dT62XJUwBxyYrqvYFxvg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "957150290958-li3fimbev0ekk9lf8usvrgqjnku9gr9p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

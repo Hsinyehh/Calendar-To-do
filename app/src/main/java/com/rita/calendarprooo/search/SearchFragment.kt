@@ -1,7 +1,6 @@
 package com.rita.calendarprooo.search
 
 import android.app.Activity
-import android.content.Context
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
@@ -9,8 +8,6 @@ import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -18,12 +15,9 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.rita.calendarprooo.R
-import com.rita.calendarprooo.databinding.FragmentHomeBinding
 import com.rita.calendarprooo.databinding.FragmentSearchBinding
-import com.rita.calendarprooo.home.HomeViewModel
 import java.io.IOException
 import com.google.android.gms.maps.CameraUpdateFactory
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.navigation.findNavController
 import com.rita.calendarprooo.NavigationDirections
 
@@ -74,8 +68,10 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
                 val address = list.get(0)
                 viewModel.searchResult.value = list.get(0)
                 viewModel.searchResultAddress.value=list.get(0).getAddressLine(0)
+                viewModel.searchResultName.value = viewModel.searchText.value
+
                 Log.i("Rita","geoLocate: ${viewModel.searchResult.value}")
-                Log.i("Rita","geoLocate: ${list.get(0).getAddressLine(0)}")
+                //Log.i("Rita","geoLocate: ${list.get(0).getAddressLine(0)}")
 
                 moveCamera(LatLng(address.latitude,address.longitude),DEFAULT_ZOOM,
                     address.getAddressLine(0))

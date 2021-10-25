@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModel
 class SearchViewModel : ViewModel() {
     var searchText = MutableLiveData<String?>()
 
+    var searchResultName = MutableLiveData<String?>()
+
     var searchResultAddress = MutableLiveData<String?>()
 
     var searchResult = MutableLiveData<Address?>()

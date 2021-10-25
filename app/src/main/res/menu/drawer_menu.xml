@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-            <item
-                android:id="@+id/homeFragment"
-                android:icon="@drawable/calendar"
-                android:title="@string/calendar" />
-            <item
-                android:id="@+id/searchFragment"
-                android:icon="@drawable/search2"
-                android:title="@string/search" />
+        <item
+            android:id="@+id/homeFragment"
+            android:icon="@drawable/calendar"
+            android:title="@string/calendar" />
+        <item
+            android:id="@+id/searchFragment"
+            android:icon="@drawable/search3"
+            android:title="@string/search" />
+        <item
+            android:id="@+id/resultFragment"
+            android:icon="@drawable/result2"
+            android:title="@string/result" />
 </menu>
