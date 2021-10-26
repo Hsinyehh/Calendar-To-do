@@ -65,16 +65,17 @@ class EditViewModel : ViewModel() {
 
     fun createNewPlan(){
         val plan = Plan(
-            id=newPlanRef.id,
-            title=title.value,
-            description=description.value,
-            location=location.value,
-            start_time=start_time.value,
-            end_time=end_time.value,15L,
-            category=categoryStatus.value?.name, emptyList(),
-            isToDoList=isTodoList.value,
-            isToDoListDone=false,
-            owner="lisa@gmail.com", emptyList(),1)
+            id = newPlanRef.id,
+            title = title.value,
+            description = description.value,
+            location = location.value,
+            start_time = start_time.value,
+            end_time = end_time.value,15L,
+            category = categoryStatus.value?.name,
+            checkList = checkList.value,
+            isToDoList = isTodoList.value,
+            isToDoListDone = false,
+            owner = "lisa@gmail.com", emptyList(),1)
 
         Log.i("Rita","new plan: $plan")
 

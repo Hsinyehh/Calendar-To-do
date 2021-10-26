@@ -23,7 +23,7 @@ class DoneAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
         //checkAdapter
         val adapter=CheckAdapter(viewModel)
         holder.binding.scheduleCheckList.adapter=adapter
-        adapter.submitList(viewModel.checkList.value)
+        adapter.submitList(item.checkList)
 
         holder.binding.scheduleOverview.setOnClickListener {
             if(holder.binding.scheduleDetail.visibility== View.GONE){

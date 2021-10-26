@@ -42,7 +42,7 @@ class HomeFragment : Fragment() {
         //schedule adapter
         val adapter = ScheduleAdapter(viewModel)
         binding.homeScheduleList.adapter = adapter
-        viewModel.planList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.scheduleList .observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             adapter.submitList(it)
         })
 
@@ -57,7 +57,7 @@ class HomeFragment : Fragment() {
         //done adapter
         val doneAdapter = DoneAdapter(viewModel)
         binding.homeDoneList.adapter = doneAdapter
-        viewModel.todoList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.doneList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             doneAdapter.submitList(it)
         })
 
@@ -127,16 +127,25 @@ class HomeFragment : Fragment() {
             override fun onClickListener() {}
             override fun onDaySelect() {
                 val day = collapsibleCalendar.selectedDay
-                Log.i(
-                    javaClass.name, "Selected Day: "
-                            + day!!.year + "/" + (day.month + 1) + "/" + day.day
-                )
+                val dateSelected = ""+day!!.day + "-" + (day.month + 1) + "-" + day.year
+
+                viewModel.convertToTimeStamp(dateSelected)
+
+                Log.i("Rita", "Selected Day: $dateSelected")
             }
 
             override fun onItemClick(view: View) {}
             override fun onDataUpdate() {}
             override fun onMonthChange() {}
             override fun onWeekChange(i: Int) {}
+        })
+
+
+        viewModel.selectedEndTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
+            Log.i("Rita","HomeViewModel.selectedEndTime- $it")
+            it?.let{
+                viewModel.readPlan()
+            }
         })
 
 

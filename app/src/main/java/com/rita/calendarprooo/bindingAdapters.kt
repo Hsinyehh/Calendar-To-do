@@ -5,6 +5,8 @@ import androidx.databinding.BindingAdapter
 import com.rita.calendarprooo.data.Category
 import com.rita.calendarprooo.data.Check
 import com.rita.calendarprooo.data.Plan
+import java.text.SimpleDateFormat
+import java.util.*
 
 @BindingAdapter("title")
 fun TextView.bindTitle(item: Plan) {
@@ -24,6 +26,17 @@ fun TextView.bindDescription(item: Plan) {
 fun TextView.bindLocation(item: Plan) {
     item?.let{
         text="${it.location}"
+    }
+}
+
+@BindingAdapter("time")
+fun TextView.bindTime(item: Plan) {
+    val simpleDateFormat = SimpleDateFormat("MM/dd hh:mm",  Locale.TAIWAN)
+    item?.let{
+        val startTime=simpleDateFormat.format(it.start_time?.let { it1 -> Date(it1) })
+        val endTime=simpleDateFormat.format(it.end_time?.let { it1 -> Date(it1) })
+
+        text="$startTime  -  $endTime"
     }
 }
 
