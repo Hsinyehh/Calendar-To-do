@@ -28,7 +28,7 @@ class EditViewModel : ViewModel() {
 
     var isTodoList= MutableLiveData<Boolean?>()
 
-    var checkList = MutableLiveData<MutableList<Check>>()
+    var checkList = MutableLiveData<MutableList<Check>?>()
 
     var start_time = MutableLiveData<Long>()
 
@@ -47,7 +47,8 @@ class EditViewModel : ViewModel() {
 
     fun checkListTextCreated(){
         Log.i("Rita","checkListTextCreated()")
-        val newCheck=Check(checkText.value,false,0,"","",3)
+        val newCheck=Check(checkText.value,false,0,"","",1,
+            newPlanRef.id)
         fakeCheckList.add(newCheck)
         checkList.value = fakeCheckList
     }
@@ -70,12 +71,16 @@ class EditViewModel : ViewModel() {
             description = description.value,
             location = location.value,
             start_time = start_time.value,
-            end_time = end_time.value,15L,
+            end_time = end_time.value,
+            15L,
             category = categoryStatus.value?.name,
-            checkList = checkList.value,
+            checkList = checkList.value!!,
             isToDoList = isTodoList.value,
             isToDoListDone = false,
-            owner = "lisa@gmail.com", emptyList(),1)
+            owner = "lisa@gmail.com",
+            mutableListOf<String>(),
+            1
+        )
 
         Log.i("Rita","new plan: $plan")
 

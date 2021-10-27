@@ -35,7 +35,8 @@ class HomeViewModel : ViewModel() {
 
     var checkList = MutableLiveData<MutableList<Check>>()
 
-    //Test for firebase
+
+    //Firebase
     val db = Firebase.firestore
     val newPlanRef = db.collection("plan").document()
 
@@ -113,6 +114,39 @@ class HomeViewModel : ViewModel() {
                 Log.w(TAG, "Error getting documents.", exception)
             }
 
+    }
+
+
+    fun getCheckList(item:Check, position:Int){
+        val planRef = item.plan_id?.let { db.collection("plan").document(it) }
+        planRef!!.get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    Log.d(TAG, "DocumentSnapshot data: ${document.data}")
+                    val plan= document.toObject(Plan::class.java)
+                    if (plan != null) {
+                        plan.checkList!![position]=item
+                        checkList.value = plan.checkList
+                        Log.i("Rita"," getCheckList-itemUpdate as $item")
+                        //Store isDone status
+                        writeCheckItemStatus(item)
+                    }
+                } else {
+                    Log.d(TAG, "No such document")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d(TAG, "get failed with ", exception)
+            }
+    }
+
+    fun writeCheckItemStatus(item:Check){
+        val planRef = item.plan_id?.let { db.collection("plan").document(it) }
+        Log.i("Rita","writeCheckItemDone-planRef: $planRef")
+        planRef!!
+            .update("checkList",checkList.value)
+            .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully updated!") }
+            .addOnFailureListener { e -> Log.w(TAG, "Error updating document", e) }
     }
 
     fun readPlanOnChanged(){

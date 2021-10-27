@@ -6,7 +6,8 @@ data class Check(
     var done_time: Long? = null,
     var owner: String? = "",
     var doner: String? = "",
-    var id: Long = 0L
+    var id: Long = 0L,
+    var plan_id: String? = ""
 ) {
     fun toHashMap(data: Check) {
         val data = hashMapOf(
