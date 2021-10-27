@@ -19,10 +19,13 @@ class TodoAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
 
+        Log.i("Rita","TodoAdapter dataSetChanged")
+
         //checkAdapter
         val adapter=CheckAdapter(viewModel)
         holder.binding.scheduleCheckList.adapter=adapter
         adapter.submitList(item.checkList)
+        adapter.notifyDataSetChanged()
 
         holder.binding.scheduleOverview.setOnClickListener {
             if(holder.binding.scheduleDetail.visibility== View.GONE){

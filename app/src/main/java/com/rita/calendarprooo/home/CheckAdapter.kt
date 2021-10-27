@@ -17,6 +17,9 @@ class CheckAdapter (val viewModel: HomeViewModel) : ListAdapter<Check,
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
+
+        Log.i("Rita","CheckAdapter dataSetChanged")
+
         holder.binding.checklistImage.setOnClickListener {
             if(item.isDone){
                 item.isDone=false
@@ -24,12 +27,14 @@ class CheckAdapter (val viewModel: HomeViewModel) : ListAdapter<Check,
             else if(!item.isDone){
                 item.isDone=true
             }
-            viewModel.getCheckList(item, position)
+            viewModel.getPlanAndChangeStatus(item, position)
             notifyDataSetChanged()
         }
         holder.binding.checklistBtnRemoved.setOnClickListener {
             Log.i("Rita","home remove btn clicked")
-            viewModel.checkListTextRemoved(position)
+            viewModel.getPlanAndRemoveItem(item,position)
+            //notifyItemRemoved (position)
+            //notifyItemRangeChanged(position, viewModel.checkListSize.value!!)
             notifyDataSetChanged()
         }
 

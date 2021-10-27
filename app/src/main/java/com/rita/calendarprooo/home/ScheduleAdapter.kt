@@ -11,6 +11,7 @@ import com.rita.calendarprooo.data.Check
 import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.databinding.ItemScheduleBinding
 import com.rita.calendarprooo.edit.EditViewModel
+import java.util.Observer
 
 class ScheduleAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
         ScheduleAdapter.ViewHolder>(ScheduleDiffCallback()) {
@@ -19,24 +20,27 @@ class ScheduleAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
 
+        Log.i("Rita","ScheduleAdapter dataSetChanged")
+
         //checkAdapter
         val adapter=CheckAdapter(viewModel)
-        holder.binding.scheduleCheckList.adapter=adapter
+        holder.binding.scheduleCheckList.adapter = adapter
         adapter.submitList(item.checkList)
+        adapter.notifyDataSetChanged()
 
         holder.binding.scheduleOverview.setOnClickListener {
-            if(holder.binding.scheduleDetail.visibility== View.GONE){
-                holder.binding.scheduleDetail.visibility= View.VISIBLE
+            if(holder.binding.scheduleDetail.visibility == View.GONE){
+                holder.binding.scheduleDetail.visibility = View.VISIBLE
             }
-            else if(holder.binding.scheduleDetail.visibility== View.VISIBLE){
-                holder.binding.scheduleDetail.visibility= View.GONE
+            else if(holder.binding.scheduleDetail.visibility == View.VISIBLE){
+                holder.binding.scheduleDetail.visibility = View.GONE
             }
             notifyDataSetChanged()
         }
 
         holder.binding.root.setOnClickListener {
-            if(holder.binding.scheduleDetail.visibility== View.VISIBLE){
-                holder.binding.scheduleDetail.visibility= View.GONE
+            if(holder.binding.scheduleDetail.visibility == View.VISIBLE){
+                holder.binding.scheduleDetail.visibility = View.GONE
             }
             notifyDataSetChanged()
         }

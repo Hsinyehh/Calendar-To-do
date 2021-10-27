@@ -13,6 +13,7 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/checkItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -43,10 +44,9 @@
             android:layout_height="17dp"
             android:layout_marginTop="7dp"
             android:layout_marginEnd="32dp"
-            android:onClick="@{()->viewModel.checkListTextCreated()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/delete3" />
+            android:src="@drawable/delete3" />
 
         <View
             android:id="@+id/separation_line"

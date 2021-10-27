@@ -38,7 +38,7 @@ class HomeViewModel : ViewModel() {
 
     //Firebase
     val db = Firebase.firestore
-    val newPlanRef = db.collection("plan").document()
+
 
     var selectedStartTime = MutableLiveData<Long>()
 
@@ -50,12 +50,6 @@ class HomeViewModel : ViewModel() {
         _todoList.value=todoListGet
     }
 
-    fun checkListTextRemoved(position:Int){
-        val listGet =  checkList.value
-        listGet?.removeAt(position)
-        Log.i("Rita","Home List removed: $listGet")
-        checkList.value = listGet
-    }
 
     fun startNavigateToEdit(){
         _navigateToEdit.value=true
@@ -117,16 +111,18 @@ class HomeViewModel : ViewModel() {
     }
 
 
-    fun getCheckList(item:Check, position:Int){
+    fun getPlanAndChangeStatus(item:Check, position:Int) {
         val planRef = item.plan_id?.let { db.collection("plan").document(it) }
+        var plan : Plan? = null
         planRef!!.get()
             .addOnSuccessListener { document ->
                 if (document != null) {
                     Log.d(TAG, "DocumentSnapshot data: ${document.data}")
-                    val plan= document.toObject(Plan::class.java)
+                    plan= document.toObject(Plan::class.java)
                     if (plan != null) {
-                        plan.checkList!![position]=item
-                        checkList.value = plan.checkList
+                        plan!!.checkList!![position]=item
+                        checkList.value = plan!!.checkList
+
                         Log.i("Rita"," getCheckList-itemUpdate as $item")
                         //Store isDone status
                         writeCheckItemStatus(item)
@@ -140,7 +136,31 @@ class HomeViewModel : ViewModel() {
             }
     }
 
-    fun writeCheckItemStatus(item:Check){
+
+    fun getPlanAndRemoveItem(item:Check, position:Int){
+        val planRef = item.plan_id?.let { db.collection("plan").document(it) }
+        planRef!!.get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    Log.d(TAG, "DocumentSnapshot data: ${document.data}")
+                    val plan= document.toObject(Plan::class.java)
+                    if (plan != null) {
+                        plan.checkList!!.removeAt(position)
+                        checkList.value = plan.checkList
+                        Log.i("Rita"," getCheckList-itemRemoved as $item")
+                        //Store isDone status
+                        writeCheckItemStatus(item)
+                    }
+                } else {
+                    Log.d(TAG, "No such document")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d(TAG, "get failed with ", exception)
+            }
+    }
+
+    private fun writeCheckItemStatus(item:Check){
         val planRef = item.plan_id?.let { db.collection("plan").document(it) }
         Log.i("Rita","writeCheckItemDone-planRef: $planRef")
         planRef!!
@@ -150,18 +170,67 @@ class HomeViewModel : ViewModel() {
     }
 
     fun readPlanOnChanged(){
-        newPlanRef.addSnapshotListener { snapshot, e ->
+        var list = mutableListOf<Plan>()
+        var listBeforeToday = mutableListOf<Plan>()
+
+        db.collection("plan")
+            .whereEqualTo("owner","lisa@gmail.com")
+            .whereGreaterThanOrEqualTo("start_time", selectedStartTime.value!!)
+            .whereLessThanOrEqualTo("start_time", selectedEndTime.value!!)
+            .addSnapshotListener { snapshot, e ->
             if (e != null) {
                 Log.w(TAG, "Listen failed.", e)
                 return@addSnapshotListener
             }
+            if (snapshot != null && !snapshot.isEmpty) {
+                list = mutableListOf<Plan>()
+                listBeforeToday = mutableListOf<Plan>()
 
-            if (snapshot != null && snapshot.exists()) {
-                Log.d(TAG, "Current data: ${snapshot.data}")
+                Log.d(TAG, "Current data: ")
+                for (item in snapshot.documents) {
+                    Log.d("Rita", item.toString())
+                    val plan= item.toObject(Plan::class.java)
+                    list.add(plan!!)
+                }
+                Log.i("Rita", "list onChanged:　$list")
+                _scheduleList.value = list.filter { it -> it.isToDoList == false }
+                _todoList.value =
+                    list.filter { it -> it.isToDoList == true && !it.isToDoListDone }
+                _doneList.value =
+                    list.filter { it -> it.isToDoList == true && it.isToDoListDone }
             } else {
                 Log.d(TAG, "Current data: null")
             }
         }
+        //plan's start-time before today
+        db.collection("plan")
+            .whereEqualTo("owner","lisa@gmail.com")
+            .whereLessThanOrEqualTo("start_time", selectedStartTime.value!!)
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e)
+                    return@addSnapshotListener
+                }
+                if (snapshot != null && !snapshot.isEmpty) {
+                    Log.d(TAG, "Current data: ")
+                    for (item in snapshot.documents) {
+                        Log.d("Rita", item.toString())
+                        val plan = item.toObject(Plan::class.java)
+                        listBeforeToday.add(plan!!)
+                    }
+                    Log.i("Rita", "listBeforeToday onChanged:　$listBeforeToday")
+                    val filteredList = listBeforeToday
+                        .filter { it -> it.end_time!! >= selectedStartTime.value!! }
+                    list.addAll(filteredList)
+                    _scheduleList.value = list.filter { it -> it.isToDoList == false }
+                    _todoList.value =
+                        list.filter { it -> it.isToDoList == true && !it.isToDoListDone }
+                    _doneList.value =
+                        list.filter { it -> it.isToDoList == true && it.isToDoListDone }
+                } else {
+                    Log.d(TAG, "Current data: null")
+                }
+            }
     }
 
     fun convertToTimeStamp(dateSelected:String){
