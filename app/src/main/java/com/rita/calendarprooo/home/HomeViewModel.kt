@@ -3,11 +3,10 @@ package com.rita.calendarprooo.home
 import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.annotation.Nullable
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.Transaction
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.rita.calendarprooo.data.Check
@@ -37,8 +36,23 @@ class HomeViewModel : ViewModel() {
 
 
     //Firebase
-    val db = Firebase.firestore
+    private val db = Firebase.firestore
 
+    var listFromToday = MutableLiveData<List<Plan>>()
+
+    var listBeforeToday = MutableLiveData<List<Plan>>()
+
+    var listTotal = MutableLiveData<List<Plan>>()
+
+
+
+    var Listtest : LiveData<List<Plan>> = Transformations.map(listTotal){
+        var listFiltered = mutableListOf<Plan>()
+        listTotal.value?.let{
+            listFiltered = it.filter { it.isToDoList == false  } as MutableList<Plan>
+        }
+        listFiltered
+    }
 
     var selectedStartTime = MutableLiveData<Long>()
 
@@ -102,7 +116,7 @@ class HomeViewModel : ViewModel() {
 
                 _scheduleList.value = list.filter { it -> it.isToDoList==false }
                 _todoList.value = list.filter { it -> it.isToDoList==true && !it.isToDoListDone }
-                _doneList.value= list.filter { it -> it.isToDoList==true && it.isToDoListDone }
+                _doneList.value= list.filter { it ->  it.isToDoListDone }
             }
             .addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting documents.", exception)
@@ -111,7 +125,7 @@ class HomeViewModel : ViewModel() {
     }
 
 
-    fun getPlanAndChangeStatus(item:Check, position:Int) {
+    fun getCheckAndChangeStatus(item:Check, position:Int) {
         val planRef = item.plan_id?.let { db.collection("plan").document(it) }
         var plan : Plan? = null
         planRef!!.get()
@@ -122,7 +136,6 @@ class HomeViewModel : ViewModel() {
                     if (plan != null) {
                         plan!!.checkList!![position]=item
                         checkList.value = plan!!.checkList
-
                         Log.i("Rita"," getCheckList-itemUpdate as $item")
                         //Store isDone status
                         writeCheckItemStatus(item)
@@ -137,7 +150,7 @@ class HomeViewModel : ViewModel() {
     }
 
 
-    fun getPlanAndRemoveItem(item:Check, position:Int){
+    fun getCheckAndRemoveItem(item:Check, position:Int){
         val planRef = item.plan_id?.let { db.collection("plan").document(it) }
         planRef!!.get()
             .addOnSuccessListener { document ->
@@ -170,9 +183,6 @@ class HomeViewModel : ViewModel() {
     }
 
     fun readPlanOnChanged(){
-        var list = mutableListOf<Plan>()
-        var listBeforeToday = mutableListOf<Plan>()
-
         db.collection("plan")
             .whereEqualTo("owner","lisa@gmail.com")
             .whereGreaterThanOrEqualTo("start_time", selectedStartTime.value!!)
@@ -183,21 +193,15 @@ class HomeViewModel : ViewModel() {
                 return@addSnapshotListener
             }
             if (snapshot != null && !snapshot.isEmpty) {
-                list = mutableListOf<Plan>()
-                listBeforeToday = mutableListOf<Plan>()
-
+                val list = mutableListOf<Plan>()
                 Log.d(TAG, "Current data: ")
-                for (item in snapshot.documents) {
+                for (item in snapshot) {
                     Log.d("Rita", item.toString())
                     val plan= item.toObject(Plan::class.java)
                     list.add(plan!!)
                 }
                 Log.i("Rita", "list onChanged:　$list")
-                _scheduleList.value = list.filter { it -> it.isToDoList == false }
-                _todoList.value =
-                    list.filter { it -> it.isToDoList == true && !it.isToDoListDone }
-                _doneList.value =
-                    list.filter { it -> it.isToDoList == true && it.isToDoListDone }
+                listFromToday.value = list
             } else {
                 Log.d(TAG, "Current data: null")
             }
@@ -212,8 +216,9 @@ class HomeViewModel : ViewModel() {
                     return@addSnapshotListener
                 }
                 if (snapshot != null && !snapshot.isEmpty) {
+                    val listBeforeToday = mutableListOf<Plan>()
                     Log.d(TAG, "Current data: ")
-                    for (item in snapshot.documents) {
+                    for (item in snapshot) {
                         Log.d("Rita", item.toString())
                         val plan = item.toObject(Plan::class.java)
                         listBeforeToday.add(plan!!)
@@ -221,16 +226,34 @@ class HomeViewModel : ViewModel() {
                     Log.i("Rita", "listBeforeToday onChanged:　$listBeforeToday")
                     val filteredList = listBeforeToday
                         .filter { it -> it.end_time!! >= selectedStartTime.value!! }
-                    list.addAll(filteredList)
-                    _scheduleList.value = list.filter { it -> it.isToDoList == false }
-                    _todoList.value =
-                        list.filter { it -> it.isToDoList == true && !it.isToDoListDone }
-                    _doneList.value =
-                        list.filter { it -> it.isToDoList == true && it.isToDoListDone }
+                    listFromToday.value = filteredList
                 } else {
                     Log.d(TAG, "Current data: null")
                 }
             }
+    }
+
+    fun getTotalList(){
+        listFromToday.value?.let{
+            var list = it.toMutableList()
+            listBeforeToday.value?.let { it1 -> list?.addAll(it1) }
+            //listTotal.value = list
+
+            _scheduleList.value = list.filter { it -> it.isToDoList == false }
+            _todoList.value =
+                list.filter { it -> it.isToDoList == true && !it.isToDoListDone }
+            _doneList.value =
+                list.filter { it ->  it.isToDoListDone }
+        }
+    }
+
+    fun getPlanAndChangeStatus(item:Plan) {
+        val planRef = item.id?.let { db.collection("plan").document(it) }
+        planRef!!
+            .update("toDoListDone", item.isToDoListDone)
+            .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully updated!") }
+            .addOnFailureListener { e -> Log.w(TAG, "Error updating document", e) }
+
     }
 
     fun convertToTimeStamp(dateSelected:String){
@@ -260,7 +283,6 @@ class HomeViewModel : ViewModel() {
     init {
         _navigateToEdit.value = null
         convertToTimeStamp(getToday())
-        readPlan()
     }
 
 

@@ -68,7 +68,19 @@ class HomeFragment : Fragment() {
         })
 
 
+        viewModel.listFromToday.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            it?.let{
+                Log.i("Rita","viewModel.listFromToday.observe: $it")
+                viewModel.getTotalList()
+            }
+        })
 
+        viewModel.listBeforeToday.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            it?.let{
+                Log.i("Rita","viewModel.listBeforeToday.observe: $it")
+                viewModel.getTotalList()
+            }
+        })
 
 
 

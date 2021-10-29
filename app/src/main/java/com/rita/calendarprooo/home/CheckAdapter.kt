@@ -27,14 +27,12 @@ class CheckAdapter (val viewModel: HomeViewModel) : ListAdapter<Check,
             else if(!item.isDone){
                 item.isDone=true
             }
-            viewModel.getPlanAndChangeStatus(item, position)
+            viewModel.getCheckAndChangeStatus(item, position)
             notifyDataSetChanged()
         }
         holder.binding.checklistBtnRemoved.setOnClickListener {
             Log.i("Rita","home remove btn clicked")
-            viewModel.getPlanAndRemoveItem(item,position)
-            //notifyItemRemoved (position)
-            //notifyItemRangeChanged(position, viewModel.checkListSize.value!!)
+            viewModel.getCheckAndRemoveItem(item,position)
             notifyDataSetChanged()
         }
 

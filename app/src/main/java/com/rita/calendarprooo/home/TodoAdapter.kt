@@ -44,6 +44,16 @@ class TodoAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
             notifyDataSetChanged()
         }
 
+        holder.binding.scheduleBtnUncheck.setOnClickListener {
+            if(item.isToDoListDone){
+                item.isToDoListDone=false
+            }
+            else if(!item.isToDoListDone){
+                item.isToDoListDone=true
+            }
+            viewModel.getPlanAndChangeStatus(item)
+            notifyDataSetChanged()
+        }
         holder.bind(item)
 
     }
