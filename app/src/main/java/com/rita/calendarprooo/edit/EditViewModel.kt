@@ -2,6 +2,7 @@ package com.rita.calendarprooo.edit
 
 import android.content.ContentValues
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.ktx.firestore
@@ -10,23 +11,26 @@ import com.rita.calendarprooo.data.Category
 import com.rita.calendarprooo.data.Check
 import com.rita.calendarprooo.data.Plan
 import java.text.SimpleDateFormat
+import java.util.*
 
 
-class EditViewModel : ViewModel() {
+class EditViewModel(plan: Plan) : ViewModel() {
 
-    var categoryStatus= MutableLiveData<Category?>()
+    var plan = MutableLiveData<Plan?>()
 
-    var checkText= MutableLiveData<String?>()
+    var categoryStatus = MutableLiveData<Category?>()
 
-    var title= MutableLiveData<String?>()
+    var checkText = MutableLiveData<String?>()
 
-    var description= MutableLiveData<String?>()
+    var title = MutableLiveData<String?>()
 
-    var location= MutableLiveData<String?>()
+    var description = MutableLiveData<String?>()
 
-    var newPlan= MutableLiveData<Plan?>()
+    var location = MutableLiveData<String?>()
 
-    var isTodoList= MutableLiveData<Boolean?>()
+    var newPlan = MutableLiveData<Plan?>()
+
+    var isTodoList = MutableLiveData<Boolean?>()
 
     var checkList = MutableLiveData<MutableList<Check>?>()
 
@@ -34,37 +38,46 @@ class EditViewModel : ViewModel() {
 
     var end_time = MutableLiveData<Long>()
 
+    var start_time_detail = MutableLiveData<List<Int>>()
+
+    var end_time_detail = MutableLiveData<List<Int>>()
+
+    var createStatus = MutableLiveData<Boolean?>()
+
+    var editStatus = MutableLiveData<Boolean?>()
+
     private val db = Firebase.firestore
     val newPlanRef = db.collection("plan").document()
 
+    val emptyCheckList = mutableListOf<Check>()
 
-    val fakeCheckList=mutableListOf<Check>()
-
-
-    fun toToListModeChanged(){
-        isTodoList.value = isTodoList.value==false
+    fun toToListModeChanged() {
+        isTodoList.value = isTodoList.value == false
     }
 
-    fun checkListTextCreated(){
-        Log.i("Rita","checkListTextCreated()")
-        val newCheck=Check(checkText.value,false,0,"","",1,
-            newPlanRef.id)
-        fakeCheckList.add(newCheck)
-        checkList.value = fakeCheckList
+    fun checkListTextCreated() {
+        val editCheckList = checkList.value
+        Log.i("Rita", "checkListTextCreated()")
+        val newCheck = Check(
+            checkText.value, false, 0, "", "", 1,
+            newPlanRef.id
+        )
+        editCheckList?.add(newCheck)
+        checkList.value = editCheckList
     }
 
-    fun checkListTextRemoved(position:Int){
-        val listGet =  checkList.value
+    fun checkListTextRemoved(position: Int) {
+        val listGet = checkList.value
         listGet?.removeAt(position)
-        Log.i("Rita","Edit List removed: $listGet")
+        Log.i("Rita", "Edit List removed: $listGet")
         checkList.value = listGet
     }
 
-    fun clearText(){
+    fun clearText() {
         checkText.value = ""
     }
 
-    fun createNewPlan(){
+    fun createNewPlan() {
         val plan = Plan(
             id = newPlanRef.id,
             title = title.value,
@@ -72,23 +85,21 @@ class EditViewModel : ViewModel() {
             location = location.value,
             start_time = start_time.value,
             end_time = end_time.value,
-            15L,
+            start_time_detail = start_time_detail.value,
+            end_time_detail = end_time_detail.value,
             category = categoryStatus.value?.name,
             checkList = checkList.value!!,
             isToDoList = isTodoList.value,
             isToDoListDone = false,
             owner = "lisa@gmail.com",
-            mutableListOf<String>(),
-            1
+            collaborator = mutableListOf<String>(),
+            order_id = 1
         )
-
-        Log.i("Rita","new plan: $plan")
-
-        newPlan.value=plan
-
+        Log.i("Rita", "new plan: $plan")
+        newPlan.value = plan
     }
 
-    fun writeNewPlan(){
+    fun writeNewPlan() {
         // Add a new document with a generated ID
         newPlanRef
             .set(newPlan.value!!)
@@ -100,44 +111,77 @@ class EditViewModel : ViewModel() {
             }
     }
 
-    fun convertToStartTimeStamp(dateSelected:String){
+    fun updatePlan() {
+        val planRef = plan.let { db.collection("plan").document(plan.value!!.id!!) }
+        Log.i("Rita", "updatePlan-planRef: $planRef")
+        planRef!!
+            .update(
+                "title", title.value,
+                "description", description.value,
+                "location", location.value,
+                "start_time",start_time.value,
+                "end_time",end_time.value,
+                "start_time_detail",start_time_detail.value,
+                "end_time_detail",end_time_detail.value,
+                "category", categoryStatus.value?.name,
+                "checkList", checkList.value!!,
+                "isToDoList", isTodoList.value
+            )
+            .addOnSuccessListener { Log.d(ContentValues.TAG, "successfully updated!") }
+            .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error updating document", e) }
+
+    }
+
+    fun convertToStartTimeStamp(dateSelected: String) {
         try {
             val dateSelectedFormat = SimpleDateFormat("dd-MM-yyyy HH:mm").parse(dateSelected)
             Log.i("Rita", "${dateSelectedFormat.time} ")
-            start_time.value=dateSelectedFormat.time
-        }
-        catch(e:java.text.ParseException){
-            Log.i("Rita","$e")
+            start_time.value = dateSelectedFormat.time
+        } catch (e: java.text.ParseException) {
+            Log.i("Rita", "$e")
         }
     }
 
-    fun convertToEndTimeStamp(dateSelected:String){
+    fun convertToEndTimeStamp(dateSelected: String) {
         try {
             val dateSelectedFormat = SimpleDateFormat("dd-MM-yyyy HH:mm").parse(dateSelected)
             Log.i("Rita", "${dateSelectedFormat.time} ")
-            end_time.value=dateSelectedFormat.time
-        }
-        catch(e:java.text.ParseException){
-            Log.i("Rita","$e")
+            end_time.value = dateSelectedFormat.time
+            createStatus.value = true
+        } catch (e: java.text.ParseException) {
+            Log.i("Rita", "$e")
         }
     }
 
+    fun doneConverted() {
+        createStatus.value = null
+    }
 
-    fun doneNavigated(){
-        newPlan.value=null
+
+    fun doneNavigated() {
+        newPlan.value = null
+        plan.value = null
+        editStatus.value = null
     }
 
     init {
-        isTodoList.value=false
-        checkText.value=null
-        checkList.value=fakeCheckList
-        categoryStatus.value= Category("",false)
-        title.value=""
-        description.value=""
-        location.value=""
-        start_time.value=null
-        end_time.value=null
-        newPlan.value=null
+        title.value = plan?.title ?: ""
+        description.value = plan?.description ?: ""
+        location.value = plan?.location ?: ""
+        start_time.value = plan?.start_time ?: null
+        end_time.value = plan?.end_time ?: null
+        start_time_detail.value = plan?.start_time_detail ?: null
+        end_time_detail.value = plan?.end_time_detail ?: null
+        newPlan.value = null
+        isTodoList.value = plan?.isToDoList ?: false
+        checkText.value = null
+        checkList.value = plan?.checkList ?: emptyCheckList
+        if (plan?.category == null) {
+            categoryStatus.value = Category("", false)
+        } else {
+            categoryStatus.value = Category(plan.category!!, true)
+        }
+
     }
 
 }

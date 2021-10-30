@@ -20,6 +20,7 @@ import java.io.IOException
 import com.google.android.gms.maps.CameraUpdateFactory
 import androidx.navigation.findNavController
 import com.rita.calendarprooo.NavigationDirections
+import com.rita.calendarprooo.data.Plan
 
 
 class SearchFragment : Fragment(), OnMapReadyCallback {
@@ -91,11 +92,12 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         }
 
         //Edit page navigation
+        val plan: Plan? = Plan()
         viewModel.navigateToEdit.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             it?.let{
                 view?.findNavController()?.navigate(
                     NavigationDirections.navigateToEditFragment(
-                    viewModel.searchResultAddress.value))
+                    viewModel.searchResultAddress.value, plan))
                 viewModel.doneNavigated()
             }
         })

@@ -9,15 +9,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.rita.calendarprooo.NavigationDirections
 import com.rita.calendarprooo.R
+import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.databinding.FragmentHomeBinding
-import com.rita.calendarprooo.edit.EditViewModel
 import com.shrikanthravi.collapsiblecalendarview.widget.CollapsibleCalendar
-import java.util.*
 
 class HomeFragment : Fragment() {
 
@@ -82,6 +80,35 @@ class HomeFragment : Fragment() {
             }
         })
 
+        viewModel.selectedEndTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
+            Log.i("Rita","HomeViewModel.selectedEndTime- $it")
+            it?.let{
+                viewModel.readPlan()
+            }
+        })
+
+        val address = ""
+        val plan: Plan? = Plan()
+        //Edit page navigation
+        viewModel.navigateToEdit.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            it?.let{
+                view?.findNavController()?.navigate(
+                    NavigationDirections.navigateToEditFragment(
+                        address, plan))
+                viewModel.doneNavigated()
+            }
+        })
+
+        viewModel.navigateToEditByPlan.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            it?.let{
+                Log.i("Rita","navigateToEditByPlan.observe: $it")
+                view?.findNavController()?.navigate(
+                    NavigationDirections.navigateToEditFragment(
+                        address, viewModel.navigateToEditByPlan.value))
+                viewModel.doneNavigated()
+            }
+        })
+
 
 
         //to-do adapter drag item
@@ -130,16 +157,6 @@ class HomeFragment : Fragment() {
         itemTouchHelper.attachToRecyclerView(toToListRecyclerView)
 
 
-        val address=""
-        //Edit page navigation
-        viewModel.navigateToEdit.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            it?.let{
-                view?.findNavController()?.navigate(
-                    NavigationDirections.navigateToEditFragment(
-                        address))
-                viewModel.doneNavigated()
-            }
-        })
 
         //calendar
         val collapsibleCalendar: CollapsibleCalendar = binding.calendarView
@@ -159,14 +176,6 @@ class HomeFragment : Fragment() {
             override fun onDataUpdate() {}
             override fun onMonthChange() {}
             override fun onWeekChange(i: Int) {}
-        })
-
-
-        viewModel.selectedEndTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
-            Log.i("Rita","HomeViewModel.selectedEndTime- $it")
-            it?.let{
-                viewModel.readPlan()
-            }
         })
 
 

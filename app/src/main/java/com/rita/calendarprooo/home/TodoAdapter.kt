@@ -37,12 +37,12 @@ class TodoAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
             notifyDataSetChanged()
         }
 
-        holder.binding.root.setOnClickListener {
+        /*holder.binding.root.setOnClickListener {
             if(holder.binding.scheduleDetail.visibility== View.VISIBLE){
                 holder.binding.scheduleDetail.visibility= View.GONE
             }
             notifyDataSetChanged()
-        }
+        }*/
 
         holder.binding.scheduleBtnUncheck.setOnClickListener {
             if(item.isToDoListDone){
@@ -54,6 +54,11 @@ class TodoAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
             viewModel.getPlanAndChangeStatus(item)
             notifyDataSetChanged()
         }
+
+        holder.binding.scheduleImageEdit.setOnClickListener {
+            viewModel.startNavigateToEditByPlan(item)
+        }
+
         holder.bind(item)
 
     }

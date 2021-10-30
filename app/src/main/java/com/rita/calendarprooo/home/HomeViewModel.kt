@@ -2,11 +2,7 @@ package com.rita.calendarprooo.home
 
 import android.content.ContentValues.TAG
 import android.util.Log
-import androidx.annotation.Nullable
 import androidx.lifecycle.*
-import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.firestore.QuerySnapshot
-import com.google.firebase.firestore.Transaction
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.rita.calendarprooo.data.Check
@@ -14,11 +10,15 @@ import com.rita.calendarprooo.data.Plan
 import java.text.SimpleDateFormat
 import java.util.*
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel() : ViewModel() {
 
     private var _navigateToEdit = MutableLiveData<Boolean>()
     val navigateToEdit : LiveData<Boolean>
         get() = _navigateToEdit
+
+    private var _navigateToEditByPlan = MutableLiveData<Plan>()
+    val navigateToEditByPlan : LiveData<Plan>
+        get() = _navigateToEditByPlan
 
     private var _scheduleList = MutableLiveData<List<Plan>>()
     val scheduleList : LiveData<List<Plan>>
@@ -34,25 +34,12 @@ class HomeViewModel : ViewModel() {
 
     var checkList = MutableLiveData<MutableList<Check>>()
 
-
     //Firebase
     private val db = Firebase.firestore
 
     var listFromToday = MutableLiveData<List<Plan>>()
 
     var listBeforeToday = MutableLiveData<List<Plan>>()
-
-    var listTotal = MutableLiveData<List<Plan>>()
-
-
-
-    var Listtest : LiveData<List<Plan>> = Transformations.map(listTotal){
-        var listFiltered = mutableListOf<Plan>()
-        listTotal.value?.let{
-            listFiltered = it.filter { it.isToDoList == false  } as MutableList<Plan>
-        }
-        listFiltered
-    }
 
     var selectedStartTime = MutableLiveData<Long>()
 
@@ -64,19 +51,22 @@ class HomeViewModel : ViewModel() {
         _todoList.value=todoListGet
     }
 
-
     fun startNavigateToEdit(){
         _navigateToEdit.value=true
     }
 
-    fun doneNavigated(){
-        _navigateToEdit.value=null
+    fun startNavigateToEditByPlan(plan:Plan){
+        _navigateToEditByPlan.value=plan
     }
 
+    fun doneNavigated(){
+        _navigateToEdit.value=null
+        _navigateToEditByPlan.value=null
+    }
 
     fun readPlan(){
         val list = mutableListOf<Plan>()
-        val listBeforeToday = mutableListOf<Plan>()
+        val listBefore = mutableListOf<Plan>()
 
         //plan's start-time from today
         db.collection("plan")
@@ -105,11 +95,11 @@ class HomeViewModel : ViewModel() {
                 for (document in result) {
                     Log.d(TAG, "${document.id} => ${document.data}")
                     val plan= document.toObject(Plan::class.java)
-                    listBeforeToday.add(plan)
+                    listBefore.add(plan)
                 }
-                Log.i("Rita","listBeforeToday:　$listBeforeToday")
+                Log.i("Rita","listBeforeToday:　$listBefore")
 
-                val filteredList = listBeforeToday
+                val filteredList = listBefore
                     .filter { it -> it.end_time!! >= selectedStartTime.value!! }
 
                 list.addAll(filteredList)
@@ -123,7 +113,6 @@ class HomeViewModel : ViewModel() {
             }
 
     }
-
 
     fun getCheckAndChangeStatus(item:Check, position:Int) {
         val planRef = item.plan_id?.let { db.collection("plan").document(it) }
@@ -148,7 +137,6 @@ class HomeViewModel : ViewModel() {
                 Log.d(TAG, "get failed with ", exception)
             }
     }
-
 
     fun getCheckAndRemoveItem(item:Check, position:Int){
         val planRef = item.plan_id?.let { db.collection("plan").document(it) }
@@ -237,7 +225,6 @@ class HomeViewModel : ViewModel() {
         listFromToday.value?.let{
             var list = it.toMutableList()
             listBeforeToday.value?.let { it1 -> list?.addAll(it1) }
-            //listTotal.value = list
 
             _scheduleList.value = list.filter { it -> it.isToDoList == false }
             _todoList.value =

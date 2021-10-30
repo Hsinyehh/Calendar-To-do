@@ -9,6 +9,8 @@ import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.data.User
 import com.rita.calendarprooo.data.Result
 import com.rita.calendarprooo.data.source.CalendarDataSource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -169,7 +171,7 @@ object CalendarRemoteDataSource : CalendarDataSource {
                         checkList.value = plan.checkList
                         Log.i("Rita"," getCheckList-itemRemoved as $check")
                         //Store isDone status
-                        //writeCheckItemStatus(item)
+                        //updatePlanByCheck(item)
                 } else {
                     Log.d(ContentValues.TAG, "No such document")
                 }

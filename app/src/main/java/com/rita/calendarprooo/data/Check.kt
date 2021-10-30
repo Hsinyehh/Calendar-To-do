@@ -1,5 +1,9 @@
 package com.rita.calendarprooo.data
 
+import android.os.Parcel
+import android.os.Parcelable
+
+@Parcelize
 data class Check(
     var title: String? = "",
     var isDone: Boolean = false,
@@ -8,15 +12,39 @@ data class Check(
     var doner: String? = "",
     var id: Long = 0L,
     var plan_id: String? = ""
-) {
-    fun toHashMap(data: Check) {
-        val data = hashMapOf(
-            "title" to data.title,
-            "isDone" to data.isDone,
-            "done_time" to data.done_time,
-            "owner" to data.owner,
-            "doner" to data.doner,
-            "id" to data.id
-        )
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readString(),
+        parcel.readByte() != 0.toByte(),
+        parcel.readValue(Long::class.java.classLoader) as? Long,
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readLong(),
+        parcel.readString()
+    ) {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(title)
+        parcel.writeByte(if (isDone) 1 else 0)
+        parcel.writeValue(done_time)
+        parcel.writeString(owner)
+        parcel.writeString(doner)
+        parcel.writeLong(id)
+        parcel.writeString(plan_id)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Check> {
+        override fun createFromParcel(parcel: Parcel): Check {
+            return Check(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Check?> {
+            return arrayOfNulls(size)
+        }
     }
 }

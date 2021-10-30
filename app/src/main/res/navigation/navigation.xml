@@ -21,6 +21,10 @@
             android:name="address"
             app:argType="string"
             app:nullable="true" />
+        <argument
+            android:name="plan"
+            app:argType="com.rita.calendarprooo.data.Plan"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/resultFragment"

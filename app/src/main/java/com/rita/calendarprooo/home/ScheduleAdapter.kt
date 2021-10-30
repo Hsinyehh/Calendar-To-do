@@ -45,6 +45,10 @@ class ScheduleAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
             notifyDataSetChanged()
         }
 
+        holder.binding.scheduleImageEdit.setOnClickListener {
+            viewModel.startNavigateToEditByPlan(item)
+        }
+
         holder.bind(item)
 
     }

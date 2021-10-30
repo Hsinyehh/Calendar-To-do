@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -14,14 +15,19 @@ import com.rita.calendarprooo.R
 import com.rita.calendarprooo.data.Category
 import com.rita.calendarprooo.data.Check
 import com.rita.calendarprooo.databinding.FragmentEditBinding
+import com.rita.calendarprooo.ext.getVmFactory
 import com.rita.calendarprooo.home.CheckAdapter
 import java.text.SimpleDateFormat
 
 
 class EditFragment : Fragment() {
 
-    private val viewModel: EditViewModel by lazy {
+    /*private val viewModel: EditViewModel by lazy {
         ViewModelProvider(this).get(EditViewModel::class.java)
+    }*/
+
+    private val viewModel by viewModels<EditViewModel> {
+        getVmFactory(EditFragmentArgs.fromBundle(requireArguments()).plan)
     }
 
     override fun onCreateView(
@@ -38,6 +44,7 @@ class EditFragment : Fragment() {
 
 
         //get safe argument from previous fragment
+        viewModel.plan.value= EditFragmentArgs.fromBundle(requireArguments()).plan
         viewModel.location.value= EditFragmentArgs.fromBundle(requireArguments()).address
 
         //Time&Date Picker binding
@@ -66,25 +73,65 @@ class EditFragment : Fragment() {
             viewModel.clearText()
         })
 
+        //Default value setup for timepicker
+        viewModel.plan.observe(viewLifecycleOwner, Observer {
+            Log.i("Rita", "plan.observe: ${viewModel.plan.value}")
+            it?.start_time_detail?.let {
+                //recognize as edit rather than created a plan
+                viewModel.editStatus.value = true
+
+                startTimePicker.currentHour = it[4]
+                startTimePicker.currentMinute = it[4]
+                startDatePicker.init(it[0], it[1] - 1, it[2], null)
+            }
+            it?.end_time_detail?.let {
+                endTimePicker.currentHour = it[3]
+                endTimePicker.currentMinute = it[4]
+                endDatePicker.init(it[0], it[1]-1, it[2],null)
+            }
+        })
+
+
         //save button
         binding.buttonSave.setOnClickListener { view: View ->
-            //StartTime
-            val startDateSelected = ""+ startDatePicker.getDayOfMonth()+
-                    "-"+ (startDatePicker.getMonth() + 1)+"-"+startDatePicker.getYear()+" "+
-                    startTimePicker.hour + ":"+startTimePicker.minute
-            viewModel.convertToStartTimeStamp(startDateSelected)
+                //StartTime
+                viewModel.start_time_detail.value = listOf<Int>(
+                    startDatePicker.year,
+                    startDatePicker.month + 1, startDatePicker.dayOfMonth, startTimePicker.hour,
+                    startTimePicker.minute
+                )
 
-            //EndTime
-            val endDateSelected = ""+ endDatePicker.getDayOfMonth()+
-                    "-"+ (endDatePicker.getMonth() + 1)+"-"+endDatePicker.getYear()+" "+
-                    endTimePicker.hour + ":"+endTimePicker.minute
-            viewModel.convertToEndTimeStamp(endDateSelected)
+                val startDateSelected = "" + startDatePicker.dayOfMonth +
+                        "-" + (startDatePicker.month + 1) + "-" + startDatePicker.year + " " +
+                        startTimePicker.hour + ":" + startTimePicker.minute
+                viewModel.convertToStartTimeStamp(startDateSelected)
+
+                //EndTime
+                viewModel.end_time_detail.value = listOf<Int>(
+                    endDatePicker.year,
+                    endDatePicker.month + 1, endDatePicker.dayOfMonth, endTimePicker.hour,
+                    endTimePicker.minute
+                )
+
+                val endDateSelected = "" + endDatePicker.dayOfMonth +
+                        "-" + (endDatePicker.month + 1) + "-" + endDatePicker.year + " " +
+                        endTimePicker.hour + ":" + endTimePicker.minute
+                viewModel.convertToEndTimeStamp(endDateSelected)
         }
 
-        viewModel.end_time.observe(viewLifecycleOwner, Observer {
-            it?.let{
-                Log.i("Rita","viewModel.end_time.observe")
-                viewModel.createNewPlan()
+        viewModel.createStatus.observe(viewLifecycleOwner, Observer {
+            if(it==true){
+                Log.i("Rita","viewModel.createStatus.observe ${viewModel.editStatus.value}")
+                if(viewModel.editStatus.value == true){
+                    viewModel.updatePlan()
+                    view?.findNavController()?.navigate(R.id.navigate_to_home_fragment)
+                    viewModel.doneNavigated()
+                }
+                else {
+                    Log.i("Rita", "viewModel.create_status.observe")
+                    viewModel.createNewPlan()
+                    viewModel.doneConverted()
+                }
             }
         })
 
