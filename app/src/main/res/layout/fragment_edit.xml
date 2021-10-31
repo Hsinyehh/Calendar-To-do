@@ -263,6 +263,7 @@
                     android:paddingEnd="10dp"
                     android:text="@string/set"
                     android:background="@drawable/border_round_corner_black"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/editText_location"
                     style="@style/edit" />

@@ -22,12 +22,13 @@ class CategoryAdapter (viewModel: EditViewModel) : ListAdapter <Category,
         val item = getItem(position)
         holder.binding.categoryView.setOnClickListener {
             Log.i("Rita","$selectedItemPosition")
-            viewModel.categoryStatus.value = item
+            /*viewModel.categoryStatus.value = item
             if(selectedItemPosition!=-1){
                 val lastSelectedItem=getItem(selectedItemPosition)
                 lastSelectedItem.isSelected=false
             }
-            item.isSelected=true
+            item.isSelected=true*/
+            viewModel.changeCategory(position,selectedItemPosition)
             selectedItemPosition=position
             notifyDataSetChanged()
         }

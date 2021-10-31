@@ -22,10 +22,6 @@ import java.text.SimpleDateFormat
 
 class EditFragment : Fragment() {
 
-    /*private val viewModel: EditViewModel by lazy {
-        ViewModelProvider(this).get(EditViewModel::class.java)
-    }*/
-
     private val viewModel by viewModels<EditViewModel> {
         getVmFactory(EditFragmentArgs.fromBundle(requireArguments()).plan)
     }
@@ -44,7 +40,7 @@ class EditFragment : Fragment() {
 
 
         //get safe argument from previous fragment
-        viewModel.plan.value= EditFragmentArgs.fromBundle(requireArguments()).plan
+        viewModel.planGet.value= EditFragmentArgs.fromBundle(requireArguments()).plan
         viewModel.location.value= EditFragmentArgs.fromBundle(requireArguments()).address
 
         //Time&Date Picker binding
@@ -60,8 +56,10 @@ class EditFragment : Fragment() {
 
         val adapter = CategoryAdapter(viewModel)
         binding.categoryList.adapter=adapter
-        adapter.submitList(categoryList)
-
+        viewModel.categoryList.observe(viewLifecycleOwner, Observer {
+            adapter.submitList(it)
+            adapter.notifyDataSetChanged()
+        })
 
         //checkAdapter
         val checkAdapter= CheckAdapter(viewModel)
@@ -74,8 +72,8 @@ class EditFragment : Fragment() {
         })
 
         //Default value setup for timepicker
-        viewModel.plan.observe(viewLifecycleOwner, Observer {
-            Log.i("Rita", "plan.observe: ${viewModel.plan.value}")
+        viewModel.planGet.observe(viewLifecycleOwner, Observer {
+            Log.i("Rita", "plan.observe: ${viewModel.planGet.value}")
             it?.start_time_detail?.let {
                 //recognize as edit rather than created a plan
                 viewModel.editStatus.value = true
@@ -89,6 +87,16 @@ class EditFragment : Fragment() {
                 endTimePicker.currentMinute = it[4]
                 endDatePicker.init(it[0], it[1]-1, it[2],null)
             }
+            viewModel.location.value = it?.location
+            if(it?.categoryList.isNullOrEmpty()){
+                viewModel.categoryList.value = categoryList
+            }
+            else{
+                viewModel.categoryList.value = it?.categoryList
+            }
+
+            Log.i("Rita","plan.location.observe: ${viewModel.location.value}")
+
         })
 
 

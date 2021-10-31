@@ -16,9 +16,11 @@ import java.util.*
 
 class EditViewModel(plan: Plan) : ViewModel() {
 
-    var plan = MutableLiveData<Plan?>()
+    var planGet = MutableLiveData<Plan?>()
 
     var categoryStatus = MutableLiveData<Category?>()
+
+    var categoryList = MutableLiveData<MutableList<Category>?>()
 
     var checkText = MutableLiveData<String?>()
 
@@ -88,6 +90,7 @@ class EditViewModel(plan: Plan) : ViewModel() {
             start_time_detail = start_time_detail.value,
             end_time_detail = end_time_detail.value,
             category = categoryStatus.value?.name,
+            categoryList = categoryList.value,
             checkList = checkList.value!!,
             isToDoList = isTodoList.value,
             isToDoListDone = false,
@@ -112,7 +115,7 @@ class EditViewModel(plan: Plan) : ViewModel() {
     }
 
     fun updatePlan() {
-        val planRef = plan.let { db.collection("plan").document(plan.value!!.id!!) }
+        val planRef = planGet.let { db.collection("plan").document(planGet.value!!.id!!) }
         Log.i("Rita", "updatePlan-planRef: $planRef")
         planRef!!
             .update(
@@ -124,12 +127,25 @@ class EditViewModel(plan: Plan) : ViewModel() {
                 "start_time_detail",start_time_detail.value,
                 "end_time_detail",end_time_detail.value,
                 "category", categoryStatus.value?.name,
+                "categoryList", categoryList.value,
                 "checkList", checkList.value!!,
                 "isToDoList", isTodoList.value
             )
             .addOnSuccessListener { Log.d(ContentValues.TAG, "successfully updated!") }
             .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error updating document", e) }
 
+    }
+
+    fun changeCategory(position:Int, lastPosition:Int){
+        Log.i("Rita","$lastPosition")
+        var categoryListGet = categoryList.value
+
+        if(lastPosition!=-1){
+            categoryListGet!![lastPosition].isSelected = false
+        }
+        categoryListGet!![position].isSelected = true
+
+        categoryList.value = categoryListGet
     }
 
     fun convertToStartTimeStamp(dateSelected: String) {
@@ -160,14 +176,14 @@ class EditViewModel(plan: Plan) : ViewModel() {
 
     fun doneNavigated() {
         newPlan.value = null
-        plan.value = null
+        planGet.value = null
         editStatus.value = null
     }
 
     init {
         title.value = plan?.title ?: ""
         description.value = plan?.description ?: ""
-        location.value = plan?.location ?: ""
+        //location.value = planGet.value.location ?: ""
         start_time.value = plan?.start_time ?: null
         end_time.value = plan?.end_time ?: null
         start_time_detail.value = plan?.start_time_detail ?: null
@@ -176,7 +192,7 @@ class EditViewModel(plan: Plan) : ViewModel() {
         isTodoList.value = plan?.isToDoList ?: false
         checkText.value = null
         checkList.value = plan?.checkList ?: emptyCheckList
-        if (plan?.category == null) {
+        if (plan?.category == "") {
             categoryStatus.value = Category("", false)
         } else {
             categoryStatus.value = Category(plan.category!!, true)
