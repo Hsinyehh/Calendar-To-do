@@ -65,7 +65,30 @@ class HomeFragment : Fragment() {
             doneAdapter.notifyDataSetChanged()
         })
 
+        //read Plans when date selected changed
+        viewModel.selectedEndTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
+            Log.i("Rita","selectedEndTime observe- $it")
+            it?.let{
+                viewModel.readPlanFromToday()
+            }
+        })
 
+        viewModel.readListFromToday.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
+            Log.i("Rita","readListFromToday observe - $it")
+            it?.let{
+                viewModel.readPlanBeforeToday()
+            }
+        })
+
+        viewModel.readListBeforeToday.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
+            Log.i("Rita","readListBeforeToday observe - $it")
+            it?.let{
+                viewModel.readPlanInTotal()
+            }
+        })
+
+
+        //update plans on home pages when data changed
         viewModel.listFromToday.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             it?.let{
                 Log.i("Rita","viewModel.listFromToday.observe: $it")
@@ -80,12 +103,6 @@ class HomeFragment : Fragment() {
             }
         })
 
-        viewModel.selectedEndTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
-            Log.i("Rita","HomeViewModel.selectedEndTime- $it")
-            it?.let{
-                viewModel.readPlan()
-            }
-        })
 
         val address = ""
         val plan: Plan? = Plan()

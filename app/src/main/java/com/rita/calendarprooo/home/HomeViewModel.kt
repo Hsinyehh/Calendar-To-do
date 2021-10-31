@@ -41,6 +41,10 @@ class HomeViewModel() : ViewModel() {
 
     var listBeforeToday = MutableLiveData<List<Plan>>()
 
+    var readListFromToday = MutableLiveData<List<Plan>>()
+
+    var readListBeforeToday = MutableLiveData<List<Plan>>()
+
     var selectedStartTime = MutableLiveData<Long>()
 
     var selectedEndTime = MutableLiveData<Long>()
@@ -64,9 +68,8 @@ class HomeViewModel() : ViewModel() {
         _navigateToEditByPlan.value=null
     }
 
-    fun readPlan(){
+    fun readPlanFromToday(){
         val list = mutableListOf<Plan>()
-        val listBefore = mutableListOf<Plan>()
 
         //plan's start-time from today
         db.collection("plan")
@@ -81,11 +84,15 @@ class HomeViewModel() : ViewModel() {
                     list.add(plan)
                 }
                 Log.i("Rita","list: $list")
+                readListFromToday.value = list
             }
             .addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting documents.", exception)
             }
+    }
 
+    fun readPlanBeforeToday(){
+        val listBefore = mutableListOf<Plan>()
         //plan's start-time before today
         db.collection("plan")
             .whereEqualTo("owner","lisa@gmail.com")
@@ -102,17 +109,34 @@ class HomeViewModel() : ViewModel() {
                 val filteredList = listBefore
                     .filter { it -> it.end_time!! >= selectedStartTime.value!! }
 
-                list.addAll(filteredList)
+                Log.i("Rita","filtered listBeforeToday:　$filteredList")
 
-                _scheduleList.value = list.filter { it -> it.isToDoList==false }
-                _todoList.value = list.filter { it -> it.isToDoList==true && !it.isToDoListDone }
-                _doneList.value= list.filter { it ->  it.isToDoListDone }
+                readListBeforeToday.value = filteredList
             }
             .addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting documents.", exception)
             }
-
     }
+
+    fun readPlanInTotal(){
+        var list = readListFromToday.value?.toMutableList()
+        var listBefore = readListBeforeToday.value?.toMutableList()
+        if(list!= null){
+            if (listBefore != null) {
+                list.addAll(listBefore)
+            }
+        }else{
+            if (listBefore != null) {
+                list = listBefore
+            }
+        }
+        if (list != null) {
+            _scheduleList.value = list.filter { it -> it.isToDoList==false }
+            _todoList.value = list.filter { it -> it.isToDoList==true && !it.isToDoListDone }
+            _doneList.value= list.filter { it ->  it.isToDoListDone }
+        }
+    }
+
 
     fun getCheckAndChangeStatus(item:Check, position:Int) {
         val planRef = item.plan_id?.let { db.collection("plan").document(it) }
@@ -222,16 +246,35 @@ class HomeViewModel() : ViewModel() {
     }
 
     fun getTotalList(){
+        val isListFromTodayNull = listFromToday.value == null
+        val isListBeforeTodayNull = listBeforeToday.value == null
+        Log.i("Rita","getTotalList-isListFromTodayNull $isListFromTodayNull")
+        Log.i("Rita","getTotalList-isListBeforeTodayNull $isListBeforeTodayNull")
+
         listFromToday.value?.let{
             var list = it.toMutableList()
-            listBeforeToday.value?.let { it1 -> list?.addAll(it1) }
-
+            if(listBeforeToday.value !== null){
+                list?.addAll(listBeforeToday.value!!)
+            }
+            else{
+                readListBeforeToday.value?.let { it1 -> list?.addAll(it1) }
+            }
             _scheduleList.value = list.filter { it -> it.isToDoList == false }
             _todoList.value =
-                list.filter { it -> it.isToDoList == true && !it.isToDoListDone }
+                list?.filter { it -> it.isToDoList == true && !it.isToDoListDone }
             _doneList.value =
-                list.filter { it ->  it.isToDoListDone }
+                list?.filter { it ->  it.isToDoListDone }
         }
+        if(listFromToday.value == null){
+            var list = readListFromToday.value?.toMutableList()!!
+            list?.addAll(listBeforeToday.value!!)
+            _scheduleList.value = list.filter { it -> it.isToDoList == false }
+            _todoList.value =
+                list?.filter { it -> it.isToDoList == true && !it.isToDoListDone }
+            _doneList.value =
+                list?.filter { it ->  it.isToDoListDone }
+        }
+
     }
 
     fun getPlanAndChangeStatus(item:Plan) {
