@@ -20,6 +20,8 @@ class EditViewModel(plan: Plan) : ViewModel() {
 
     var categoryStatus = MutableLiveData<Category?>()
 
+    var categoryPosition = MutableLiveData<Int?>()
+
     var categoryList = MutableLiveData<MutableList<Category>?>()
 
     var checkText = MutableLiveData<String?>()
@@ -90,6 +92,7 @@ class EditViewModel(plan: Plan) : ViewModel() {
             start_time_detail = start_time_detail.value,
             end_time_detail = end_time_detail.value,
             category = categoryStatus.value?.name,
+            categoryPosition = categoryPosition.value,
             categoryList = categoryList.value,
             checkList = checkList.value!!,
             isToDoList = isTodoList.value,
@@ -127,6 +130,7 @@ class EditViewModel(plan: Plan) : ViewModel() {
                 "start_time_detail",start_time_detail.value,
                 "end_time_detail",end_time_detail.value,
                 "category", categoryStatus.value?.name,
+                "categoryPosition", categoryPosition.value,
                 "categoryList", categoryList.value,
                 "checkList", checkList.value!!,
                 "isToDoList", isTodoList.value
@@ -140,11 +144,19 @@ class EditViewModel(plan: Plan) : ViewModel() {
         Log.i("Rita","$lastPosition")
         var categoryListGet = categoryList.value
 
+        //deselected the origin position value
+        if(categoryPosition.value!=-1){
+            categoryListGet!![categoryPosition.value!!].isSelected = false
+        }
+
         if(lastPosition!=-1){
             categoryListGet!![lastPosition].isSelected = false
         }
         categoryListGet!![position].isSelected = true
+        val item = categoryListGet!![position]
+        categoryStatus.value = item
 
+        categoryPosition.value = position
         categoryList.value = categoryListGet
     }
 
@@ -181,22 +193,23 @@ class EditViewModel(plan: Plan) : ViewModel() {
     }
 
     init {
-        title.value = plan?.title ?: ""
-        description.value = plan?.description ?: ""
+        title.value = plan.title ?: ""
+        description.value = plan.description ?: ""
         //location.value = planGet.value.location ?: ""
-        start_time.value = plan?.start_time ?: null
-        end_time.value = plan?.end_time ?: null
-        start_time_detail.value = plan?.start_time_detail ?: null
-        end_time_detail.value = plan?.end_time_detail ?: null
+        start_time.value = plan.start_time ?: null
+        end_time.value = plan.end_time ?: null
+        start_time_detail.value = plan.start_time_detail ?: null
+        end_time_detail.value = plan.end_time_detail ?: null
         newPlan.value = null
-        isTodoList.value = plan?.isToDoList ?: false
+        isTodoList.value = plan.isToDoList ?: false
         checkText.value = null
-        checkList.value = plan?.checkList ?: emptyCheckList
+        checkList.value = plan.checkList ?: emptyCheckList
         if (plan?.category == "") {
             categoryStatus.value = Category("", false)
         } else {
             categoryStatus.value = Category(plan.category!!, true)
         }
+        categoryPosition.value = plan.categoryPosition
 
     }
 

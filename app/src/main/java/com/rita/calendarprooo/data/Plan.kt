@@ -17,6 +17,7 @@ data class Plan(
     var end_time_detail: List<Int>? = null,
     var alert_time: Long? = null,
     var category: String? = "",
+    var categoryPosition: Int? = -1,
     var categoryList:MutableList<Category>? = mutableListOf<Category>(),
     var checkList: MutableList<Check>? = mutableListOf<Check>(),
     var isToDoList:Boolean? = false,
