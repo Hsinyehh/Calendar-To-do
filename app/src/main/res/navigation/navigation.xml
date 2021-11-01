@@ -37,5 +37,9 @@
     <action
         android:id="@+id/navigate_to_home_fragment"
         app:destination="@id/homeFragment" />
+    <fragment
+        android:id="@+id/invitationFragment"
+        android:name="com.rita.calendarprooo.invitation.InvitationFragment"
+        android:label="InvitationFragment" />
 
 </navigation>

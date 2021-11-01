@@ -228,17 +228,17 @@ class HomeViewModel() : ViewModel() {
                     return@addSnapshotListener
                 }
                 if (snapshot != null && !snapshot.isEmpty) {
-                    val listBeforeToday = mutableListOf<Plan>()
+                    val listBefore = mutableListOf<Plan>()
                     Log.d(TAG, "Current data: ")
                     for (item in snapshot) {
                         Log.d("Rita", item.toString())
                         val plan = item.toObject(Plan::class.java)
-                        listBeforeToday.add(plan!!)
+                        listBefore.add(plan!!)
                     }
-                    Log.i("Rita", "listBeforeToday onChanged:　$listBeforeToday")
-                    val filteredList = listBeforeToday
+                    Log.i("Rita", "listBeforeToday onChanged:　$listBefore")
+                    val filteredList = listBefore
                         .filter { it -> it.end_time!! >= selectedStartTime.value!! }
-                    listFromToday.value = filteredList
+                    listBeforeToday.value = filteredList
                 } else {
                     Log.d(TAG, "Current data: null")
                 }
@@ -246,35 +246,30 @@ class HomeViewModel() : ViewModel() {
     }
 
     fun getTotalList(){
-        val isListFromTodayNull = listFromToday.value == null
-        val isListBeforeTodayNull = listBeforeToday.value == null
-        Log.i("Rita","getTotalList-isListFromTodayNull $isListFromTodayNull")
-        Log.i("Rita","getTotalList-isListBeforeTodayNull $isListBeforeTodayNull")
+        Log.i("Rita","getTotalList listFromToday - ${listFromToday.value}")
+        Log.i("Rita","getTotalList readListBeforeToday - ${readListBeforeToday.value}")
+        var list = listFromToday.value!!.toMutableList()
+        readListBeforeToday.value?.let { it1 -> list?.addAll(it1) }
 
-        listFromToday.value?.let{
-            var list = it.toMutableList()
-            if(listBeforeToday.value !== null){
-                list?.addAll(listBeforeToday.value!!)
-            }
-            else{
-                readListBeforeToday.value?.let { it1 -> list?.addAll(it1) }
-            }
-            _scheduleList.value = list.filter { it -> it.isToDoList == false }
-            _todoList.value =
-                list?.filter { it -> it.isToDoList == true && !it.isToDoListDone }
-            _doneList.value =
-                list?.filter { it ->  it.isToDoListDone }
-        }
-        if(listFromToday.value == null){
-            var list = readListFromToday.value?.toMutableList()!!
-            list?.addAll(listBeforeToday.value!!)
-            _scheduleList.value = list.filter { it -> it.isToDoList == false }
-            _todoList.value =
-                list?.filter { it -> it.isToDoList == true && !it.isToDoListDone }
-            _doneList.value =
-                list?.filter { it ->  it.isToDoListDone }
-        }
+        _scheduleList.value = list?.filter { it -> it.isToDoList == false }
+        _todoList.value =
+            list?.filter { it -> it.isToDoList == true && !it.isToDoListDone }
+        _doneList.value =
+            list?.filter { it ->  it.isToDoListDone }
+    }
 
+
+    fun getTotalListBefore(){
+        Log.i("Rita","getTotalList list - ${readListFromToday.value}")
+        Log.i("Rita","getTotalList listBefore - ${listBeforeToday.value}")
+        var list = readListFromToday.value?.toMutableList()
+        listBeforeToday.value?.let { list?.addAll(it) }
+
+        _scheduleList.value = list?.filter { it -> it.isToDoList == false }
+        _todoList.value =
+            list?.filter { it -> it.isToDoList == true && !it.isToDoListDone }
+        _doneList.value =
+            list?.filter { it ->  it.isToDoListDone }
     }
 
     fun getPlanAndChangeStatus(item:Plan) {
@@ -283,7 +278,6 @@ class HomeViewModel() : ViewModel() {
             .update("toDoListDone", item.isToDoListDone)
             .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully updated!") }
             .addOnFailureListener { e -> Log.w(TAG, "Error updating document", e) }
-
     }
 
     fun convertToTimeStamp(dateSelected:String){

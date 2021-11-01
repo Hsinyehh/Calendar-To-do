@@ -99,7 +99,7 @@ class HomeFragment : Fragment() {
         viewModel.listBeforeToday.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             it?.let{
                 Log.i("Rita","viewModel.listBeforeToday.observe: $it")
-                viewModel.getTotalList()
+                viewModel.getTotalListBefore()
             }
         })
 

@@ -12,4 +12,8 @@
             android:id="@+id/resultFragment"
             android:icon="@drawable/result2"
             android:title="@string/result" />
+        <item
+            android:id="@+id/invitationFragment"
+            android:icon="@drawable/invitation2"
+            android:title="@string/invitation" />
 </menu>
