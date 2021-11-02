@@ -16,6 +16,15 @@ class InvitationAdapter (val viewModel: InvitationViewModel) : ListAdapter<Plan,
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
+
+        holder.binding.invitationBtnAccept.setOnClickListener {
+            viewModel.acceptOrDeclineInvitation(item,true)
+        }
+
+        holder.binding.invitationBtnDecline.setOnClickListener {
+            viewModel.acceptOrDeclineInvitation(item,false)
+        }
+
         holder.bind(item)
     }
 

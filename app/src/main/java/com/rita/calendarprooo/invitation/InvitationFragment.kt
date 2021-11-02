@@ -56,14 +56,12 @@ class InvitationFragment : Fragment() {
         //invitation adapter
         val adapter = InvitationAdapter(viewModel)
         binding.invitationList.adapter = adapter
-        adapter.submitList(planList)
 
-
-        /*viewModel.todoList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.invitationList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             Log.i("Rita","todoList.observe: $it")
             adapter.submitList(it)
             adapter.notifyDataSetChanged()
-        })*/
+        })
 
         return binding.root
     }

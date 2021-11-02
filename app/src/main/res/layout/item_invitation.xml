@@ -35,7 +35,7 @@
             android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/invitation_text_time"
-            app:srcCompat="@drawable/time" />
+            app:srcCompat="@drawable/invitation" />
 
         <TextView
             android:id="@+id/invitation_text_title"
