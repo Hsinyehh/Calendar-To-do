@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="plan"
+            type="com.rita.calendarprooo.data.Plan" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/border_round_corner">
+
+        <TextView
+            android:id="@+id/invitation_text_time"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:time="@{plan}"
+            tools:text="11/2 17:00 - 11/4 18:00"
+            style="@style/invitation_list" />
+
+        <ImageView
+            android:id="@+id/invitation_image_time"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/invitation_text_time"
+            app:srcCompat="@drawable/time" />
+
+        <TextView
+            android:id="@+id/invitation_text_title"
+            style="@style/invitation_list"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toEndOf="@id/invitation_image_time"
+            app:layout_constraintTop_toBottomOf="@id/invitation_text_time"
+            app:title="@{plan}"
+            tools:text="Jogging" />
+
+
+        <ImageView
+            android:id="@+id/invitation_image_account"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/invitation_image_time"
+            app:srcCompat="@drawable/account" />
+
+        <TextView
+            android:id="@+id/invitation_text_account"
+            style="@style/invitation_list"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintStart_toEndOf="@id/invitation_image_account"
+            app:layout_constraintTop_toBottomOf="@id/invitation_text_title"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:time="@{plan}"
+            tools:text="mia@fake.com" />
+
+        <TextView
+            android:id="@+id/invitation_btn_accept"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="32dp"
+            android:background="@drawable/btn_green_background"
+            android:fontFamily="@font/noto_sans"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="@string/accept"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/invitation_btn_decline"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="23dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/btn_red_background"
+            android:fontFamily="@font/noto_sans"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="@string/decline"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/invitation_btn_accept" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

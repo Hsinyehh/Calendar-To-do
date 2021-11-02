@@ -41,7 +41,7 @@ class HomeFragment : Fragment() {
         val adapter = ScheduleAdapter(viewModel)
         binding.homeScheduleList.adapter = adapter
         viewModel.scheduleList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.i("Rita","viewModel.scheduleList.observe: $it")
+            Log.i("Rita","scheduleList.observe: $it")
             adapter.submitList(it)
             adapter.notifyDataSetChanged()
         })
@@ -51,7 +51,7 @@ class HomeFragment : Fragment() {
         val todoAdapter = TodoAdapter(viewModel)
         binding.homeTodoList.adapter = todoAdapter
         viewModel.todoList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.i("Rita","viewModel.todoList.observe: $it")
+            Log.i("Rita","todoList.observe: $it")
             todoAdapter.submitList(it)
             todoAdapter.notifyDataSetChanged()
         })
@@ -60,7 +60,7 @@ class HomeFragment : Fragment() {
         val doneAdapter = DoneAdapter(viewModel)
         binding.homeDoneList.adapter = doneAdapter
         viewModel.doneList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.i("Rita","viewModel.doneList.observe: $it")
+            Log.i("Rita","doneList.observe: $it")
             doneAdapter.submitList(it)
             doneAdapter.notifyDataSetChanged()
         })
@@ -91,14 +91,14 @@ class HomeFragment : Fragment() {
         //update plans on home pages when data changed
         viewModel.listFromToday.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             it?.let{
-                Log.i("Rita","viewModel.listFromToday.observe: $it")
+                Log.i("Rita","listFromToday.observe: $it")
                 viewModel.getTotalList()
             }
         })
 
         viewModel.listBeforeToday.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             it?.let{
-                Log.i("Rita","viewModel.listBeforeToday.observe: $it")
+                Log.i("Rita","listBeforeToday.observe: $it")
                 viewModel.getTotalListBefore()
             }
         })

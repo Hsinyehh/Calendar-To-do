@@ -19,4 +19,11 @@
     <string name="search">GoogleMap Search</string>
     <string name="result">Result and Profile</string>
     <string name="invitation">Invitation</string>
+    <string name="invite_title">LET\'S EDIT TOGETHER</string>
+    <string name="send">Send</string>
+    <string name="invite_hint">Enter the E-mail</string>
+    <string name="plan">Plan</string>
+    <string name="accept">Accept</string>
+    <string name="decline">Decline</string>
+    <string name="no_invitation">No Invitation Yet</string>
 </resources>

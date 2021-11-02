@@ -12,5 +12,114 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ImageView
+            android:id="@+id/invite_btn_cancel"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/delete2" />
+
+        <TextView
+            android:id="@+id/invite_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="32dp"
+            android:text="@string/invite_title"
+            android:textSize="28sp"
+            app:layout_constraintEnd_toStartOf="@id/invite_btn_cancel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/invite_image_title"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginStart="84dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/invite_title"
+            app:srcCompat="@drawable/plan" />
+
+        <TextView
+            android:id="@+id/invite_text_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Meeting"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@id/invite_image_title"
+            app:layout_constraintTop_toBottomOf="@id/invite_title" />
+
+        <ImageView
+            android:id="@+id/invite_image_time"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginStart="84dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/invite_image_title"
+            app:srcCompat="@drawable/time__2_" />
+
+        <TextView
+            android:id="@+id/invite_text_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="11/1 11:30 - 11/3 12:30"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@id/invite_image_time"
+            app:layout_constraintTop_toBottomOf="@id/invite_image_title"/>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/input"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="55dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="55dp"
+            android:background="@drawable/border_corner_gray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/invite_text_time">
+
+            <EditText
+                android:id="@+id/invite_edit_email"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:hint="@string/invite_hint"
+                android:textAlignment="center"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"></EditText>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/text_category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="35dp"
+            android:background="@drawable/btn_green_background"
+            android:fontFamily="@font/noto_sans"
+            android:paddingStart="50dp"
+            android:paddingEnd="50dp"
+            android:text="@string/send"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/input" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

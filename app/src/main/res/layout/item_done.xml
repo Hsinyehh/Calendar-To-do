@@ -31,7 +31,7 @@
                 style="@style/plan_time_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
+                android:layout_marginStart="24dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:time="@{plan}"
@@ -41,11 +41,11 @@
                 android:id="@+id/schedule_btn_check"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="6dp"
+                android:src="@{plan.isToDoListDone == true?@drawable/check:@drawable/uncheck}"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/schedule_text_time"
-                android:src="@{plan.isToDoListDone == true?@drawable/check:@drawable/uncheck}" />
+                app:layout_constraintTop_toBottomOf="@id/schedule_text_time" />
 
             <TextView
                 android:id="@+id/schedule_text_title"
@@ -53,6 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="6dp"
                 app:layout_constraintStart_toEndOf="@+id/schedule_btn_check"
                 app:layout_constraintTop_toBottomOf="@id/schedule_text_time"
                 app:title="@{plan}"
@@ -63,7 +64,7 @@
                 android:id="@+id/schedule_image_account"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="6dp"
                 android:layout_marginEnd="32dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/schedule_text_time"
@@ -73,20 +74,11 @@
             android:id="@+id/schedule_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintTop_toBottomOf="@id/schedule_overview"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <ImageView
-                android:id="@+id/schedule_image_invite"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/separation_line"
-                app:srcCompat="@drawable/invite" />
 
             <ImageView
                 android:id="@+id/schedule_image_edit"
@@ -94,19 +86,28 @@
                 android:layout_height="25dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="12dp"
-                app:layout_constraintEnd_toStartOf="@id/schedule_image_invite"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/separation_line"
                 app:srcCompat="@drawable/edit" />
 
+            <ImageView
+                android:id="@+id/schedule_image_invite"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="24dp"
+                app:layout_constraintEnd_toStartOf="@id/schedule_image_edit"
+                app:layout_constraintTop_toBottomOf="@id/separation_line"
+                app:srcCompat="@drawable/invite" />
 
 
             <View
                 android:id="@+id/separation_line"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:layout_marginStart="32dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="32dp"
+                android:layout_marginEnd="24dp"
                 android:background="#CCCCCC"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -116,7 +117,7 @@
                 android:id="@+id/schedule_image_description"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:layout_marginStart="32dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/separation_line"
@@ -137,7 +138,7 @@
                 android:id="@+id/schedule_image_location"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:layout_marginStart="32dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/schedule_image_description"
@@ -158,7 +159,7 @@
                 android:id="@+id/schedule_image_checklist"
                 android:layout_width="18dp"
                 android:layout_height="18dp"
-                android:layout_marginStart="32dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/schedule_text_location"
@@ -178,14 +179,13 @@
                 android:id="@+id/schedule_check_list"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="10dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/schedule_text_checklist"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:itemCount="3"
                 tools:listitem="@layout/item_check" />
 
