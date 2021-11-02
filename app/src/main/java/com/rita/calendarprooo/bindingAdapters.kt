@@ -29,6 +29,13 @@ fun TextView.bindLocation(item: Plan) {
     }
 }
 
+@BindingAdapter("owner")
+fun TextView.bindOwner(item: Plan) {
+    item?.let{
+        text="${it.owner}"
+    }
+}
+
 @BindingAdapter("time")
 fun TextView.bindTime(item: Plan) {
     val simpleDateFormat = SimpleDateFormat("MM/dd hh:mm",  Locale.TAIWAN)

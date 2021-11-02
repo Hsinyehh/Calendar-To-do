@@ -126,6 +126,16 @@ class HomeFragment : Fragment() {
             }
         })
 
+        viewModel.navigateToInvite.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            it?.let{
+                Log.i("Rita","navigateToInvite.observe: $it")
+                view?.findNavController()?.navigate(
+                    NavigationDirections.navigateToInviteFragment(
+                        viewModel.navigateToInvite.value))
+                viewModel.doneNavigated()
+            }
+        })
+
 
 
         //to-do adapter drag item

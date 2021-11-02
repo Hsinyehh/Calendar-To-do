@@ -16,7 +16,6 @@ class ViewModelFactory constructor(
 
                 isAssignableFrom(EditViewModel::class.java) ->
                     plan?.let { EditViewModel(it) }
-
                 /*isAssignableFrom(HomeViewModel::class.java) ->
                     HomeViewModel(repository)*/
 

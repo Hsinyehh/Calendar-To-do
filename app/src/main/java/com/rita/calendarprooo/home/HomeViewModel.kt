@@ -20,6 +20,10 @@ class HomeViewModel() : ViewModel() {
     val navigateToEditByPlan : LiveData<Plan>
         get() = _navigateToEditByPlan
 
+    private var _navigateToInvite = MutableLiveData<Plan>()
+    val navigateToInvite : LiveData<Plan>
+        get() = _navigateToInvite
+
     private var _scheduleList = MutableLiveData<List<Plan>>()
     val scheduleList : LiveData<List<Plan>>
         get() = _scheduleList
@@ -63,9 +67,14 @@ class HomeViewModel() : ViewModel() {
         _navigateToEditByPlan.value=plan
     }
 
+    fun startNavigateToInvite(plan:Plan){
+        _navigateToInvite.value=plan
+    }
+
     fun doneNavigated(){
         _navigateToEdit.value=null
         _navigateToEditByPlan.value=null
+        _navigateToInvite.value=null
     }
 
     fun readPlanFromToday(){
