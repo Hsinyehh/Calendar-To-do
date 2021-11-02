@@ -50,6 +50,8 @@ class EditViewModel(plan: Plan) : ViewModel() {
 
     var editStatus = MutableLiveData<Boolean?>()
 
+    var invitationList = MutableLiveData<MutableList<String>>()
+
     private val db = Firebase.firestore
     val newPlanRef = db.collection("plan").document()
 
@@ -94,10 +96,11 @@ class EditViewModel(plan: Plan) : ViewModel() {
             category = categoryStatus.value?.name,
             categoryPosition = categoryPosition.value,
             categoryList = categoryList.value,
-            checkList = checkList.value!!,
+            checkList = checkList.value,
             isToDoList = isTodoList.value,
             isToDoListDone = false,
             owner = "lisa@gmail.com",
+            invitation = invitationList.value,
             collaborator = mutableListOf<String>(),
             order_id = 1
         )
@@ -211,6 +214,7 @@ class EditViewModel(plan: Plan) : ViewModel() {
         }
         categoryPosition.value = plan.categoryPosition
 
+        invitationList.value = mutableListOf("lisa@gmail.com")
     }
 
 }

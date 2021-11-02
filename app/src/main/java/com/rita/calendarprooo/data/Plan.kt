@@ -23,6 +23,7 @@ data class Plan(
     var isToDoList:Boolean? = false,
     var isToDoListDone:Boolean = false,
     var owner:String? = "",
+    var invitation: MutableList<String>? = mutableListOf<String>(),
     var collaborator: MutableList<String>? = mutableListOf<String>(),
     var order_id:Int? = -1
     ) : Parcelable {
