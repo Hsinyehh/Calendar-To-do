@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -29,21 +30,14 @@ class ScheduleAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
         adapter.notifyDataSetChanged()
 
         holder.binding.scheduleOverview.setOnClickListener {
-            if(holder.binding.scheduleDetail.visibility == View.GONE){
-                holder.binding.scheduleDetail.visibility = View.VISIBLE
-            }
-            else if(holder.binding.scheduleDetail.visibility == View.VISIBLE){
-                holder.binding.scheduleDetail.visibility = View.GONE
-            }
-            notifyDataSetChanged()
+            Log.i("Rita","scheduleOverview onclick")
+            viewModel.changeScheduleView(position)
         }
 
-        holder.binding.root.setOnClickListener {
-            if(holder.binding.scheduleDetail.visibility == View.VISIBLE){
-                holder.binding.scheduleDetail.visibility = View.GONE
-            }
-            notifyDataSetChanged()
-        }
+        /*holder.binding.root.setOnClickListener {
+            Log.i("Rita","binding.root onclick")
+            viewModel.changeScheduleView(position)
+        }*/
 
         holder.binding.scheduleImageEdit.setOnClickListener {
             viewModel.startNavigateToEditByPlan(item)
@@ -53,7 +47,7 @@ class ScheduleAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
             viewModel.startNavigateToInvite(item)
         }
 
-        holder.bind(item)
+        holder.bind(item, position, viewModel)
 
     }
 
@@ -64,8 +58,10 @@ class ScheduleAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
     class ViewHolder private constructor(val binding: ItemScheduleBinding)
         : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: Plan) {
+        fun bind(item: Plan, position: Int, viewModel: HomeViewModel) {
             binding.plan = item
+            binding.position = position
+            binding.viewModel = viewModel
             binding.executePendingBindings()
         }
 
@@ -73,7 +69,7 @@ class ScheduleAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
             fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = ItemScheduleBinding.inflate(layoutInflater, parent, false)
-
+                binding.lifecycleOwner = parent.context as LifecycleOwner
                 return ViewHolder(binding)
             }
         }

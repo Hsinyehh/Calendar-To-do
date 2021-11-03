@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -29,21 +30,13 @@ class DoneAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
         adapter.notifyDataSetChanged()
 
         holder.binding.scheduleOverview.setOnClickListener {
-            if(holder.binding.scheduleDetail.visibility== View.GONE){
-                holder.binding.scheduleDetail.visibility= View.VISIBLE
-            }
-            else if(holder.binding.scheduleDetail.visibility== View.VISIBLE){
-                holder.binding.scheduleDetail.visibility= View.GONE
-            }
-            notifyDataSetChanged()
+            viewModel.changeDoneView(position)
         }
 
         /*holder.binding.root.setOnClickListener {
-            if(holder.binding.scheduleDetail.visibility== View.VISIBLE){
-                holder.binding.scheduleDetail.visibility= View.GONE
-            }
-            notifyDataSetChanged()
+            viewModel.changeDoneView(position)
         }*/
+
         holder.binding.scheduleBtnCheck.setOnClickListener {
             if(item.isToDoListDone){
                 item.isToDoListDone=false
@@ -52,6 +45,7 @@ class DoneAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
                 item.isToDoListDone=true
             }
             viewModel.getPlanAndChangeStatus(item)
+            viewModel.startToGetViewListForTodo()
             notifyDataSetChanged()
         }
 
@@ -59,7 +53,7 @@ class DoneAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
             viewModel.startNavigateToEditByPlan(item)
         }
 
-        holder.bind(item)
+        holder.bind(item, position,viewModel)
 
     }
 
@@ -70,8 +64,10 @@ class DoneAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
     class ViewHolder private constructor(val binding: ItemDoneBinding)
         : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: Plan) {
+        fun bind(item: Plan, position: Int ,viewModel: HomeViewModel) {
             binding.plan = item
+            binding.position = position
+            binding.viewModel = viewModel
             binding.executePendingBindings()
         }
 
@@ -79,7 +75,7 @@ class DoneAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
             fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = ItemDoneBinding.inflate(layoutInflater, parent, false)
-
+                binding.lifecycleOwner = parent.context as LifecycleOwner
                 return ViewHolder(binding)
             }
         }

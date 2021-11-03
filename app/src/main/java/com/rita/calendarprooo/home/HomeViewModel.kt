@@ -53,6 +53,18 @@ class HomeViewModel() : ViewModel() {
 
     var selectedEndTime = MutableLiveData<Long>()
 
+    var scheduleViewList = MutableLiveData<MutableList<Boolean>>()
+
+    var todoViewList = MutableLiveData<MutableList<Boolean>>()
+
+    var doneViewList = MutableLiveData<MutableList<Boolean>>()
+
+    var startToGetViewList = MutableLiveData<Boolean>()
+
+    var startToGetViewListForTodoMode = MutableLiveData<Boolean>()
+
+    var startToGetViewListForDoneMode = MutableLiveData<Boolean>()
+
     fun swapCheckListItem(start:Int , end:Int){
         val todoListGet=_todoList.value
         Collections.swap(todoListGet,start,end)
@@ -143,9 +155,114 @@ class HomeViewModel() : ViewModel() {
             _scheduleList.value = list.filter { it -> it.isToDoList==false }
             _todoList.value = list.filter { it -> it.isToDoList==true && !it.isToDoListDone }
             _doneList.value= list.filter { it ->  it.isToDoListDone }
+            startToGetViewList.value = true
         }
     }
 
+    fun doneGetViewList(){
+        startToGetViewList.value = null
+    }
+
+    fun startToGetViewListForTodo(){
+        startToGetViewListForTodoMode.value = true
+        startToGetViewListForDoneMode.value = true
+    }
+
+    fun getViewList(){
+        Log.i("Rita","getViewList")
+        val list = mutableListOf<Boolean>()
+        val todoList = mutableListOf<Boolean>()
+        val doneList = mutableListOf<Boolean>()
+        val size = _scheduleList.value?.size
+        val todoSize = _todoList.value?.size
+        val doneSize = _doneList.value?.size
+
+        if(size!=null && size>0){
+            for(i in 1..size){
+                list.add(false)
+            }
+            scheduleViewList.value = list
+        }
+        if(todoSize!=null && todoSize>0){
+            for(i in 1..todoSize){
+                todoList.add(false)
+            }
+            todoViewList.value = todoList
+        }
+        if(doneSize!=null && doneSize>0){
+            for(i in 1..doneSize){
+                doneList.add(false)
+            }
+            doneViewList.value = doneList
+        }
+    }
+
+    fun getViewListForTodoMode(){
+
+        val todoList = mutableListOf<Boolean>()
+        val doneList = mutableListOf<Boolean>()
+        val todoSize = _todoList.value?.size
+        val doneSize = _doneList.value?.size
+
+        if(todoSize!=null && todoSize>0){
+            for(i in 1..todoSize){
+                todoList.add(false)
+            }
+            todoViewList.value = todoList
+        }
+        if(doneSize!=null && doneSize>0){
+            for(i in 1..doneSize){
+                doneList.add(false)
+            }
+            doneViewList.value = doneList
+        }
+
+        Log.i("Rita","getViewListForTodoMode  todo- ${todoViewList.value}")
+        Log.i("Rita","getViewListForTodoMode  done- ${doneViewList.value}")
+    }
+
+    fun changeScheduleView(position: Int){
+        var list = scheduleViewList.value
+        var status = list?.get(position)
+
+        Log.i("Rita","ScheduleView- $position -$status")
+        status = status != true
+        list?.set(position,status)
+        Log.i("Rita","ScheduleView changed- $position -$status")
+
+        scheduleViewList.value = list
+
+    }
+
+    fun changeTodoView(position: Int){
+        var list = todoViewList.value
+        var status = list?.get(position)
+        Log.i("Rita","todoViewList- ${todoViewList.value}")
+
+        Log.i("Rita","todoView- $position - $status")
+        status = status != true
+        list?.set(position,status)
+        Log.i("Rita","todoView changed- $position - $status")
+
+        todoViewList.value = list
+        Log.i("Rita","todoViewList changed- ${todoViewList.value}")
+    }
+
+    fun changeDoneView(position: Int){
+        var list = doneViewList.value
+        var status = list?.get(position)
+        Log.i("Rita","doneViewList- ${doneViewList.value}")
+
+        Log.i("Rita","doneView- $position - $status")
+        status = status != true
+        list?.set(position,status)
+        Log.i("Rita","doneView changed- $position - $status")
+
+        doneViewList.value = list
+
+        Log.i("Rita","doneViewList changed- ${doneViewList.value}")
+
+    }
 
     fun getCheckAndChangeStatus(item:Check, position:Int) {
         val planRef = item.plan_id?.let { db.collection("plan").document(it) }
@@ -266,7 +383,6 @@ class HomeViewModel() : ViewModel() {
         _doneList.value =
             list?.filter { it ->  it.isToDoListDone }
     }
-
 
     fun getTotalListBefore(){
         Log.i("Rita","getTotalList list - ${readListFromToday.value}")

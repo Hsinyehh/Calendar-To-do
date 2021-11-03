@@ -4,6 +4,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.persistableBundleOf
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -28,20 +30,12 @@ class TodoAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
         adapter.notifyDataSetChanged()
 
         holder.binding.scheduleOverview.setOnClickListener {
-            if(holder.binding.scheduleDetail.visibility== View.GONE){
-                holder.binding.scheduleDetail.visibility= View.VISIBLE
-            }
-            else if(holder.binding.scheduleDetail.visibility== View.VISIBLE){
-                holder.binding.scheduleDetail.visibility= View.GONE
-            }
-            notifyDataSetChanged()
+            Log.i("Rita","todoOverview onclick")
+            viewModel.changeTodoView(position)
         }
 
         /*holder.binding.root.setOnClickListener {
-            if(holder.binding.scheduleDetail.visibility== View.VISIBLE){
-                holder.binding.scheduleDetail.visibility= View.GONE
-            }
-            notifyDataSetChanged()
+            viewModel.changeTodoView(position)
         }*/
 
         holder.binding.scheduleBtnUncheck.setOnClickListener {
@@ -52,6 +46,7 @@ class TodoAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
                 item.isToDoListDone=true
             }
             viewModel.getPlanAndChangeStatus(item)
+            viewModel.startToGetViewListForTodo()
             notifyDataSetChanged()
         }
 
@@ -59,7 +54,7 @@ class TodoAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
             viewModel.startNavigateToEditByPlan(item)
         }
 
-        holder.bind(item)
+        holder.bind(item, position ,viewModel)
 
     }
 
@@ -70,8 +65,10 @@ class TodoAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
     class ViewHolder private constructor(val binding: ItemTodoBinding)
         : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: Plan) {
+        fun bind(item: Plan,position: Int ,viewModel: HomeViewModel) {
             binding.plan = item
+            binding.position = position
+            binding.viewModel = viewModel
             binding.executePendingBindings()
         }
 
@@ -79,7 +76,7 @@ class TodoAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
             fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = ItemTodoBinding.inflate(layoutInflater, parent, false)
-
+                binding.lifecycleOwner = parent.context as LifecycleOwner
                 return ViewHolder(binding)
             }
         }

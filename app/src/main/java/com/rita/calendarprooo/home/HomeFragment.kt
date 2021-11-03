@@ -37,34 +37,6 @@ class HomeFragment : Fragment() {
 
         viewModel.readPlanOnChanged()
 
-        //schedule adapter
-        val adapter = ScheduleAdapter(viewModel)
-        binding.homeScheduleList.adapter = adapter
-        viewModel.scheduleList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.i("Rita","scheduleList.observe: $it")
-            adapter.submitList(it)
-            adapter.notifyDataSetChanged()
-        })
-
-
-        //to-do adapter
-        val todoAdapter = TodoAdapter(viewModel)
-        binding.homeTodoList.adapter = todoAdapter
-        viewModel.todoList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.i("Rita","todoList.observe: $it")
-            todoAdapter.submitList(it)
-            todoAdapter.notifyDataSetChanged()
-        })
-
-        //done adapter
-        val doneAdapter = DoneAdapter(viewModel)
-        binding.homeDoneList.adapter = doneAdapter
-        viewModel.doneList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.i("Rita","doneList.observe: $it")
-            doneAdapter.submitList(it)
-            doneAdapter.notifyDataSetChanged()
-        })
-
         //read Plans when date selected changed
         viewModel.selectedEndTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
             Log.i("Rita","selectedEndTime observe- $it")
@@ -102,6 +74,67 @@ class HomeFragment : Fragment() {
                 viewModel.getTotalListBefore()
             }
         })
+
+        viewModel.startToGetViewList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            if(it==true){
+                viewModel.getViewList()
+                viewModel.doneGetViewList()
+            }
+        })
+
+
+        //schedule adapter
+        val adapter = ScheduleAdapter(viewModel)
+        binding.homeScheduleList.adapter = adapter
+        viewModel.scheduleList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita","scheduleList.observe: $it")
+            adapter.submitList(it)
+            adapter.notifyDataSetChanged()
+        })
+
+        //test
+        viewModel.scheduleViewList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita","scheduleViewList.observe: $it")
+
+            adapter.notifyDataSetChanged()
+        })
+
+        //to-do adapter
+        val todoAdapter = TodoAdapter(viewModel)
+        binding.homeTodoList.adapter = todoAdapter
+        viewModel.todoList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita","todoList.observe: $it")
+
+            //get size again for to-do/done mode changed
+            Log.i("Rita","todoList.observe: ${viewModel.startToGetViewListForTodoMode.value}")
+            if(viewModel.startToGetViewListForTodoMode.value==true){
+                viewModel.getViewListForTodoMode()
+                viewModel.startToGetViewListForTodoMode.value=null
+            }
+
+            todoAdapter.submitList(it)
+            todoAdapter.notifyDataSetChanged()
+            viewModel.doneGetViewList()
+        })
+
+        //done adapter
+        val doneAdapter = DoneAdapter(viewModel)
+        binding.homeDoneList.adapter = doneAdapter
+        viewModel.doneList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita","doneList.observe: $it")
+
+            //get size again for to-do/done mode changed
+            Log.i("Rita","doneList.observe: ${viewModel.startToGetViewListForDoneMode.value}")
+            if(viewModel.startToGetViewListForDoneMode.value==true){
+                viewModel.getViewListForTodoMode()
+                viewModel.startToGetViewListForDoneMode.value=null
+            }
+
+            doneAdapter.submitList(it)
+            doneAdapter.notifyDataSetChanged()
+            viewModel.doneGetViewList()
+        })
+
 
 
         val address = ""
