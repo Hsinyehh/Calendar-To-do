@@ -58,7 +58,9 @@ class EditViewModel(plan: Plan) : ViewModel() {
     val emptyCheckList = mutableListOf<Check>()
 
     fun toToListModeChanged() {
+        Log.i("Rita","editVM isTodoList ${isTodoList.value}")
         isTodoList.value = isTodoList.value == false
+        Log.i("Rita","editVM isTodoList changed ${isTodoList.value}")
     }
 
     fun checkListTextCreated() {
@@ -135,8 +137,8 @@ class EditViewModel(plan: Plan) : ViewModel() {
                 "category", categoryStatus.value?.name,
                 "categoryPosition", categoryPosition.value,
                 "categoryList", categoryList.value,
-                "checkList", checkList.value!!,
-                "isToDoList", isTodoList.value
+                "checkList", checkList.value,
+                "toDoList", isTodoList.value
             )
             .addOnSuccessListener { Log.d(ContentValues.TAG, "successfully updated!") }
             .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error updating document", e) }

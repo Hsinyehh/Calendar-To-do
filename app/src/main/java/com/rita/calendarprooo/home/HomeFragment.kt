@@ -59,6 +59,18 @@ class HomeFragment : Fragment() {
             }
         })
 
+        viewModel.startToGetViewList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            if(it==true){
+                viewModel.getViewList()
+                viewModel.doneGetViewList()
+            }
+        })
+
+        //test
+        viewModel.scheduleViewList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita","scheduleViewList.observe: $it")
+        })
+
 
         //update plans on home pages when data changed
         viewModel.listFromToday.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
@@ -75,12 +87,6 @@ class HomeFragment : Fragment() {
             }
         })
 
-        viewModel.startToGetViewList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            if(it==true){
-                viewModel.getViewList()
-                viewModel.doneGetViewList()
-            }
-        })
 
 
         //schedule adapter
@@ -92,12 +98,7 @@ class HomeFragment : Fragment() {
             adapter.notifyDataSetChanged()
         })
 
-        //test
-        viewModel.scheduleViewList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.i("Rita","scheduleViewList.observe: $it")
 
-            adapter.notifyDataSetChanged()
-        })
 
         //to-do adapter
         val todoAdapter = TodoAdapter(viewModel)

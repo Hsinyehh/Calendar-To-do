@@ -21,7 +21,6 @@ class DoneAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
 
-        Log.i("Rita","DoneAdapter dataSetChanged")
 
         //checkAdapter
         val adapter=CheckAdapter(viewModel)
@@ -45,6 +44,8 @@ class DoneAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
                 item.isToDoListDone=true
             }
             viewModel.getPlanAndChangeStatus(item)
+
+            //get viewList again
             viewModel.startToGetViewListForTodo()
             notifyDataSetChanged()
         }

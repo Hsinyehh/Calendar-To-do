@@ -117,7 +117,7 @@ class HomeViewModel() : ViewModel() {
         //plan's start-time before today
         db.collection("plan")
             .whereEqualTo("owner","lisa@gmail.com")
-            .whereLessThanOrEqualTo("start_time", selectedStartTime.value!!)
+            .whereLessThan("start_time", selectedStartTime.value!!)
             .get()
             .addOnSuccessListener { result ->
                 for (document in result) {
@@ -265,6 +265,13 @@ class HomeViewModel() : ViewModel() {
     }
 
     fun getCheckAndChangeStatus(item:Check, position:Int) {
+        if(item.isDone){
+            item.isDone=false
+        }
+        else if(!item.isDone){
+            item.isDone=true
+        }
+
         val planRef = item.plan_id?.let { db.collection("plan").document(it) }
         var plan : Plan? = null
         planRef!!.get()
@@ -332,9 +339,8 @@ class HomeViewModel() : ViewModel() {
             }
             if (snapshot != null && !snapshot.isEmpty) {
                 val list = mutableListOf<Plan>()
-                Log.d(TAG, "Current data: ")
                 for (item in snapshot) {
-                    Log.d("Rita", item.toString())
+                    Log.d("Rita","Current data: $item")
                     val plan= item.toObject(Plan::class.java)
                     list.add(plan!!)
                 }
@@ -347,7 +353,7 @@ class HomeViewModel() : ViewModel() {
         //plan's start-time before today
         db.collection("plan")
             .whereEqualTo("owner","lisa@gmail.com")
-            .whereLessThanOrEqualTo("start_time", selectedStartTime.value!!)
+            .whereLessThan("start_time", selectedStartTime.value!!)
             .addSnapshotListener { snapshot, e ->
                 if (e != null) {
                     Log.w(TAG, "Listen failed.", e)
@@ -355,15 +361,16 @@ class HomeViewModel() : ViewModel() {
                 }
                 if (snapshot != null && !snapshot.isEmpty) {
                     val listBefore = mutableListOf<Plan>()
-                    Log.d(TAG, "Current data: ")
                     for (item in snapshot) {
-                        Log.d("Rita", item.toString())
+                        Log.d("Rita","Current data Before: $item")
                         val plan = item.toObject(Plan::class.java)
-                        listBefore.add(plan!!)
+                        if(plan.start_time!! < selectedStartTime.value!!){
+                            listBefore.add(plan!!)
+                        }
                     }
-                    Log.i("Rita", "listBeforeToday onChanged:　$listBefore")
                     val filteredList = listBefore
                         .filter { it -> it.end_time!! >= selectedStartTime.value!! }
+                    Log.i("Rita", "listBeforeToday onChanged:　$filteredList")
                     listBeforeToday.value = filteredList
                 } else {
                     Log.d(TAG, "Current data: null")
@@ -375,7 +382,7 @@ class HomeViewModel() : ViewModel() {
         Log.i("Rita","getTotalList listFromToday - ${listFromToday.value}")
         Log.i("Rita","getTotalList readListBeforeToday - ${readListBeforeToday.value}")
         var list = listFromToday.value!!.toMutableList()
-        readListBeforeToday.value?.let { it1 -> list?.addAll(it1) }
+        readListBeforeToday.value?.let { list?.addAll(it) }
 
         _scheduleList.value = list?.filter { it -> it.isToDoList == false }
         _todoList.value =
@@ -385,8 +392,8 @@ class HomeViewModel() : ViewModel() {
     }
 
     fun getTotalListBefore(){
-        Log.i("Rita","getTotalList list - ${readListFromToday.value}")
-        Log.i("Rita","getTotalList listBefore - ${listBeforeToday.value}")
+        Log.i("Rita","getTotalListBefore readList - ${readListFromToday.value}")
+        Log.i("Rita","getTotalListBefore listBefore - ${listBeforeToday.value}")
         var list = readListFromToday.value?.toMutableList()
         listBeforeToday.value?.let { list?.addAll(it) }
 

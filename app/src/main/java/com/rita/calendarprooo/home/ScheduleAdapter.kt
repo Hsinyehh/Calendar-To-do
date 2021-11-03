@@ -21,7 +21,6 @@ class ScheduleAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
 
-        Log.i("Rita","ScheduleAdapter dataSetChanged")
 
         //checkAdapter
         val adapter=CheckAdapter(viewModel)
