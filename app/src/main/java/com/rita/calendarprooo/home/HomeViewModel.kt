@@ -266,12 +266,16 @@ class HomeViewModel() : ViewModel() {
 
     }
 
-    fun getCheckAndChangeStatus(item:Check, position:Int) {
+    fun getCheckAndChangeStatus(item: Check, position: Int) {
         if(item.isDone){
-            item.isDone=false
+            item.isDone = false
+            item.done_time = null
+            item.doner = null
         }
         else if(!item.isDone){
-            item.isDone=true
+            item.isDone = true
+            item.done_time = Calendar.getInstance().timeInMillis
+            item.doner = "Lisa"
         }
 
         val planRef = item.plan_id?.let { db.collection("plan").document(it) }
@@ -411,7 +415,9 @@ class HomeViewModel() : ViewModel() {
     fun getPlanAndChangeStatus(item:Plan) {
         val planRef = item.id?.let { db.collection("plan").document(it) }
         planRef!!
-            .update("toDoListDone", item.isToDoListDone)
+            .update("toDoListDone", item.isToDoListDone,
+                            "done_time", item.done_time,
+                                                "doner",item.doner)
             .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully updated!") }
             .addOnFailureListener { e -> Log.w(TAG, "Error updating document", e) }
     }

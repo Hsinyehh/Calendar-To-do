@@ -9,14 +9,17 @@
             type="com.rita.calendarprooo.data.Check" />
         <variable
             name="viewModel"
-            type="com.rita.calendarprooo.edit.EditViewModel" />
+            type="com.rita.calendarprooo.home.HomeViewModel" />
+        <variable
+            name="view"
+            type="android.view.View" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/checkItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp">
+        android:layout_marginTop="8dp">
 
         <ImageView
             android:id="@+id/checklist_image"
@@ -35,8 +38,8 @@
             android:layout_marginStart="10dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@+id/checklist_image"
-            android:text="warm up"
             app:checkTitle="@{check}"
+            tools:text="Jogging"
             style="@style/check_list"/>
 
         <ImageView
@@ -49,17 +52,43 @@
             app:layout_constraintTop_toTopOf="parent"
             android:src="@drawable/delete3" />
 
+        <TextView
+            android:id="@+id/checklist_done_time"
+            style="@style/check_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:textSize="10sp"
+            android:visibility="@{check.isDone? view.VISIBLE:view.GONE}"
+            app:checkDoneTime="@{check}"
+            app:layout_constraintStart_toEndOf="@id/checklist_image"
+            app:layout_constraintTop_toBottomOf="@id/checklist_text"
+            tools:text="11/3 18:30" />
+
+        <TextView
+            android:id="@+id/checklist_done_doner"
+            style="@style/check_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:textSize="10sp"
+            app:checkDone="@{check}"
+            android:visibility="@{check.isDone? view.VISIBLE:view.GONE}"
+            app:layout_constraintStart_toEndOf="@id/checklist_done_time"
+            app:layout_constraintTop_toBottomOf="@id/checklist_text"
+            tools:text="By Mia" />
+
         <View
             android:id="@+id/separation_line"
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_marginStart="50dp"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="32dp"
             android:background="#CCCCCC"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/checklist_text" />
+            app:layout_constraintTop_toBottomOf="@+id/checklist_done_time" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

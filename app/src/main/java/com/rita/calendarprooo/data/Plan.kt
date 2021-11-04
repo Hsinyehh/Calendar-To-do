@@ -22,6 +22,8 @@ data class Plan(
     var checkList: MutableList<Check>? = mutableListOf<Check>(),
     var isToDoList:Boolean? = false,
     var isToDoListDone:Boolean = false,
+    var done_time: Long? = 0L,
+    var doner:String? = "",
     var owner:String? = "",
     var owner_name:String? = "",
     var invitation: MutableList<String>? = mutableListOf<String>(),

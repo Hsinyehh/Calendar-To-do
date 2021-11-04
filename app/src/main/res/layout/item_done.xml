@@ -68,6 +68,18 @@
                 app:title="@{plan}"
                 tools:text="Jogging" />
 
+            <TextView
+                android:id="@+id/schedule_text_done_info"
+                style="@style/plan_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="6dp"
+                app:layout_constraintStart_toEndOf="@+id/schedule_btn_check"
+                app:layout_constraintTop_toBottomOf="@id/schedule_text_title"
+                app:done_info="@{plan}"
+                tools:text="11/4 21:00  By Mia" />
+
 
             <ImageView
                 android:id="@+id/schedule_image_account"
@@ -78,6 +90,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/schedule_text_time"
                 app:srcCompat="@drawable/account" />
+
             <TextView
                 android:id="@+id/schedule_text_account"
                 style="@style/plan_list"
@@ -179,7 +192,7 @@
                 android:id="@+id/schedule_image_checklist"
                 android:layout_width="18dp"
                 android:layout_height="18dp"
-                android:layout_marginStart="24dp"
+                android:layout_marginStart="26dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/schedule_text_location"

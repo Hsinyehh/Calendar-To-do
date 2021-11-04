@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.rita.calendarprooo.data.Check
 import com.rita.calendarprooo.databinding.ItemCheckBinding
 import com.rita.calendarprooo.edit.EditViewModel
+import java.util.*
 
 class CheckAdapter (val viewModel: EditViewModel) : ListAdapter<Check,
         CheckAdapter.ViewHolder>(CheckDiffCallback()) {
@@ -18,10 +19,14 @@ class CheckAdapter (val viewModel: EditViewModel) : ListAdapter<Check,
         val item = getItem(position)
         holder.binding.checklistImage.setOnClickListener {
             if(item.isDone){
-                item.isDone=false
+                item.isDone = false
+                item.done_time = null
+                item.doner = null
             }
             else if(!item.isDone){
-                item.isDone=true
+                item.isDone = true
+                item.done_time = Calendar.getInstance().timeInMillis
+                item.doner = "Lisa"
             }
             notifyDataSetChanged()
         }

@@ -14,6 +14,7 @@ import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.databinding.ItemScheduleBinding
 import com.rita.calendarprooo.databinding.ItemTodoBinding
 import com.rita.calendarprooo.edit.EditViewModel
+import java.util.*
 
 class TodoAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
         TodoAdapter.ViewHolder>(TodoDiffCallback()) {
@@ -38,11 +39,14 @@ class TodoAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
         }*/
 
         holder.binding.scheduleBtnUncheck.setOnClickListener {
-            if(item.isToDoListDone){
-                item.isToDoListDone=false
-            }
-            else if(!item.isToDoListDone){
-                item.isToDoListDone=true
+            if(!item.isToDoListDone){
+                item.isToDoListDone = true
+                item.done_time = Calendar.getInstance().timeInMillis
+                item.doner = "Lisa"
+            }else if(item.isToDoListDone){
+                item.isToDoListDone = false
+                item.done_time = null
+                item.doner = null
             }
             viewModel.getPlanAndChangeStatus(item)
 

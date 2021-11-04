@@ -56,6 +56,23 @@ fun TextView.bindTime(item: Plan?) {
     }
 }
 
+
+@BindingAdapter("done_info")
+fun TextView.bindDoneInfo(item: Plan?) {
+    val simpleDateFormat = SimpleDateFormat("MM/dd hh:mm",  Locale.TAIWAN)
+    item?.let{ it ->
+        var doneTime : String?  = null
+        it.done_time?.let{
+            doneTime = simpleDateFormat.format( Date(it) )
+        }
+        text = if(item.doner!=null){
+            "$doneTime By ${item.doner}"
+        }else{
+            ""
+        }
+    }
+}
+
 @BindingAdapter("checkTitle")
 fun TextView.bindCheckTitle(item: Check?) {
     item?.let{
@@ -68,8 +85,26 @@ fun TextView.bindCheckTitle(item: Check?) {
 
 @BindingAdapter("categoryName")
 fun TextView.bindCategoryTitle(item: Category?) {
-    item?.let{
-        text="${it.name}"
+    item?.name?.let{
+        text="$it"
+    }
+}
+
+@BindingAdapter("checkDoneTime")
+fun TextView.bindDoneTime(item: Check?) {
+    val simpleDateFormat = SimpleDateFormat("MM/dd hh:mm",  Locale.TAIWAN)
+    var doneTime : String?  = null
+    item?.done_time?.let{
+        doneTime = simpleDateFormat.format( Date(it) )
+        text = "$doneTime"?:""
+    }
+
+}
+
+@BindingAdapter("checkDone")
+fun TextView.bindDone(item: Check?) {
+    item?.doner?.let{
+        text="By $it"
     }
 }
 
