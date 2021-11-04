@@ -38,6 +38,13 @@ fun TextView.bindOwner(item: Plan?) {
     }
 }
 
+@BindingAdapter("owner_name")
+fun TextView.bindOwnerName(item: Plan?) {
+    item?.let{
+        text="${it.owner_name}"
+    }
+}
+
 @BindingAdapter("time")
 fun TextView.bindTime(item: Plan?) {
     val simpleDateFormat = SimpleDateFormat("MM/dd hh:mm",  Locale.TAIWAN)

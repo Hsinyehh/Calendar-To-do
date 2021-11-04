@@ -94,7 +94,8 @@ class HomeViewModel() : ViewModel() {
 
         //plan's start-time from today
         db.collection("plan")
-            .whereEqualTo("owner","lisa@gmail.com")
+            //.whereEqualTo("owner","lisa@gmail.com")
+            .whereArrayContains("collaborator","lisa@gmail.com")
             .whereGreaterThanOrEqualTo("start_time", selectedStartTime.value!!)
             .whereLessThanOrEqualTo("start_time", selectedEndTime.value!!)
             .get()
@@ -116,7 +117,8 @@ class HomeViewModel() : ViewModel() {
         val listBefore = mutableListOf<Plan>()
         //plan's start-time before today
         db.collection("plan")
-            .whereEqualTo("owner","lisa@gmail.com")
+            //.whereEqualTo("owner","lisa@gmail.com")
+            .whereArrayContains("collaborator","lisa@gmail.com")
             .whereLessThan("start_time", selectedStartTime.value!!)
             .get()
             .addOnSuccessListener { result ->
@@ -329,7 +331,8 @@ class HomeViewModel() : ViewModel() {
 
     fun readPlanOnChanged(){
         db.collection("plan")
-            .whereEqualTo("owner","lisa@gmail.com")
+            //.whereEqualTo("owner","lisa@gmail.com")
+            .whereArrayContains("collaborator","lisa@gmail.com")
             .whereGreaterThanOrEqualTo("start_time", selectedStartTime.value!!)
             .whereLessThanOrEqualTo("start_time", selectedEndTime.value!!)
             .addSnapshotListener { snapshot, e ->
@@ -352,7 +355,8 @@ class HomeViewModel() : ViewModel() {
         }
         //plan's start-time before today
         db.collection("plan")
-            .whereEqualTo("owner","lisa@gmail.com")
+            //.whereEqualTo("owner","lisa@gmail.com")
+            .whereArrayContains("collaborator","lisa@gmail.com")
             .whereLessThan("start_time", selectedStartTime.value!!)
             .addSnapshotListener { snapshot, e ->
                 if (e != null) {

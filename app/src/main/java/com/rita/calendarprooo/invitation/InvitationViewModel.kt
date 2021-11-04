@@ -2,7 +2,9 @@ package com.rita.calendarprooo.invitation
 
 import android.content.ContentValues
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -12,10 +14,17 @@ class InvitationViewModel : ViewModel() {
 
     var invitationList = MutableLiveData<MutableList<Plan>>()
 
+    var invitationListSize : LiveData<Int> =Transformations.map(invitationList){
+        it.size
+    }
+
+
     //Firebase
     private val db = Firebase.firestore
 
-    private fun readInvitation(){
+   fun readInvitation(){
+       var list = mutableListOf<Plan>()
+
         db.collection("plan")
             .whereArrayContains("invitation","lisa@gmail.com")
             .addSnapshotListener { snapshot, e ->
@@ -24,7 +33,6 @@ class InvitationViewModel : ViewModel() {
                     return@addSnapshotListener
                 }
                 if (snapshot != null && !snapshot.isEmpty) {
-                    val list = mutableListOf<Plan>()
                     for (item in snapshot) {
                         val plan= item.toObject(Plan::class.java)
                         list.add(plan!!)
@@ -32,7 +40,9 @@ class InvitationViewModel : ViewModel() {
                     Log.i("Rita", "Invitation list onChanged:　$list")
                     invitationList.value = list
                 } else {
-                    Log.d(ContentValues.TAG, "Current data: null")
+                    var nullList = mutableListOf<Plan>()
+                    Log.d(ContentValues.TAG, "Current data: null: $nullList")
+                    invitationList.value = nullList
                 }
             }
     }
@@ -43,7 +53,7 @@ class InvitationViewModel : ViewModel() {
         val collaboratorGet = plan.collaborator
 
         val indexRemoved = invitationGet?.indexOf("lisa@gmail.com")
-        if (indexRemoved != null) {
+        if (indexRemoved != null && indexRemoved >= 0 ) {
             invitationGet?.removeAt(indexRemoved)
         }
         if(isAccepted){
@@ -63,7 +73,7 @@ class InvitationViewModel : ViewModel() {
 
 
     init {
-        readInvitation()
+        //readInvitation()
     }
 
 }

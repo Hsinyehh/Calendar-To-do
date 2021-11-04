@@ -102,6 +102,7 @@ class EditViewModel(plan: Plan) : ViewModel() {
             isToDoList = isTodoList.value,
             isToDoListDone = false,
             owner = "lisa@gmail.com",
+            owner_name = "Lisa",
             invitation = invitationList.value,
             collaborator = mutableListOf<String>(),
             order_id = 1

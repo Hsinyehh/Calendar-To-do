@@ -32,25 +32,7 @@ class InvitationFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
 
-        //FAKE DATA
-        val plan2= Plan(
-            id="1",
-            title="Meeting",
-            description="for product development",
-            location="Taipei",1636029000000,1636029000000,null,
-            null,null,
-            "Job",0,owner="lisa@fake.com")
-
-        val plan3= Plan(
-            id="1",
-            title="Discussion",
-            description="for product development",
-            location="Taipei",1636029000000,1636029000000,null,
-            null,null,
-            "Job",0,owner="lisa@fake.com")
-
-
-        val planList= mutableListOf<Plan>(plan2,plan3)
+        viewModel.readInvitation()
 
 
         //invitation adapter
@@ -58,7 +40,7 @@ class InvitationFragment : Fragment() {
         binding.invitationList.adapter = adapter
 
         viewModel.invitationList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.i("Rita","todoList.observe: $it")
+            Log.i("Rita","invitationList.observe: $it")
             adapter.submitList(it)
             adapter.notifyDataSetChanged()
         })

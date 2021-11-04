@@ -7,6 +7,9 @@
         <variable
             name="viewModel"
             type="com.rita.calendarprooo.invitation.InvitationViewModel" />
+        <variable
+            name="view"
+            type="android.view.View" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -22,6 +25,7 @@
             android:text="@string/plan"
             android:textColor="@color/black_3f3a3a"
             android:textSize="20sp"
+            android:visibility="@{viewModel.invitationListSize>0? view.VISIBLE:view.GONE}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -42,15 +46,17 @@
             android:id="@+id/invitation_title_no_invitation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="150dp"
             android:fontFamily="@font/noto_sans"
             android:text="@string/no_invitation"
             android:textColor="@color/gray_808080"
             android:textSize="28sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="@{viewModel.invitationListSize &lt;1? view.VISIBLE:view.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:visibility="gone"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

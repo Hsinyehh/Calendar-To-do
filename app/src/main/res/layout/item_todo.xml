@@ -73,11 +73,24 @@
                 android:id="@+id/schedule_image_account"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:layout_marginTop="6dp"
-                android:layout_marginEnd="32dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="24dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/schedule_text_time"
                 app:srcCompat="@drawable/account" />
+
+            <TextView
+                android:id="@+id/schedule_text_account"
+                style="@style/plan_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:layout_marginEnd="6dp"
+                app:layout_constraintEnd_toStartOf="@id/schedule_image_account"
+                app:layout_constraintTop_toBottomOf="@id/schedule_text_time"
+                app:owner_name="@{plan}"
+                tools:text="Mia" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/schedule_detail"
