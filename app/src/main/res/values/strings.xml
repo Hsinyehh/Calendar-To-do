@@ -30,4 +30,5 @@
     <string name="category_title">ADD CATEGORY</string>
     <string name="category_hint">Enter the Category</string>
     <string name="submit">Submit</string>
+    <string name="login_title">Calendar-to-do</string>
 </resources>

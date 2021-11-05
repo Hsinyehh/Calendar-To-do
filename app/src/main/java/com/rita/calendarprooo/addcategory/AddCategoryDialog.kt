@@ -34,15 +34,6 @@ class AddCategoryDialog : DialogFragment() {
 
         viewModel.planGet.value= AddCategoryDialogArgs.fromBundle(requireArguments()).plan
 
-
-        //Test
-        /*viewModel.planGet.observe(viewLifecycleOwner, Observer {
-            Log.i("Rita","planGet.observe $it")
-            val isIdEmpty = viewModel.planGet.value?.id ==""
-            //Log.i("Rita","planGet.id ${it?.id}")
-            Log.i("Rita","planGet.is id empty $isIdEmpty")
-        })*/
-
         viewModel.startToCreate.observe(viewLifecycleOwner, Observer {
             Log.i("Rita","startToCreate.observe $it")
             if(it == true){
