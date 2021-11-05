@@ -10,6 +10,7 @@ import com.google.firebase.ktx.Firebase
 import com.rita.calendarprooo.data.Category
 import com.rita.calendarprooo.data.Check
 import com.rita.calendarprooo.data.Plan
+import com.rita.calendarprooo.data.User
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -144,6 +145,50 @@ class EditViewModel(plan: Plan) : ViewModel() {
             .addOnSuccessListener { Log.d(ContentValues.TAG, "successfully updated!") }
             .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error updating document", e) }
 
+    }
+
+    fun getCategoryFromUser(){
+        Log.i("Rita","EditVM getCategoryFromUser")
+        db.collection("user")
+            .whereEqualTo("email", "lisa@gmail.com")
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.w(ContentValues.TAG, "Listen failed.", e)
+                    return@addSnapshotListener
+                }
+                if (snapshot != null && !snapshot.isEmpty) {
+                    for (item in snapshot) {
+                        Log.d("Rita", "Current user: $item")
+                        val user = item.toObject(User::class.java)
+                        categoryList.value = user.categoryList
+                        Log.i("Rita", "category:　${categoryList.value}")
+                    }
+                } else {
+                    Log.d(ContentValues.TAG, "Current user: null")
+                }
+            }
+    }
+
+    fun getCategoryFromPlan(){
+        Log.i("Rita","EditVM getCategoryFromPlan")
+        db.collection("plan")
+            .whereEqualTo("id", "${planGet.value?.id}")
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.w(ContentValues.TAG, "Listen failed.", e)
+                    return@addSnapshotListener
+                }
+                if (snapshot != null && !snapshot.isEmpty) {
+                    for (item in snapshot) {
+                        Log.d("Rita", "Current plan: $item")
+                        val plan = item.toObject(Plan::class.java)
+                        categoryList.value = plan.categoryList
+                        Log.i("Rita", "category:　${categoryList.value}")
+                    }
+                } else {
+                    Log.d(ContentValues.TAG, "Current user: null")
+                }
+            }
     }
 
     fun changeCategory(position:Int, lastPosition:Int){

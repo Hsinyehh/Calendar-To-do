@@ -8,14 +8,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import com.rita.calendarprooo.R
-import com.rita.calendarprooo.databinding.FragmentInviteBinding
-import com.rita.calendarprooo.edit.EditFragmentArgs
+import com.rita.calendarprooo.databinding.DialogInviteBinding
 
-class InviteFragment : DialogFragment() {
+
+class InviteDialog : DialogFragment() {
     private val viewModel: InviteViewModel by lazy {
         ViewModelProvider(this).get(InviteViewModel::class.java)
     }
@@ -25,15 +23,15 @@ class InviteFragment : DialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         //layout binding
-        val binding: FragmentInviteBinding = DataBindingUtil.inflate(
-            inflater, R.layout.fragment_invite, container, false
+        val binding: DialogInviteBinding = DataBindingUtil.inflate(
+            inflater, R.layout.dialog_invite, container, false
         )
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
         //safe args
-        viewModel.plan.value = InviteFragmentArgs.fromBundle(requireArguments()).plan
+        viewModel.plan.value = InviteDialogArgs.fromBundle(requireArguments()).plan
 
         binding.inviteBtnCancel.setOnClickListener {
             dismiss()

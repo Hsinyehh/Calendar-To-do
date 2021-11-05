@@ -181,7 +181,7 @@
                 android:id="@+id/schedule_image_checklist"
                 android:layout_width="18dp"
                 android:layout_height="18dp"
-                android:layout_marginStart="24dp"
+                android:layout_marginStart="26dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/schedule_text_location"

@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import com.rita.calendarprooo.NavigationDirections
 import com.rita.calendarprooo.R
 import com.rita.calendarprooo.data.Category
 import com.rita.calendarprooo.data.Check
@@ -89,10 +90,12 @@ class EditFragment : Fragment() {
             }
             viewModel.location.value = it?.location
             if(it?.categoryList.isNullOrEmpty()){
-                viewModel.categoryList.value = categoryList
+                //viewModel.categoryList.value = categoryList
+                viewModel.getCategoryFromUser()
             }
             else{
-                viewModel.categoryList.value = it?.categoryList
+                //viewModel.categoryList.value = it?.categoryList
+                viewModel.getCategoryFromPlan()
             }
 
             Log.i("Rita","plan.location.observe: ${viewModel.location.value}")
@@ -160,6 +163,13 @@ class EditFragment : Fragment() {
         //TimePicker
         binding.startTimepicker.setIs24HourView(true)
         binding.endTimepicker.setIs24HourView(true)
+
+        //add category Button
+        binding.btnCategoryPlus.setOnClickListener {
+            //view?.findNavController()?.navigate(R.id.navigate_to_add_category_dialog)
+            view?.findNavController()?.navigate(
+                NavigationDirections.navigateToAddCategoryDialog(viewModel.planGet.value))
+        }
 
 
         return  binding.root

@@ -35,8 +35,17 @@
         android:label="InvitationFragment" />
     <dialog
         android:id="@+id/inviteFragment"
-        android:name="com.rita.calendarprooo.invite.InviteFragment"
+        android:name="com.rita.calendarprooo.invite.InviteDialog"
         android:label="InviteFragment">
+        <argument
+            android:name="plan"
+            app:argType="com.rita.calendarprooo.data.Plan"
+            app:nullable="true"/>
+    </dialog>
+    <dialog
+        android:id="@+id/addCategoryDialog"
+        android:name="com.rita.calendarprooo.addcategory.AddCategoryDialog"
+        android:label="AddCategoryDialog" >
         <argument
             android:name="plan"
             app:argType="com.rita.calendarprooo.data.Plan"
@@ -51,4 +60,7 @@
     <action
         android:id="@+id/navigate_to_invite_fragment"
         app:destination="@id/inviteFragment" />
+    <action
+        android:id="@+id/navigate_to_add_category_dialog"
+        app:destination="@id/addCategoryDialog" />
 </navigation>
