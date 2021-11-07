@@ -51,6 +51,10 @@
             app:argType="com.rita.calendarprooo.data.Plan"
             app:nullable="true"/>
     </dialog>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.rita.calendarprooo.login.LoginFragment"
+        android:label="LoginFragment" />
     <action
         android:id="@+id/navigate_to_edit_fragment"
         app:destination="@id/editFragment" />
@@ -63,4 +67,7 @@
     <action
         android:id="@+id/navigate_to_add_category_dialog"
         app:destination="@id/addCategoryDialog" />
+    <action
+        android:id="@+id/navigate_to_login_fragment"
+        app:destination="@id/loginFragment" />
 </navigation>

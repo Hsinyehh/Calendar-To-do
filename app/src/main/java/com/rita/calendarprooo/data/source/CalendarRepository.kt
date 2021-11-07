@@ -25,4 +25,8 @@ interface CalendarRepository {
 
     suspend fun getCheckAndRemoveItem(check:Check, position:Int,
                                       checkList: MutableLiveData<MutableList<Check>>): Result<Boolean>
+
+    fun getUser (id:String) : MutableLiveData<User>
+
+    suspend fun createUser(newUser: User): Result<Boolean>
 }

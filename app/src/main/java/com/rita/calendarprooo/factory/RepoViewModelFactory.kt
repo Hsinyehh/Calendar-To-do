@@ -2,22 +2,23 @@ package com.rita.calendarprooo.factory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.rita.calendarprooo.data.Plan
+import com.rita.calendarprooo.MainViewModel
 import com.rita.calendarprooo.data.source.CalendarRepository
-import com.rita.calendarprooo.edit.EditViewModel
 import com.rita.calendarprooo.login.LoginViewModel
 
-@Suppress("UNCHECKED_CAST")
-class ViewModelFactory constructor(
-    private val plan: Plan?
+class RepoViewModelFactory constructor(
+    private val repository: CalendarRepository
 ) : ViewModelProvider.NewInstanceFactory() {
 
     override fun <T : ViewModel> create(modelClass: Class<T>) =
         with(modelClass) {
             when {
 
-                isAssignableFrom(EditViewModel::class.java) ->
-                    plan?.let { EditViewModel(it) }
+                isAssignableFrom(LoginViewModel::class.java) ->
+                    LoginViewModel(repository)
+
+                isAssignableFrom(MainViewModel::class.java) ->
+                    MainViewModel(repository)
 
                 else ->
                     throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")

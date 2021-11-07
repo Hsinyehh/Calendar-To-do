@@ -31,4 +31,8 @@ interface CalendarDataSource {
         checkList: Int,
         checkList1: MutableLiveData<MutableList<Check>>
     ): Result<Boolean>
+
+    fun getUser (id:String) : MutableLiveData<User>
+
+    suspend fun createUser(newUser: User): Result<Boolean>
 }

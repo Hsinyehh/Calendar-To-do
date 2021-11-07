@@ -44,4 +44,12 @@ class DefaultCalendarRepository(private val remoteDataSource: CalendarDataSource
             Result<Boolean>{
         return remoteDataSource.getCheckAndRemoveItem(check,position,checkList)
     }
+
+    override fun getUser (id:String) : MutableLiveData<User>{
+        return remoteDataSource.getUser (id)
+    }
+
+    override suspend fun createUser(newUser: User): Result<Boolean>{
+        return remoteDataSource.createUser(newUser)
+    }
 }

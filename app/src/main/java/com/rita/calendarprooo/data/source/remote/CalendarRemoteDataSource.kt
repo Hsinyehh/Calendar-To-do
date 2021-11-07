@@ -1,16 +1,17 @@
 package com.rita.calendarprooo.data.source.remote
 
 import android.content.ContentValues
+import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.FirebaseFirestore
+import com.rita.calendarprooo.CalendarProApplication
+import com.rita.calendarprooo.R
 import com.rita.calendarprooo.data.Check
 import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.data.User
 import com.rita.calendarprooo.data.Result
 import com.rita.calendarprooo.data.source.CalendarDataSource
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -18,6 +19,7 @@ import kotlin.coroutines.suspendCoroutine
 object CalendarRemoteDataSource : CalendarDataSource {
 
     private const val PATH_PLAN = "plan"
+    private const val PATH_USER = "user"
 
     override fun getLivePlansFromToday(selectedStartTime: Long,selectedEndTime: Long ,user: User):
             MutableLiveData<MutableList<Plan>> {
@@ -179,6 +181,47 @@ object CalendarRemoteDataSource : CalendarDataSource {
             }
             .addOnFailureListener { exception ->
                 Log.d(ContentValues.TAG, "get failed with ", exception)
+            }
+    }
+
+    override fun getUser (id: String) : MutableLiveData<User>{
+        val liveData = MutableLiveData<User>()
+
+        FirebaseFirestore.getInstance()
+            .collection(PATH_USER)
+            .whereEqualTo("email", id)
+            .addSnapshotListener { snapshot, exception ->
+                Log.d(TAG, "getUser snapshot ${snapshot!!.documents}")
+                exception?.let {
+                    Log.d(TAG, "[${this::class.simpleName}] Error getting documents. ${it.message}")
+                }
+
+                for (document in snapshot!!) {
+                    val user = document.toObject(User::class.java)
+                    liveData.value = user
+                }
+            }
+        return liveData
+    }
+
+    override suspend fun createUser(newUser: User): Result<Boolean> = suspendCoroutine { continuation ->
+        val db = FirebaseFirestore.getInstance()
+
+        db.collection(PATH_USER).document(newUser.email)
+            .set(newUser)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.i("Rita","Create: $newUser")
+                    continuation.resume(Result.Success(true))
+                } else {
+                    task.exception?.let {
+
+                        Log.i("Rita","[${this::class.simpleName}] Error getting documents. ${it.message}")
+                        continuation.resume(Result.Error(it))
+                        return@addOnCompleteListener
+                    }
+                    continuation.resume(Result.Fail(CalendarProApplication.instance.getString(R.string.Error)))
+                }
             }
     }
 }

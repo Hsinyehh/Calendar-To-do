@@ -42,7 +42,7 @@
         <androidx.drawerlayout.widget.DrawerLayout
             android:id="@+id/drawerLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -58,7 +58,7 @@
                     android:name="androidx.navigation.fragment.NavHostFragment"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="60dp"
+                    android:layout_marginTop="0dp"
                     app:defaultNavHost="true"
                     app:navGraph="@navigation/navigation" />
             </LinearLayout>
@@ -68,8 +68,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
-                app:menu="@menu/drawer_menu"
-                app:headerLayout="@layout/nav_header"/>
+                app:headerLayout="@layout/nav_header"
+                app:menu="@menu/drawer_menu" />
         </androidx.drawerlayout.widget.DrawerLayout>
 
 
