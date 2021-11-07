@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
 
         auth = Firebase.auth
         var currentUser = auth.currentUser
-
+        Log.i("Rita","MainActivity currentUser: ${currentUser} , userToken: ${UserManager.userToken}")
         if (currentUser == null) {
             //login first
             if (!UserManager.isLoggedIn) {
@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity() {
                 firebaseAuthWithGoogle(userToken!!)
             }
         } else {
-            currentUser.email?.let { viewModel.getUserData(it) }
+            UserManager.userToken?.let { viewModel.getUserData(it) }
             viewModel.navigateToHome.value = true
         }
 
@@ -114,7 +114,7 @@ class MainActivity : AppCompatActivity() {
                     // Sign in success, update UI with the signed-in user's information
                     val user = auth.currentUser
                     Log.d(TAG, "signInWithCredential:success with user email: ${user!!.email}")
-                    user.email?.let { viewModel.getUserData(it) }
+                    UserManager.userToken?.let { viewModel.getUserData(it) }
                     viewModel.navigateToLogin.value = true
                 } else {
                     // If sign in fails, display a message to the user.

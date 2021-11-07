@@ -2,7 +2,6 @@ package com.rita.calendarprooo.edit
 
 import android.content.ContentValues
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.ktx.firestore
@@ -11,11 +10,15 @@ import com.rita.calendarprooo.data.Category
 import com.rita.calendarprooo.data.Check
 import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.data.User
+import com.rita.calendarprooo.data.source.CalendarRepository
+import com.rita.calendarprooo.login.UserManager
 import java.text.SimpleDateFormat
 import java.util.*
 
 
-class EditViewModel(plan: Plan) : ViewModel() {
+class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
+
+    val currentUser = UserManager.user.value
 
     var planGet = MutableLiveData<Plan?>()
 
@@ -51,7 +54,7 @@ class EditViewModel(plan: Plan) : ViewModel() {
 
     var editStatus = MutableLiveData<Boolean?>()
 
-    var invitationList = MutableLiveData<MutableList<String>>()
+    var collaborator = MutableLiveData<MutableList<String>>()
 
     private val db = Firebase.firestore
     val newPlanRef = db.collection("plan").document()
@@ -67,11 +70,21 @@ class EditViewModel(plan: Plan) : ViewModel() {
     fun checkListTextCreated() {
         val editCheckList = checkList.value
         Log.i("Rita", "checkListTextCreated()")
-        val newCheck = Check(
-            checkText.value, false, 0, "", "", 1,
-            newPlanRef.id
-        )
-        editCheckList?.add(newCheck)
+        if(planGet.value?.id.isNullOrEmpty()){
+            val newCheck = Check(
+                checkText.value, false, 0, "", "", 1,
+                newPlanRef.id
+            )
+            editCheckList?.add(newCheck)
+        }else{
+            val newCheck = Check(
+                checkText.value, false, 0, "", "", 1,
+                planGet.value!!.id
+            )
+            editCheckList?.add(newCheck)
+        }
+
+
         checkList.value = editCheckList
     }
 
@@ -102,10 +115,10 @@ class EditViewModel(plan: Plan) : ViewModel() {
             checkList = checkList.value,
             isToDoList = isTodoList.value,
             isToDoListDone = false,
-            owner = "lisa@gmail.com",
-            owner_name = "Lisa",
-            invitation = invitationList.value,
-            collaborator = mutableListOf<String>(),
+            owner = currentUser!!.email,
+            owner_name = currentUser!!.name,
+            invitation = mutableListOf<String>(),
+            collaborator = collaborator.value,
             order_id = 1
         )
         Log.i("Rita", "new plan: $plan")
@@ -150,7 +163,7 @@ class EditViewModel(plan: Plan) : ViewModel() {
     fun getCategoryFromUser(){
         Log.i("Rita","EditVM getCategoryFromUser")
         db.collection("user")
-            .whereEqualTo("email", "lisa@gmail.com")
+            .whereEqualTo("email", currentUser!!.email)
             .addSnapshotListener { snapshot, e ->
                 if (e != null) {
                     Log.w(ContentValues.TAG, "Listen failed.", e)
@@ -262,7 +275,7 @@ class EditViewModel(plan: Plan) : ViewModel() {
         }
         categoryPosition.value = plan.categoryPosition
 
-        invitationList.value = mutableListOf("lisa@gmail.com")
+        collaborator.value = mutableListOf(currentUser!!.email)
     }
 
 }

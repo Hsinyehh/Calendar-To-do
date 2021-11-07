@@ -7,10 +7,17 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.rita.calendarprooo.data.Check
 import com.rita.calendarprooo.data.Plan
+import com.rita.calendarprooo.data.User
+import com.rita.calendarprooo.data.source.CalendarRepository
+import com.rita.calendarprooo.login.UserManager
 import java.text.SimpleDateFormat
 import java.util.*
 
-class HomeViewModel() : ViewModel() {
+class HomeViewModel(repository: CalendarRepository) : ViewModel() {
+
+    private val repository = repository
+
+    var currentUser = MutableLiveData<User>()
 
     private var _navigateToEdit = MutableLiveData<Boolean>()
     val navigateToEdit : LiveData<Boolean>
@@ -90,55 +97,59 @@ class HomeViewModel() : ViewModel() {
     }
 
     fun readPlanFromToday(){
+        Log.i("Rita", "readPlanFromToday user: ${currentUser.value}")
         val list = mutableListOf<Plan>()
 
         //plan's start-time from today
-        db.collection("plan")
-            //.whereEqualTo("owner","lisa@gmail.com")
-            .whereArrayContains("collaborator","lisa@gmail.com")
-            .whereGreaterThanOrEqualTo("start_time", selectedStartTime.value!!)
-            .whereLessThanOrEqualTo("start_time", selectedEndTime.value!!)
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    Log.d(TAG, "${document.id} => ${document.data}")
-                    val plan= document.toObject(Plan::class.java)
-                    list.add(plan)
+        currentUser.value?.let {
+            db.collection("plan")
+                .whereArrayContains("collaborator", it.email)
+                .whereGreaterThanOrEqualTo("start_time", selectedStartTime.value!!)
+                .whereLessThanOrEqualTo("start_time", selectedEndTime.value!!)
+                .get()
+                .addOnSuccessListener { result ->
+                    for (document in result) {
+                        Log.d(TAG, "${document.id} => ${document.data}")
+                        val plan= document.toObject(Plan::class.java)
+                        list.add(plan)
+                    }
+                    Log.i("Rita","list: $list")
+                    readListFromToday.value = list
                 }
-                Log.i("Rita","list: $list")
-                readListFromToday.value = list
-            }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents.", exception)
-            }
+                .addOnFailureListener { exception ->
+                    Log.w(TAG, "Error getting documents.", exception)
+                }
+        }
     }
 
     fun readPlanBeforeToday(){
+        Log.i("Rita", "readPlanBeforeToday user: ${currentUser.value}")
         val listBefore = mutableListOf<Plan>()
         //plan's start-time before today
-        db.collection("plan")
-            //.whereEqualTo("owner","lisa@gmail.com")
-            .whereArrayContains("collaborator","lisa@gmail.com")
-            .whereLessThan("start_time", selectedStartTime.value!!)
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    Log.d(TAG, "${document.id} => ${document.data}")
-                    val plan= document.toObject(Plan::class.java)
-                    listBefore.add(plan)
+        currentUser.value?.let {
+            db.collection("plan")
+                .whereArrayContains("collaborator", it.email)
+                .whereLessThan("start_time", selectedStartTime.value!!)
+                .get()
+                .addOnSuccessListener { result ->
+                    for (document in result) {
+                        Log.d(TAG, "${document.id} => ${document.data}")
+                        val plan= document.toObject(Plan::class.java)
+                        listBefore.add(plan)
+                    }
+                    Log.i("Rita","listBeforeToday:　$listBefore")
+
+                    val filteredList = listBefore
+                        .filter { it -> it.end_time!! >= selectedStartTime.value!! }
+
+                    Log.i("Rita","filtered listBeforeToday:　$filteredList")
+
+                    readListBeforeToday.value = filteredList
                 }
-                Log.i("Rita","listBeforeToday:　$listBefore")
-
-                val filteredList = listBefore
-                    .filter { it -> it.end_time!! >= selectedStartTime.value!! }
-
-                Log.i("Rita","filtered listBeforeToday:　$filteredList")
-
-                readListBeforeToday.value = filteredList
-            }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents.", exception)
-            }
+                .addOnFailureListener { exception ->
+                    Log.w(TAG, "Error getting documents.", exception)
+                }
+        }
     }
 
     fun readPlanInTotal(){
@@ -275,7 +286,7 @@ class HomeViewModel() : ViewModel() {
         else if(!item.isDone){
             item.isDone = true
             item.done_time = Calendar.getInstance().timeInMillis
-            item.doner = "Lisa"
+            item.doner = currentUser.value?.name
         }
 
         val planRef = item.plan_id?.let { db.collection("plan").document(it) }
@@ -334,56 +345,59 @@ class HomeViewModel() : ViewModel() {
     }
 
     fun readPlanOnChanged(){
-        db.collection("plan")
-            //.whereEqualTo("owner","lisa@gmail.com")
-            .whereArrayContains("collaborator","lisa@gmail.com")
-            .whereGreaterThanOrEqualTo("start_time", selectedStartTime.value!!)
-            .whereLessThanOrEqualTo("start_time", selectedEndTime.value!!)
-            .addSnapshotListener { snapshot, e ->
-            if (e != null) {
-                Log.w(TAG, "Listen failed.", e)
-                return@addSnapshotListener
-            }
-            if (snapshot != null && !snapshot.isEmpty) {
-                val list = mutableListOf<Plan>()
-                for (item in snapshot) {
-                    Log.d("Rita","Current data: $item")
-                    val plan= item.toObject(Plan::class.java)
-                    list.add(plan!!)
-                }
-                Log.i("Rita", "list onChanged:　$list")
-                listFromToday.value = list
-            } else {
-                Log.d(TAG, "Current data: null")
-            }
-        }
-        //plan's start-time before today
-        db.collection("plan")
-            //.whereEqualTo("owner","lisa@gmail.com")
-            .whereArrayContains("collaborator","lisa@gmail.com")
-            .whereLessThan("start_time", selectedStartTime.value!!)
-            .addSnapshotListener { snapshot, e ->
+        Log.i("Rita", "readPlanOnChanged user: ${currentUser.value}")
+        currentUser.value?.let {
+            db.collection("plan")
+                .whereArrayContains("collaborator", it.email)
+                .whereGreaterThanOrEqualTo("start_time", selectedStartTime.value!!)
+                .whereLessThanOrEqualTo("start_time", selectedEndTime.value!!)
+                .addSnapshotListener { snapshot, e ->
                 if (e != null) {
                     Log.w(TAG, "Listen failed.", e)
                     return@addSnapshotListener
                 }
                 if (snapshot != null && !snapshot.isEmpty) {
-                    val listBefore = mutableListOf<Plan>()
+                    val list = mutableListOf<Plan>()
                     for (item in snapshot) {
-                        Log.d("Rita","Current data Before: $item")
-                        val plan = item.toObject(Plan::class.java)
-                        if(plan.start_time!! < selectedStartTime.value!!){
-                            listBefore.add(plan!!)
-                        }
+                        Log.d("Rita","Current data: $item")
+                        val plan= item.toObject(Plan::class.java)
+                        list.add(plan!!)
                     }
-                    val filteredList = listBefore
-                        .filter { it -> it.end_time!! >= selectedStartTime.value!! }
-                    Log.i("Rita", "listBeforeToday onChanged:　$filteredList")
-                    listBeforeToday.value = filteredList
+                    Log.i("Rita", "list onChanged:　$list")
+                    listFromToday.value = list
                 } else {
                     Log.d(TAG, "Current data: null")
                 }
             }
+        }
+        //plan's start-time before today
+        currentUser.value?.let {
+            db.collection("plan")
+                .whereArrayContains("collaborator", it.email)
+                .whereLessThan("start_time", selectedStartTime.value!!)
+                .addSnapshotListener { snapshot, e ->
+                    if (e != null) {
+                        Log.w(TAG, "Listen failed.", e)
+                        return@addSnapshotListener
+                    }
+                    if (snapshot != null && !snapshot.isEmpty) {
+                        val listBefore = mutableListOf<Plan>()
+                        for (item in snapshot) {
+                            Log.d("Rita","Current data Before: $item")
+                            val plan = item.toObject(Plan::class.java)
+                            if(plan.start_time!! < selectedStartTime.value!!){
+                                listBefore.add(plan!!)
+                            }
+                        }
+                        val filteredList = listBefore
+                            .filter { it -> it.end_time!! >= selectedStartTime.value!! }
+                        Log.i("Rita", "listBeforeToday onChanged:　$filteredList")
+                        listBeforeToday.value = filteredList
+                    } else {
+                        Log.d(TAG, "Current data: null")
+                    }
+                }
+        }
     }
 
     fun getTotalList(){
@@ -446,9 +460,15 @@ class HomeViewModel() : ViewModel() {
         return today
     }
 
+    fun getUserData(userId: String) {
+        Log.d("Rita", "userId: $userId")
+        currentUser = repository.getUser(userId)
+    }
+
     init {
         _navigateToEdit.value = null
         convertToTimeStamp(getToday())
+        UserManager.userToken?.let { getUserData(it) }
     }
 
 

@@ -1,12 +1,17 @@
 package com.rita.calendarprooo
 
 import android.util.Log
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.rita.calendarprooo.data.Category
 import com.rita.calendarprooo.data.Check
 import com.rita.calendarprooo.data.Plan
+import com.rita.calendarprooo.data.User
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -105,6 +110,38 @@ fun TextView.bindDoneTime(item: Check?) {
 fun TextView.bindDone(item: Check?) {
     item?.doner?.let{
         text="By $it"
+    }
+}
+
+@BindingAdapter("userName")
+fun TextView.bindUserName(item: User?) {
+    Log.i("Rita","name: ${item}")
+    item?.let{
+        text="${it.name}"
+    }
+}
+
+@BindingAdapter("userEmail")
+fun TextView.bindUserEmail(item: User?) {
+    Log.i("Rita","email: ${item}")
+    item?.let{
+        text="${it.email}"
+    }
+}
+
+@BindingAdapter("imageUrl")
+fun bindFirstImage(imgView: ImageView, item: User) {
+
+    Log.i("Rita","imageUri: ${item}")
+    item?.photo?.let {
+        val imgUri = it.toUri().buildUpon().scheme("https").build()
+        Glide.with(imgView.context)
+            .load(imgUri)
+            .apply(
+                RequestOptions()
+                    .placeholder(R.drawable.account)
+                    .error(R.drawable.account))
+            .into(imgView)
     }
 }
 

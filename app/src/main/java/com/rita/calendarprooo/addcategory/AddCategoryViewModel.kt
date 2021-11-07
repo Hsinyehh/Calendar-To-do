@@ -10,8 +10,11 @@ import com.google.firebase.ktx.Firebase
 import com.rita.calendarprooo.data.Category
 import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.data.User
+import com.rita.calendarprooo.login.UserManager
 
 class AddCategoryViewModel : ViewModel() {
+
+    val currentUser = UserManager.user.value
 
     private var categoryList = MutableLiveData<MutableList<Category>>()
 
@@ -75,7 +78,7 @@ class AddCategoryViewModel : ViewModel() {
     //if the plan is at created Status
     fun getCategoryFromUser() {
         db.collection("user")
-            .whereEqualTo("email", "lisa@gmail.com")
+            .whereEqualTo("email", currentUser!!.email)
             .get()
             .addOnSuccessListener { result ->
                 for (item in result) {
@@ -93,7 +96,7 @@ class AddCategoryViewModel : ViewModel() {
 
     //Both Conditions Needs the functions below
     fun updateUser() {
-        val userRef = db.collection("user").document("aezQzyUGLYRot36CphaZ")
+        val userRef = db.collection("user").document(currentUser!!.email)
         Log.i("Rita", "updateUser-Ref: $userRef")
         userRef!!
             .update(

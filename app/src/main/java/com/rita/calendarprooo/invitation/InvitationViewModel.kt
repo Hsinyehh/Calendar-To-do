@@ -9,8 +9,11 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.rita.calendarprooo.data.Plan
+import com.rita.calendarprooo.login.UserManager
 
 class InvitationViewModel : ViewModel() {
+
+    val currentUser = UserManager.user.value
 
     var invitationList = MutableLiveData<MutableList<Plan>>()
 
@@ -26,7 +29,7 @@ class InvitationViewModel : ViewModel() {
        var list = mutableListOf<Plan>()
 
         db.collection("plan")
-            .whereArrayContains("invitation","lisa@gmail.com")
+            .whereArrayContains("invitation",currentUser!!.email)
             .addSnapshotListener { snapshot, e ->
                 if (e != null) {
                     Log.w(ContentValues.TAG, "Listen failed.", e)
@@ -52,12 +55,12 @@ class InvitationViewModel : ViewModel() {
         val invitationGet = plan.invitation
         val collaboratorGet = plan.collaborator
 
-        val indexRemoved = invitationGet?.indexOf("lisa@gmail.com")
+        val indexRemoved = invitationGet?.indexOf(currentUser!!.email)
         if (indexRemoved != null && indexRemoved >= 0 ) {
             invitationGet?.removeAt(indexRemoved)
         }
         if(isAccepted){
-            collaboratorGet?.add("lisa@gmail.com")
+            collaboratorGet?.add(currentUser!!.email)
         }
 
         val planRef =  db.collection("plan").document(plan.id!!)

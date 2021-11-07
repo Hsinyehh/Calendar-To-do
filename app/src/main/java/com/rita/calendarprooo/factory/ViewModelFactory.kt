@@ -5,11 +5,10 @@ import androidx.lifecycle.ViewModelProvider
 import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.data.source.CalendarRepository
 import com.rita.calendarprooo.edit.EditViewModel
-import com.rita.calendarprooo.login.LoginViewModel
 
 @Suppress("UNCHECKED_CAST")
 class ViewModelFactory constructor(
-    private val plan: Plan?
+    private val plan: Plan?, private val repository: CalendarRepository
 ) : ViewModelProvider.NewInstanceFactory() {
 
     override fun <T : ViewModel> create(modelClass: Class<T>) =
@@ -17,7 +16,7 @@ class ViewModelFactory constructor(
             when {
 
                 isAssignableFrom(EditViewModel::class.java) ->
-                    plan?.let { EditViewModel(it) }
+                    plan?.let { EditViewModel(it, repository) }
 
                 else ->
                     throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")

@@ -76,7 +76,7 @@ class LoginViewModel(repository: CalendarRepository) : ViewModel() {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    getUserData(user.email)
+                    getUserData(user.id)
                     startToNavigateToHome()
                 }
                 is Result.Fail -> {
@@ -96,8 +96,8 @@ class LoginViewModel(repository: CalendarRepository) : ViewModel() {
         }
     }
 
-    fun getUserData(email: String) {
-        UserManager.user = repository.getUser(email)
+    fun getUserData(id: String) {
+        UserManager.user = repository.getUser(id)
     }
 
     fun  startToNavigateToHome(){

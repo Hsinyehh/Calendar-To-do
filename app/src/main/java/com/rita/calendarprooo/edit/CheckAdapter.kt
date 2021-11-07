@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.rita.calendarprooo.data.Check
 import com.rita.calendarprooo.databinding.ItemCheckBinding
-import com.rita.calendarprooo.edit.EditViewModel
+import com.rita.calendarprooo.login.UserManager
 import java.util.*
 
 class CheckAdapter (val viewModel: EditViewModel) : ListAdapter<Check,
@@ -26,7 +26,7 @@ class CheckAdapter (val viewModel: EditViewModel) : ListAdapter<Check,
             else if(!item.isDone){
                 item.isDone = true
                 item.done_time = Calendar.getInstance().timeInMillis
-                item.doner = "Lisa"
+                item.doner = UserManager.user.value?.name
             }
             notifyDataSetChanged()
         }

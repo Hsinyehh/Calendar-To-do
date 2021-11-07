@@ -73,6 +73,7 @@ class LoginFragment : Fragment() {
         })
 
         viewModel.navigateToHome.observe(viewLifecycleOwner, Observer {
+            Log.i("Rita","navigateToHome observe: ${it}")
             if(it == true){
                 findNavController().navigate(NavigationDirections.navigateToHomeFragment())
                 viewModel.doneNavigated()

@@ -189,7 +189,7 @@ object CalendarRemoteDataSource : CalendarDataSource {
 
         FirebaseFirestore.getInstance()
             .collection(PATH_USER)
-            .whereEqualTo("email", id)
+            .whereEqualTo("id", id)
             .addSnapshotListener { snapshot, exception ->
                 Log.d(TAG, "getUser snapshot ${snapshot!!.documents}")
                 exception?.let {
@@ -207,7 +207,7 @@ object CalendarRemoteDataSource : CalendarDataSource {
     override suspend fun createUser(newUser: User): Result<Boolean> = suspendCoroutine { continuation ->
         val db = FirebaseFirestore.getInstance()
 
-        db.collection(PATH_USER).document(newUser.email)
+        db.collection(PATH_USER).document(newUser.id)
             .set(newUser)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {

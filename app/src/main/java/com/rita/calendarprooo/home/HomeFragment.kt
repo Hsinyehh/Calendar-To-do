@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -15,13 +16,17 @@ import com.rita.calendarprooo.NavigationDirections
 import com.rita.calendarprooo.R
 import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.databinding.FragmentHomeBinding
+import com.rita.calendarprooo.ext.getVmFactory
+import com.rita.calendarprooo.login.LoginViewModel
 import com.shrikanthravi.collapsiblecalendarview.widget.CollapsibleCalendar
 
 class HomeFragment : Fragment() {
 
-    private val viewModel: HomeViewModel by lazy {
+    /*private val viewModel: HomeViewModel by lazy {
         ViewModelProvider(this).get(HomeViewModel::class.java)
-    }
+    }*/
+
+    private val viewModel by viewModels<HomeViewModel> { getVmFactory() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,7 +40,7 @@ class HomeFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        viewModel.readPlanOnChanged()
+
 
         //read Plans when date selected changed
         viewModel.selectedEndTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
@@ -69,6 +74,11 @@ class HomeFragment : Fragment() {
         //test
         viewModel.scheduleViewList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             Log.i("Rita","scheduleViewList.observe: $it")
+        })
+
+        viewModel.currentUser.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita","currentUser.observe: $it")
+            viewModel.readPlanOnChanged()
         })
 
 
