@@ -72,7 +72,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
                 viewModel.searchResultName.value = viewModel.searchText.value
 
                 Log.i("Rita","geoLocate: ${viewModel.searchResult.value}")
-                //Log.i("Rita","geoLocate: ${list.get(0).getAddressLine(0)}")
+                Log.i("Rita","geoLocate: ${list.get(0).getAddressLine(0)}")
 
                 moveCamera(LatLng(address.latitude,address.longitude),DEFAULT_ZOOM,
                     address.getAddressLine(0))

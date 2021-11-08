@@ -83,8 +83,6 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
             )
             editCheckList?.add(newCheck)
         }
-
-
         checkList.value = editCheckList
     }
 
@@ -274,8 +272,8 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
             categoryStatus.value = Category(plan.category!!, true)
         }
         categoryPosition.value = plan.categoryPosition
-
         collaborator.value = mutableListOf(currentUser!!.email)
+
     }
 
 }

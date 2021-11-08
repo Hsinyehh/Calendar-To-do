@@ -51,10 +51,6 @@ class EditFragment : Fragment() {
         val endDatePicker=binding.endDatepicker
 
 
-        //FAKE DATA
-        val categoryList = mutableListOf<Category>(Category("Job",false),
-            Category("Travel",false),Category("Meeting",false))
-
         val adapter = CategoryAdapter(viewModel)
         binding.categoryList.adapter=adapter
         viewModel.categoryList.observe(viewLifecycleOwner, Observer {
@@ -78,7 +74,7 @@ class EditFragment : Fragment() {
             it?.start_time_detail?.let {
                 //recognize as edit rather than created a plan
                 viewModel.editStatus.value = true
-
+                viewModel.location.value = viewModel.planGet?.value?.location
                 startTimePicker.currentHour = it[4]
                 startTimePicker.currentMinute = it[4]
                 startDatePicker.init(it[0], it[1] - 1, it[2], null)
@@ -88,7 +84,7 @@ class EditFragment : Fragment() {
                 endTimePicker.currentMinute = it[4]
                 endDatePicker.init(it[0], it[1]-1, it[2],null)
             }
-            viewModel.location.value = it?.location
+
             if(it?.categoryList.isNullOrEmpty()){
                 //viewModel.categoryList.value = categoryList
                 viewModel.getCategoryFromUser()

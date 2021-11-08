@@ -46,7 +46,7 @@ class AddCategoryDialog : DialogFragment() {
         })
 
         viewModel.startToPrepare.observe(viewLifecycleOwner, Observer {
-            Log.i("Rita","startToCreate.observe $it")
+            Log.i("Rita","startToPrepare.observe $it")
             if(it == true){
                 viewModel.prepareForCategory()
             }
