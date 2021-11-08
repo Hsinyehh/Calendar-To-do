@@ -23,8 +23,6 @@ class InvitationViewModel : ViewModel() {
     private val db = Firebase.firestore
 
    fun readInvitation(){
-       var list = mutableListOf<Plan>()
-
         db.collection("plan")
             .whereArrayContains("invitation","lisa@gmail.com")
             .addSnapshotListener { snapshot, e ->
@@ -33,6 +31,7 @@ class InvitationViewModel : ViewModel() {
                     return@addSnapshotListener
                 }
                 if (snapshot != null && !snapshot.isEmpty) {
+                    var list = mutableListOf<Plan>()
                     for (item in snapshot) {
                         val plan= item.toObject(Plan::class.java)
                         list.add(plan!!)

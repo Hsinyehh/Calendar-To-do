@@ -51,7 +51,7 @@ class EditViewModel(plan: Plan) : ViewModel() {
 
     var editStatus = MutableLiveData<Boolean?>()
 
-    var invitationList = MutableLiveData<MutableList<String>>()
+    var collaborator = MutableLiveData<MutableList<String>>()
 
     private val db = Firebase.firestore
     val newPlanRef = db.collection("plan").document()
@@ -67,11 +67,19 @@ class EditViewModel(plan: Plan) : ViewModel() {
     fun checkListTextCreated() {
         val editCheckList = checkList.value
         Log.i("Rita", "checkListTextCreated()")
-        val newCheck = Check(
-            checkText.value, false, 0, "", "", 1,
-            newPlanRef.id
-        )
-        editCheckList?.add(newCheck)
+        if(planGet.value?.id.isNullOrEmpty()){
+            val newCheck = Check(
+                checkText.value, false, 0, "", "", 1,
+                newPlanRef.id
+            )
+            editCheckList?.add(newCheck)
+        }else{
+            val newCheck = Check(
+                checkText.value, false, 0, "", "", 1,
+                planGet.value!!.id
+            )
+            editCheckList?.add(newCheck)
+        }
         checkList.value = editCheckList
     }
 
@@ -104,8 +112,8 @@ class EditViewModel(plan: Plan) : ViewModel() {
             isToDoListDone = false,
             owner = "lisa@gmail.com",
             owner_name = "Lisa",
-            invitation = invitationList.value,
-            collaborator = mutableListOf<String>(),
+            invitation = mutableListOf<String>(),
+            collaborator = collaborator.value,
             order_id = 1
         )
         Log.i("Rita", "new plan: $plan")
@@ -262,7 +270,7 @@ class EditViewModel(plan: Plan) : ViewModel() {
         }
         categoryPosition.value = plan.categoryPosition
 
-        invitationList.value = mutableListOf("lisa@gmail.com")
+        collaborator.value = mutableListOf("lisa@gmail.com")
     }
 
 }
