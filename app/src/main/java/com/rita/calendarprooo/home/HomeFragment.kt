@@ -78,6 +78,7 @@ class HomeFragment : Fragment() {
 
         viewModel.currentUser.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             Log.i("Rita","currentUser.observe: $it")
+            viewModel.readPlanFromToday()
             viewModel.readPlanOnChanged()
         })
 

@@ -98,7 +98,7 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
 
     fun readPlanFromToday(){
         Log.i("Rita", "readPlanFromToday user: ${currentUser.value}")
-        val list = mutableListOf<Plan>()
+
 
         //plan's start-time from today
         currentUser.value?.let {
@@ -108,6 +108,7 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
                 .whereLessThanOrEqualTo("start_time", selectedEndTime.value!!)
                 .get()
                 .addOnSuccessListener { result ->
+                    val list = mutableListOf<Plan>()
                     for (document in result) {
                         Log.d(TAG, "${document.id} => ${document.data}")
                         val plan= document.toObject(Plan::class.java)
@@ -124,7 +125,6 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
 
     fun readPlanBeforeToday(){
         Log.i("Rita", "readPlanBeforeToday user: ${currentUser.value}")
-        val listBefore = mutableListOf<Plan>()
         //plan's start-time before today
         currentUser.value?.let {
             db.collection("plan")
@@ -132,6 +132,7 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
                 .whereLessThan("start_time", selectedStartTime.value!!)
                 .get()
                 .addOnSuccessListener { result ->
+                    val listBefore = mutableListOf<Plan>()
                     for (document in result) {
                         Log.d(TAG, "${document.id} => ${document.data}")
                         val plan= document.toObject(Plan::class.java)
@@ -463,6 +464,7 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
     fun getUserData(userId: String) {
         Log.d("Rita", "userId: $userId")
         currentUser = repository.getUser(userId)
+        UserManager.user = repository.getUser(userId)
     }
 
     init {

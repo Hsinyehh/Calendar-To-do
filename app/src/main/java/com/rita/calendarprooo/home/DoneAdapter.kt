@@ -14,6 +14,7 @@ import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.databinding.ItemDoneBinding
 import com.rita.calendarprooo.databinding.ItemScheduleBinding
 import com.rita.calendarprooo.edit.EditViewModel
+import com.rita.calendarprooo.login.UserManager
 import java.util.*
 
 class DoneAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
@@ -41,7 +42,7 @@ class DoneAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
             if(!item.isToDoListDone){
                 item.isToDoListDone = true
                 item.done_time = Calendar.getInstance().timeInMillis
-                item.doner = "Lisa"
+                item.doner = UserManager.user.value?.name
             }else if(item.isToDoListDone){
                 item.isToDoListDone = false
                 item.done_time = null

@@ -7,6 +7,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
 import com.rita.calendarprooo.data.Category
 import com.rita.calendarprooo.data.Check
@@ -116,27 +117,28 @@ fun TextView.bindDone(item: Check?) {
 @BindingAdapter("userName")
 fun TextView.bindUserName(item: User?) {
     Log.i("Rita","name: ${item}")
-    item?.let{
-        text="${it.name}"
+    item?.name?.let{
+        text="$it"
     }
 }
 
 @BindingAdapter("userEmail")
 fun TextView.bindUserEmail(item: User?) {
     Log.i("Rita","email: ${item}")
-    item?.let{
-        text="${it.email}"
+    item?.email?.let{
+        text="$it"
     }
 }
 
 @BindingAdapter("imageUrl")
-fun bindFirstImage(imgView: ImageView, item: User) {
+fun bindImage(imgView: ImageView, item: User?) {
 
     Log.i("Rita","imageUri: ${item}")
     item?.photo?.let {
         val imgUri = it.toUri().buildUpon().scheme("https").build()
         Glide.with(imgView.context)
             .load(imgUri)
+            .transform(CircleCrop())
             .apply(
                 RequestOptions()
                     .placeholder(R.drawable.account)

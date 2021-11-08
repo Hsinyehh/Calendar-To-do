@@ -36,5 +36,10 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
+    <style name="profile">
+        <item name="android:fontFamily">@font/noto_sans</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
 
 </resources>

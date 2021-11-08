@@ -49,7 +49,7 @@ class AddCategoryViewModel : ViewModel() {
             list?.add(newCategory)
             categoryList.value = list
 
-            Log.i("Rita","prepareForCategory categoryList chenaged ${categoryList.value}")
+            Log.i("Rita","prepareForCategory categoryList changed ${categoryList.value}")
             //start to update
             startToUpdate.value = true
         }
@@ -94,9 +94,9 @@ class AddCategoryViewModel : ViewModel() {
             }
     }
 
-    //Both Conditions Needs the functions below
+    //Both Conditions Needs the function below
     fun updateUser() {
-        val userRef = db.collection("user").document(currentUser!!.email)
+        val userRef = db.collection("user").document(currentUser!!.id)
         Log.i("Rita", "updateUser-Ref: $userRef")
         userRef!!
             .update(
@@ -110,6 +110,7 @@ class AddCategoryViewModel : ViewModel() {
             }
     }
 
+    //only for edit status
     fun updateThePlan(){
         val planRef = db.collection("plan").document("${planGet.value?.id}")
         Log.i("Rita", "updatePlan-Ref: $planRef")

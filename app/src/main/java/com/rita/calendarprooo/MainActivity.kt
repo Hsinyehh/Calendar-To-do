@@ -18,10 +18,12 @@ import com.rita.calendarprooo.ext.getVmFactory
 import com.rita.calendarprooo.login.UserManager
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
+import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.rita.calendarprooo.databinding.NavHeaderBinding
 
 class MainActivity : AppCompatActivity() {
 
@@ -98,6 +100,21 @@ class MainActivity : AppCompatActivity() {
             UserManager.userToken?.let { viewModel.getUserData(it) }
             viewModel.navigateToHome.value = true
         }
+
+    }
+
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+
+        val navigationView = findViewById<NavigationView>(R.id.navView)
+
+        // we have to bind the viewModel manually to the header-view
+        // since NavigationView does not support databinding by itself
+        val headerView = navigationView.getHeaderView(0)
+        val headerViewBinding = NavHeaderBinding.bind(headerView)
+        headerViewBinding.viewModel = viewModel
+        // this new line is important to get notifications about livedata-changes!!!
+        headerViewBinding.lifecycleOwner = this
 
     }
 
