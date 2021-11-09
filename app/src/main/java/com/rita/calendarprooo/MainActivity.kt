@@ -59,6 +59,7 @@ class MainActivity : AppCompatActivity() {
             if (nd.id == nc.graph.startDestination) {
                 // prevent nav gesture if not on start destination
                 drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+                toolbar.visibility = View.VISIBLE
             } else {
                 drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
             }

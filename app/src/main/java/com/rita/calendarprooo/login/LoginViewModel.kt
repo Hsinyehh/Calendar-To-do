@@ -77,7 +77,7 @@ class LoginViewModel(repository: CalendarRepository) : ViewModel() {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
                     getUserData(user.id)
-                    startToNavigateToHome()
+                    //startToNavigateToHome()
                 }
                 is Result.Fail -> {
                     _error.value = result.error
