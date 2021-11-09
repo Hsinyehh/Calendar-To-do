@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">CalendarPro</string>
+    <!--home-->
     <string name="calendar">Calendar</string>
     <string name="schedule">Schedule</string>
     <string name="todo">To-do</string>
@@ -8,6 +9,7 @@
     <string name="description">Description</string>
     <string name="location">Location</string>
     <string name="check_list">Check List</string>
+    <!--edit-->
     <string name="todo_list_mode">To-do-List Mode</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
@@ -16,8 +18,10 @@
     <string name="end_time">End Time</string>
     <string name="set">Set</string>
     <string name="clear">Clear</string>
+    <!--search-->
     <string name="search">GoogleMap Search</string>
     <string name="result">Result and Profile</string>
+    <!--invitation-->
     <string name="invitation">Invitation</string>
     <string name="invite_title">LET\'S EDIT TOGETHER</string>
     <string name="send">Send</string>
@@ -27,9 +31,15 @@
     <string name="decline">Decline</string>
     <string name="no_invitation">No Invitation Yet</string>
     <string name="invite">Invite</string>
+    <!--add category-->
     <string name="category_title">ADD CATEGORY</string>
     <string name="category_hint">Enter the Category</string>
     <string name="submit">Submit</string>
+    <!--login-->
     <string name="login_title">Calendar-to-do</string>
     <string name="Error">Error</string>
+    <!--result-->
+    <string name="to_do_task">To-do Task</string>
+    <string name="done_task">Done Task</string>
+    <string name="done_task_category">Done Task Category</string>
 </resources>

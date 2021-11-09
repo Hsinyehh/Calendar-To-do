@@ -41,5 +41,19 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <style name="result_title">
+        <item name="android:fontFamily">@font/noto_sans</item>
+        <item name="android:textColor">@color/black_3f3a3a</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="result_num" >
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:textColor">@color/black_3f3a3a</item>
+        <item name="android:textSize">28sp</item>
+    </style>
+
 
 </resources>
