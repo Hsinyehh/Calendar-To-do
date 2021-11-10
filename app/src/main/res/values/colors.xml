@@ -13,9 +13,21 @@
     <color name="gray_808080">#808080</color>
     <color name="pink_F2E5D9">#F2E5D9</color>
     <color name="brown_F1E1D5">#F1E1D5</color>
-    <color name="red_CF6E62">#CF6E62</color>
-    <color name="red_DDA098">#DDA098</color>
-    <color name="pink_E2B4BD">#E2B4BD</color>
     <color name="green_20B2AA">#20B2AA</color>
     <color name="green_97A97C">#97A97C</color>
+    <color name="blue_3A7CA5">#3A7CA5</color>
+
+
+    <!--color List-->
+    <color name="red_CF6E62">#CF6E62</color>
+    <color name="green_84A59D">#84A59D</color>
+    <color name="pink_E2B4BD">#E2B4BD</color>
+    <color name="pink_CCB7AE">#CCB7AE</color>
+    <color name="yellow_F6BD60">#F6BD60</color>
+
+    <color name="black_424B54">#424B54</color>
+    <color name="green_93A8AC">#93A8AC</color>
+    <color name="red_DDA098">#DDA098</color>
+    <color name="red_9B6A6C">#9B6A6C</color>
+    <color name="purple_706677">#706677</color>
 </resources>

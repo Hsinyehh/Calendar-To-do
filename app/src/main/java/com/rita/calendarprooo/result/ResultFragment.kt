@@ -6,21 +6,27 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.rita.calendarprooo.R
 import com.rita.calendarprooo.databinding.FragmentResultBinding
+import com.rita.calendarprooo.ext.convertToTimeStamp
+import com.rita.calendarprooo.ext.getColorCode
+import com.rita.calendarprooo.ext.getVmFactory
+import com.rita.calendarprooo.login.LoginViewModel
+import com.rita.calendarprooo.login.UserManager
 import com.shrikanthravi.collapsiblecalendarview.widget.CollapsibleCalendar
 
 
 class ResultFragment:Fragment() {
-    private val viewModel : ResultViewModel by lazy {
-        ViewModelProvider(this).get(ResultViewModel::class.java)
-    }
+
+    private val viewModel by viewModels<ResultViewModel> { getVmFactory() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,31 +40,82 @@ class ResultFragment:Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        //read Plans when date selected changed
+        viewModel.selectedEndTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
+            Log.i("Rita","result selectedEndTime observe- $it")
+            it?.let{
+                viewModel.readPlanFromToday()
+                viewModel.readListFromToday.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
+                    Log.i("Rita","result readListFromToday observe - $it")
+                    it?.let{
+                        viewModel.readPlanBeforeToday()
+                        viewModel.readListBeforeToday.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
+                            Log.i("Rita","result readListBeforeToday observe - $it")
+                            it?.let{
+                                viewModel.readPlanInTotal()
+                                viewModel.doneList.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
+                                    Log.i("Rita","result doneList observe - $it")
+                                    it?.let{
+                                        viewModel.countForCategory(it)
+                                    }
+                                })
+                            }
+                        })
+                    }
+                })
+            }
+        })
+
 
         // pie chart setup
-        val piechart = binding.barPie
+        val pieChart = binding.barPie
 
-        val entries = mutableListOf<PieEntry>()
-        entries.add(PieEntry(100F,"apple"))
-        entries.add(PieEntry(200F,"banana"))
+        viewModel.categoryForDoneList.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
+            Log.i("Rita","result categoryForDoneList observe - $it")
+            it?.let{
+                val entries = mutableListOf<PieEntry>()
+                for(item in it){
+                    entries.add(PieEntry(item.value,item.key))
+                }
+                viewModel.pieEntryList.value = entries
+            }
+        })
 
-        val colors = mutableListOf<Int>()
-        colors.add(resources.getColor(R.color.pink_F2E5D9))
-        colors.add(resources.getColor(R.color.red_CF6E62))
-        colors.add(resources.getColor(R.color.purple_200))
+        val colors = mutableListOf<Int>( getColorCode(R.color.pink_F2E5D9),
+            getColorCode(R.color.red_CF6E62),
+            getColorCode(R.color.green_97A97C),getColorCode(R.color.pink_CCB7AE),
+            getColorCode(R.color.yellow_F6BD60), getColorCode(R.color.black_424B54),
+            getColorCode(R.color.green_84A59D),getColorCode(R.color.red_DDA098),
+            getColorCode(R.color.red_9B6A6C),getColorCode(R.color.purple_706677))
 
-        val dataSet = PieDataSet(entries,"label")
-        dataSet.setColors(colors)
+        fun setPieChart(list:MutableList<PieEntry>){
+            var dataSet = PieDataSet(list,"label")
 
-        val pieData = PieData(dataSet)
-        pieData.setDrawValues(true)
-        pieData.setValueTextSize(15f)
-        pieData.setValueTextColor(Color.WHITE)
+            dataSet.setColors(colors)
 
-        piechart.setData(pieData)
-        piechart.invalidate()
-        piechart.setEntryLabelColor(Color.WHITE)
-        piechart.setEntryLabelTextSize(15f)
+            val pieData = PieData(dataSet)
+            pieData.setDrawValues(true)
+            pieData.setValueTextSize(15f)
+            pieData.setValueTextColor(Color.WHITE)
+
+            pieChart.setData(pieData)
+            pieChart.invalidate()
+            pieChart.setEntryLabelColor(Color.WHITE)
+            pieChart.setEntryLabelTextSize(15f)
+        }
+
+
+        viewModel.pieEntryList.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
+            Log.i("Rita","result categoryForDoneList observe - $it")
+            if(it.isNullOrEmpty()){
+                viewModel.initPieEntryList()
+            }
+            setPieChart(it)
+        })
+
+
+
+
 
 
         //calendar
@@ -70,9 +127,9 @@ class ResultFragment:Fragment() {
                 val day = collapsibleCalendar.selectedDay
                 val dateSelected = ""+day!!.day + "-" + (day.month + 1) + "-" + day.year
 
-                //viewModel.convertToTimeStamp(dateSelected)
+                viewModel.selectedTimeSet(dateSelected)
 
-                Log.i("Rita", "Selected Day: $dateSelected")
+                Log.i("Rita", "result Selected Day: $dateSelected")
             }
 
             override fun onItemClick(view: View) {}
@@ -85,4 +142,4 @@ class ResultFragment:Fragment() {
 
     }
 
-    }
+}

@@ -21,25 +21,23 @@ object CalendarRemoteDataSource : CalendarDataSource {
     private const val PATH_PLAN = "plan"
     private const val PATH_USER = "user"
 
-    override fun getLivePlansFromToday(selectedStartTime: Long,selectedEndTime: Long ,user: User):
-            MutableLiveData<MutableList<Plan>> {
-        var livedata = MutableLiveData<MutableList<Plan>>()
+    override fun getLivePlansFromToday(selectedStartTime: Long,selectedEndTime: Long, user: User):
+            MutableLiveData<List<Plan>> {
+        var livedata = MutableLiveData<List<Plan>>()
         FirebaseFirestore.getInstance()
             .collection(PATH_PLAN)
-            .whereEqualTo("owner","lisa@gmail.com")
+            .whereArrayContains("collaborator", user.email)
             .whereGreaterThanOrEqualTo("start_time", selectedStartTime)
             .whereLessThanOrEqualTo("start_time", selectedEndTime)
             .addSnapshotListener { snapshot, e ->
-                Log.i("Rita","addSnapshotListener detect")
-
+                Log.i("Rita","Today SnapshotListener user email:${user.email} ")
                 e?.let {
                     Log.i("Rita",
                         "[${this::class.simpleName}] Error getting documents. ${it.message}")
                 }
-
                 val list = mutableListOf<Plan>()
                 for (item in snapshot!!) {
-                    //Log.d("Rita", item.toString())
+                    Log.i("Rita", "plan:　${item.data}")
                     val plan= item.toObject(Plan::class.java)
                     list.add(plan!!)
                 }
@@ -52,14 +50,14 @@ object CalendarRemoteDataSource : CalendarDataSource {
 
 
     override fun getLivePlansBeforeToday(selectedStartTime:Long, user:User):
-            MutableLiveData<MutableList<Plan>> {
-        var livedata = MutableLiveData<MutableList<Plan>>()
+            MutableLiveData<List<Plan>> {
+        var livedata = MutableLiveData<List<Plan>>()
         FirebaseFirestore.getInstance()
             .collection(PATH_PLAN)
-            .whereEqualTo("owner","lisa@gmail.com")
+            .whereArrayContains("collaborator", user.email)
             .whereLessThanOrEqualTo("start_time", selectedStartTime)
             .addSnapshotListener { snapshot, e ->
-                Log.i("Rita","addSnapshotListener detect")
+                Log.i("Rita","Before SnapshotListener user email:${user.email} ")
 
                 e?.let {
                     Log.i("Rita",
@@ -67,13 +65,12 @@ object CalendarRemoteDataSource : CalendarDataSource {
                 }
                 val list = mutableListOf<Plan>()
                 for (item in snapshot!!) {
-                    //Log.d("Rita", item.toString())
                     val plan= item.toObject(Plan::class.java)
                     list.add(plan!!)
                 }
                 Log.i("Rita", "list onChanged:　$list")
                 val filteredList = list.filter { it -> it.end_time!! >= selectedStartTime }
-                livedata.value = filteredList.toMutableList()
+                livedata.value = filteredList
             }
         return livedata
     }

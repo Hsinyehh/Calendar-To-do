@@ -11,12 +11,12 @@ class DefaultCalendarRepository(private val remoteDataSource: CalendarDataSource
     :CalendarRepository {
 
     override fun getLivePlansFromToday(selectedStartTime: Long,selectedEndTime: Long,user: User)
-    : MutableLiveData<MutableList<Plan>>{
+    : MutableLiveData<List<Plan>>{
         return remoteDataSource.getLivePlansFromToday(selectedStartTime,selectedEndTime,user)
     }
 
     override fun getLivePlansBeforeToday(selectedStartTime:Long, user:User):
-            MutableLiveData<MutableList<Plan>>{
+            MutableLiveData<List<Plan>>{
         return remoteDataSource.getLivePlansBeforeToday(selectedStartTime, user)
     }
 

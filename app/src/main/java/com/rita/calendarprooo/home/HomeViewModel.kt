@@ -20,27 +20,27 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
     var currentUser = MutableLiveData<User>()
 
     private var _navigateToEdit = MutableLiveData<Boolean>()
-    val navigateToEdit : LiveData<Boolean>
+    val navigateToEdit: LiveData<Boolean>
         get() = _navigateToEdit
 
     private var _navigateToEditByPlan = MutableLiveData<Plan>()
-    val navigateToEditByPlan : LiveData<Plan>
+    val navigateToEditByPlan: LiveData<Plan>
         get() = _navigateToEditByPlan
 
     private var _navigateToInvite = MutableLiveData<Plan>()
-    val navigateToInvite : LiveData<Plan>
+    val navigateToInvite: LiveData<Plan>
         get() = _navigateToInvite
 
     private var _scheduleList = MutableLiveData<List<Plan>>()
-    val scheduleList : LiveData<List<Plan>>
+    val scheduleList: LiveData<List<Plan>>
         get() = _scheduleList
 
     private var _todoList = MutableLiveData<List<Plan>>()
-    val todoList : LiveData<List<Plan>>
+    val todoList: LiveData<List<Plan>>
         get() = _todoList
 
     private var _doneList = MutableLiveData<List<Plan>>()
-    val doneList : LiveData<List<Plan>>
+    val doneList: LiveData<List<Plan>>
         get() = _doneList
 
     var checkList = MutableLiveData<MutableList<Check>>()
@@ -72,31 +72,31 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
 
     var startToGetViewListForDoneMode = MutableLiveData<Boolean>()
 
-    fun swapCheckListItem(start:Int , end:Int){
-        val todoListGet=_todoList.value
-        Collections.swap(todoListGet,start,end)
-        _todoList.value=todoListGet
+    fun swapCheckListItem(start: Int, end: Int) {
+        val todoListGet = _todoList.value
+        Collections.swap(todoListGet, start, end)
+        _todoList.value = todoListGet
     }
 
-    fun startNavigateToEdit(){
-        _navigateToEdit.value=true
+    fun startNavigateToEdit() {
+        _navigateToEdit.value = true
     }
 
-    fun startNavigateToEditByPlan(plan:Plan){
-        _navigateToEditByPlan.value=plan
+    fun startNavigateToEditByPlan(plan: Plan) {
+        _navigateToEditByPlan.value = plan
     }
 
-    fun startNavigateToInvite(plan:Plan){
-        _navigateToInvite.value=plan
+    fun startNavigateToInvite(plan: Plan) {
+        _navigateToInvite.value = plan
     }
 
-    fun doneNavigated(){
-        _navigateToEdit.value=null
-        _navigateToEditByPlan.value=null
-        _navigateToInvite.value=null
+    fun doneNavigated() {
+        _navigateToEdit.value = null
+        _navigateToEditByPlan.value = null
+        _navigateToInvite.value = null
     }
 
-    fun readPlanFromToday(){
+    fun readPlanFromToday() {
         Log.i("Rita", "readPlanFromToday user: ${currentUser.value}")
 
 
@@ -111,10 +111,10 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
                     val list = mutableListOf<Plan>()
                     for (document in result) {
                         Log.d(TAG, "${document.id} => ${document.data}")
-                        val plan= document.toObject(Plan::class.java)
+                        val plan = document.toObject(Plan::class.java)
                         list.add(plan)
                     }
-                    Log.i("Rita","list: $list")
+                    Log.i("Rita", "list: $list")
                     readListFromToday.value = list
                 }
                 .addOnFailureListener { exception ->
@@ -123,7 +123,7 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
         }
     }
 
-    fun readPlanBeforeToday(){
+    fun readPlanBeforeToday() {
         Log.i("Rita", "readPlanBeforeToday user: ${currentUser.value}")
         //plan's start-time before today
         currentUser.value?.let {
@@ -135,15 +135,15 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
                     val listBefore = mutableListOf<Plan>()
                     for (document in result) {
                         Log.d(TAG, "${document.id} => ${document.data}")
-                        val plan= document.toObject(Plan::class.java)
+                        val plan = document.toObject(Plan::class.java)
                         listBefore.add(plan)
                     }
-                    Log.i("Rita","listBeforeToday:　$listBefore")
+                    Log.i("Rita", "listBeforeToday:　$listBefore")
 
                     val filteredList = listBefore
                         .filter { it -> it.end_time!! >= selectedStartTime.value!! }
 
-                    Log.i("Rita","filtered listBeforeToday:　$filteredList")
+                    Log.i("Rita", "filtered listBeforeToday:　$filteredList")
 
                     readListBeforeToday.value = filteredList
                 }
@@ -153,37 +153,37 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
         }
     }
 
-    fun readPlanInTotal(){
+    fun readPlanInTotal() {
         var list = readListFromToday.value?.toMutableList()
         var listBefore = readListBeforeToday.value?.toMutableList()
-        if(list!= null){
+        if (list != null) {
             if (listBefore != null) {
                 list.addAll(listBefore)
             }
-        }else{
+        } else {
             if (listBefore != null) {
                 list = listBefore
             }
         }
         if (list != null) {
-            _scheduleList.value = list.filter { it -> it.isToDoList==false }
-            _todoList.value = list.filter { it -> it.isToDoList==true && !it.isToDoListDone }
-            _doneList.value= list.filter { it ->  it.isToDoListDone }
+            _scheduleList.value = list.filter { it -> it.isToDoList == false }
+            _todoList.value = list.filter { it -> it.isToDoList == true && !it.isToDoListDone }
+            _doneList.value = list.filter { it -> it.isToDoListDone }
             startToGetViewList.value = true
         }
     }
 
-    fun doneGetViewList(){
+    fun doneGetViewList() {
         startToGetViewList.value = null
     }
 
-    fun startToGetViewListForTodo(){
+    fun startToGetViewListForTodo() {
         startToGetViewListForTodoMode.value = true
         startToGetViewListForDoneMode.value = true
     }
 
-    fun getViewList(){
-        Log.i("Rita","getViewList")
+    fun getViewList() {
+        Log.i("Rita", "getViewList")
         val list = mutableListOf<Boolean>()
         val todoList = mutableListOf<Boolean>()
         val doneList = mutableListOf<Boolean>()
@@ -191,116 +191,115 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
         val todoSize = _todoList.value?.size
         val doneSize = _doneList.value?.size
 
-        if(size!=null && size>0){
-            for(i in 1..size){
+        if (size != null && size > 0) {
+            for (i in 1..size) {
                 list.add(false)
             }
             scheduleViewList.value = list
         }
-        if(todoSize!=null && todoSize>0){
-            for(i in 1..todoSize){
+        if (todoSize != null && todoSize > 0) {
+            for (i in 1..todoSize) {
                 todoList.add(false)
             }
             todoViewList.value = todoList
         }
-        if(doneSize!=null && doneSize>0){
-            for(i in 1..doneSize){
+        if (doneSize != null && doneSize > 0) {
+            for (i in 1..doneSize) {
                 doneList.add(false)
             }
             doneViewList.value = doneList
         }
     }
 
-    fun getViewListForTodoMode(){
+    fun getViewListForTodoMode() {
 
         val todoList = mutableListOf<Boolean>()
         val doneList = mutableListOf<Boolean>()
         val todoSize = _todoList.value?.size
         val doneSize = _doneList.value?.size
 
-        if(todoSize!=null && todoSize>0){
-            for(i in 1..todoSize){
+        if (todoSize != null && todoSize > 0) {
+            for (i in 1..todoSize) {
                 todoList.add(false)
             }
             todoViewList.value = todoList
         }
-        if(doneSize!=null && doneSize>0){
-            for(i in 1..doneSize){
+        if (doneSize != null && doneSize > 0) {
+            for (i in 1..doneSize) {
                 doneList.add(false)
             }
             doneViewList.value = doneList
         }
 
-        Log.i("Rita","getViewListForTodoMode  todo- ${todoViewList.value}")
-        Log.i("Rita","getViewListForTodoMode  done- ${doneViewList.value}")
+        Log.i("Rita", "getViewListForTodoMode  todo- ${todoViewList.value}")
+        Log.i("Rita", "getViewListForTodoMode  done- ${doneViewList.value}")
     }
 
-    fun changeScheduleView(position: Int){
+    fun changeScheduleView(position: Int) {
         var list = scheduleViewList.value
         var status = list?.get(position)
 
-        Log.i("Rita","ScheduleView- $position -$status")
+        Log.i("Rita", "ScheduleView- $position -$status")
         status = status != true
-        list?.set(position,status)
-        Log.i("Rita","ScheduleView changed- $position -$status")
+        list?.set(position, status)
+        Log.i("Rita", "ScheduleView changed- $position -$status")
 
         scheduleViewList.value = list
 
     }
 
-    fun changeTodoView(position: Int){
+    fun changeTodoView(position: Int) {
         var list = todoViewList.value
         var status = list?.get(position)
-        Log.i("Rita","todoViewList- ${todoViewList.value}")
+        Log.i("Rita", "todoViewList- ${todoViewList.value}")
 
-        Log.i("Rita","todoView- $position - $status")
+        Log.i("Rita", "todoView- $position - $status")
         status = status != true
-        list?.set(position,status)
-        Log.i("Rita","todoView changed- $position - $status")
+        list?.set(position, status)
+        Log.i("Rita", "todoView changed- $position - $status")
 
         todoViewList.value = list
-        Log.i("Rita","todoViewList changed- ${todoViewList.value}")
+        Log.i("Rita", "todoViewList changed- ${todoViewList.value}")
     }
 
-    fun changeDoneView(position: Int){
+    fun changeDoneView(position: Int) {
         var list = doneViewList.value
         var status = list?.get(position)
-        Log.i("Rita","doneViewList- ${doneViewList.value}")
+        Log.i("Rita", "doneViewList- ${doneViewList.value}")
 
-        Log.i("Rita","doneView- $position - $status")
+        Log.i("Rita", "doneView- $position - $status")
         status = status != true
-        list?.set(position,status)
-        Log.i("Rita","doneView changed- $position - $status")
+        list?.set(position, status)
+        Log.i("Rita", "doneView changed- $position - $status")
 
         doneViewList.value = list
 
-        Log.i("Rita","doneViewList changed- ${doneViewList.value}")
+        Log.i("Rita", "doneViewList changed- ${doneViewList.value}")
 
     }
 
     fun getCheckAndChangeStatus(item: Check, position: Int) {
-        if(item.isDone){
+        if (item.isDone) {
             item.isDone = false
             item.done_time = null
             item.doner = null
-        }
-        else if(!item.isDone){
+        } else if (!item.isDone) {
             item.isDone = true
             item.done_time = Calendar.getInstance().timeInMillis
             item.doner = currentUser.value?.name
         }
 
         val planRef = item.plan_id?.let { db.collection("plan").document(it) }
-        var plan : Plan? = null
+        var plan: Plan? = null
         planRef!!.get()
             .addOnSuccessListener { document ->
                 if (document != null) {
                     Log.d(TAG, "DocumentSnapshot data: ${document.data}")
-                    plan= document.toObject(Plan::class.java)
+                    plan = document.toObject(Plan::class.java)
                     if (plan != null) {
-                        plan!!.checkList!![position]=item
+                        plan!!.checkList!![position] = item
                         checkList.value = plan!!.checkList
-                        Log.i("Rita"," getCheckList-itemUpdate as $item")
+                        Log.i("Rita", " getCheckList-itemUpdate as $item")
                         //Store isDone status
                         writeCheckItemStatus(item)
                     }
@@ -313,17 +312,17 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
             }
     }
 
-    fun getCheckAndRemoveItem(item:Check, position:Int){
+    fun getCheckAndRemoveItem(item: Check, position: Int) {
         val planRef = item.plan_id?.let { db.collection("plan").document(it) }
         planRef!!.get()
             .addOnSuccessListener { document ->
                 if (document != null) {
                     Log.d(TAG, "DocumentSnapshot data: ${document.data}")
-                    val plan= document.toObject(Plan::class.java)
+                    val plan = document.toObject(Plan::class.java)
                     if (plan != null) {
                         plan.checkList!!.removeAt(position)
                         checkList.value = plan.checkList
-                        Log.i("Rita"," getCheckList-itemRemoved as $item")
+                        Log.i("Rita", " getCheckList-itemRemoved as $item")
                         //Store isDone status
                         writeCheckItemStatus(item)
                     }
@@ -336,16 +335,16 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
             }
     }
 
-    private fun writeCheckItemStatus(item:Check){
+    private fun writeCheckItemStatus(item: Check) {
         val planRef = item.plan_id?.let { db.collection("plan").document(it) }
-        Log.i("Rita","writeCheckItemDone-planRef: $planRef")
+        Log.i("Rita", "writeCheckItemDone-planRef: $planRef")
         planRef!!
-            .update("checkList",checkList.value)
+            .update("checkList", checkList.value)
             .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully updated!") }
             .addOnFailureListener { e -> Log.w(TAG, "Error updating document", e) }
     }
 
-    fun readPlanOnChanged(){
+    fun readPlanOnChanged() {
         Log.i("Rita", "readPlanOnChanged user: ${currentUser.value}")
         currentUser.value?.let {
             db.collection("plan")
@@ -353,23 +352,23 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
                 .whereGreaterThanOrEqualTo("start_time", selectedStartTime.value!!)
                 .whereLessThanOrEqualTo("start_time", selectedEndTime.value!!)
                 .addSnapshotListener { snapshot, e ->
-                if (e != null) {
-                    Log.w(TAG, "Listen failed.", e)
-                    return@addSnapshotListener
-                }
-                if (snapshot != null && !snapshot.isEmpty) {
-                    val list = mutableListOf<Plan>()
-                    for (item in snapshot) {
-                        Log.d("Rita","Current data: $item")
-                        val plan= item.toObject(Plan::class.java)
-                        list.add(plan!!)
+                    if (e != null) {
+                        Log.w(TAG, "Listen failed.", e)
+                        return@addSnapshotListener
                     }
-                    Log.i("Rita", "list onChanged:　$list")
-                    listFromToday.value = list
-                } else {
-                    Log.d(TAG, "Current data: null")
+                    if (snapshot != null && !snapshot.isEmpty) {
+                        val list = mutableListOf<Plan>()
+                        for (item in snapshot) {
+                            Log.d("Rita", "Current data: $item")
+                            val plan = item.toObject(Plan::class.java)
+                            list.add(plan!!)
+                        }
+                        Log.i("Rita", "list onChanged:　$list")
+                        listFromToday.value = list
+                    } else {
+                        Log.d(TAG, "Current data: null")
+                    }
                 }
-            }
         }
         //plan's start-time before today
         currentUser.value?.let {
@@ -384,9 +383,9 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
                     if (snapshot != null && !snapshot.isEmpty) {
                         val listBefore = mutableListOf<Plan>()
                         for (item in snapshot) {
-                            Log.d("Rita","Current data Before: $item")
+                            Log.d("Rita", "Current data Before: $item")
                             val plan = item.toObject(Plan::class.java)
-                            if(plan.start_time!! < selectedStartTime.value!!){
+                            if (plan.start_time!! < selectedStartTime.value!!) {
                                 listBefore.add(plan!!)
                             }
                         }
@@ -401,9 +400,9 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
         }
     }
 
-    fun getTotalList(){
-        Log.i("Rita","getTotalList listFromToday - ${listFromToday.value}")
-        Log.i("Rita","getTotalList readListBeforeToday - ${readListBeforeToday.value}")
+    fun getTotalList() {
+        Log.i("Rita", "getTotalList listFromToday - ${listFromToday.value}")
+        Log.i("Rita", "getTotalList readListBeforeToday - ${readListBeforeToday.value}")
         var list = listFromToday.value!!.toMutableList()
         readListBeforeToday.value?.let { list?.addAll(it) }
 
@@ -411,12 +410,12 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
         _todoList.value =
             list?.filter { it -> it.isToDoList == true && !it.isToDoListDone }
         _doneList.value =
-            list?.filter { it ->  it.isToDoListDone }
+            list?.filter { it -> it.isToDoListDone }
     }
 
-    fun getTotalListBefore(){
-        Log.i("Rita","getTotalListBefore readList - ${readListFromToday.value}")
-        Log.i("Rita","getTotalListBefore listBefore - ${listBeforeToday.value}")
+    fun getTotalListBefore() {
+        Log.i("Rita", "getTotalListBefore readList - ${readListFromToday.value}")
+        Log.i("Rita", "getTotalListBefore listBefore - ${listBeforeToday.value}")
         var list = readListFromToday.value?.toMutableList()
         listBeforeToday.value?.let { list?.addAll(it) }
 
@@ -424,23 +423,25 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
         _todoList.value =
             list?.filter { it -> it.isToDoList == true && !it.isToDoListDone }
         _doneList.value =
-            list?.filter { it ->  it.isToDoListDone }
+            list?.filter { it -> it.isToDoListDone }
     }
 
-    fun getPlanAndChangeStatus(item:Plan) {
+    fun getPlanAndChangeStatus(item: Plan) {
         val planRef = item.id?.let { db.collection("plan").document(it) }
         planRef!!
-            .update("toDoListDone", item.isToDoListDone,
-                            "done_time", item.done_time,
-                                                "doner",item.doner)
+            .update(
+                "toDoListDone", item.isToDoListDone,
+                "done_time", item.done_time,
+                "doner", item.doner
+            )
             .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully updated!") }
             .addOnFailureListener { e -> Log.w(TAG, "Error updating document", e) }
     }
 
-    fun convertToTimeStamp(dateSelected:String){
+    fun convertToTimeStamp(dateSelected: String) {
         try {
-            val startTime= "$dateSelected 00:00"
-            val endTime= "$dateSelected 23:59"
+            val startTime = "$dateSelected 00:00"
+            val endTime = "$dateSelected 23:59"
 
             val startDateSelectedFormat = SimpleDateFormat("dd-MM-yyyy HH:mm").parse(startTime)
             val endDateSelectedFormat = SimpleDateFormat("dd-MM-yyyy HH:mm").parse(endTime)
@@ -448,16 +449,15 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
 
             selectedStartTime.value = startDateSelectedFormat.time
             selectedEndTime.value = endDateSelectedFormat.time
-        }
-        catch(e:java.text.ParseException){
-            Log.i("Rita","$e")
+        } catch (e: java.text.ParseException) {
+            Log.i("Rita", "$e")
         }
     }
 
-    fun getToday() : String {
+    fun getToday(): String {
         val df = SimpleDateFormat("dd-MM-yyyy");
         val today = df.format(Calendar.getInstance().getTime())
-        Log.i("Rita","getToday() - $today")
+        Log.i("Rita", "getToday() - $today")
         return today
     }
 
