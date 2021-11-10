@@ -44,6 +44,13 @@ class ResultFragment:Fragment() {
         viewModel.selectedEndTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
             Log.i("Rita","result selectedEndTime observe- $it")
             it?.let{
+                viewModel.readDone()
+                viewModel.doneList.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
+                    Log.i("Rita","result doneList observe - $it")
+                    it?.let{
+                        viewModel.countForCategory(it)
+                    }
+                })
                 viewModel.readPlanFromToday()
                 viewModel.readListFromToday.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
                     Log.i("Rita","result readListFromToday observe - $it")
@@ -53,12 +60,6 @@ class ResultFragment:Fragment() {
                             Log.i("Rita","result readListBeforeToday observe - $it")
                             it?.let{
                                 viewModel.readPlanInTotal()
-                                viewModel.doneList.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
-                                    Log.i("Rita","result doneList observe - $it")
-                                    it?.let{
-                                        viewModel.countForCategory(it)
-                                    }
-                                })
                             }
                         })
                     }

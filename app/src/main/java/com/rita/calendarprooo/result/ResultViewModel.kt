@@ -42,13 +42,6 @@ class ResultViewModel(val repository: CalendarRepository) : ViewModel() {
     val doneList : LiveData<List<Plan>>
         get() = _doneList
 
-    val doneListSize : LiveData<Int> = Transformations.map(doneList){
-        var size = 0
-        if(!doneList.value.isNullOrEmpty()){
-            size = doneList.value?.size!!
-        }
-        size
-    }
 
     var categoryForDoneList = MutableLiveData<MutableMap<String, Float>>()
 
@@ -56,19 +49,20 @@ class ResultViewModel(val repository: CalendarRepository) : ViewModel() {
 
 
     fun readPlanFromToday(){
-        Log.i("Rita","1. readPlanFromToday ${readListFromToday.value }")
         readListFromToday = repository.getLivePlansFromToday(selectedStartTime.value!!,
             selectedEndTime.value!!,UserManager.user.value!!)
-
-        //readListFromToday.value = list.value
     }
 
     fun readPlanBeforeToday(){
-        Log.i("Rita","1. readPlanBeforeToday ${readListBeforeToday.value }")
         readListBeforeToday = repository.getLivePlansBeforeToday(selectedStartTime.value!!,
             UserManager.user.value!!)
-        Log.i("Rita","2. readPlanBeforeToday ${readListBeforeToday.value }")
-        //readListBeforeToday.value = list.value
+    }
+
+    fun readDone(){
+        _doneList = repository.getLiveDone(selectedStartTime.value!!,
+            selectedEndTime.value!!,UserManager.user.value!!)
+
+        _doneList.value = _doneList.value
     }
 
 
@@ -86,7 +80,7 @@ class ResultViewModel(val repository: CalendarRepository) : ViewModel() {
         }
         if (list != null) {
             _todoList.value = list.filter { it -> it.isToDoList==true && !it.isToDoListDone }
-            _doneList.value= list.filter { it ->  it.isToDoListDone }
+            //_doneList.value= list.filter { it ->  it.isToDoListDone }
         }
     }
 
@@ -114,16 +108,16 @@ class ResultViewModel(val repository: CalendarRepository) : ViewModel() {
     }
 
     fun initPieEntryList(){
-        pieEntryList.value = mutableListOf<PieEntry>(PieEntry(100F,"None"))
+        pieEntryList.value = mutableListOf<PieEntry>(PieEntry(1F,"None"))
     }
 
 
     init{
         Log.i("Rita", "${UserManager.user.value}")
-
         initPieEntryList()
-
         selectedTimeSet(getToday())
+
+        readDone()
 
     }
 

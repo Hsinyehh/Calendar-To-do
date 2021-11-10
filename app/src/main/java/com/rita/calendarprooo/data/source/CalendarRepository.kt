@@ -29,4 +29,7 @@ interface CalendarRepository {
     fun getUser (id:String) : MutableLiveData<User>
 
     suspend fun createUser(newUser: User): Result<Boolean>
+
+    fun getLiveDone(selectedStartTime: Long,selectedEndTime: Long,user: User):
+            MutableLiveData<List<Plan>>
 }

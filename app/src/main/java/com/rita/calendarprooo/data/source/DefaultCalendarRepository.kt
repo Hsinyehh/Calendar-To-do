@@ -52,4 +52,9 @@ class DefaultCalendarRepository(private val remoteDataSource: CalendarDataSource
     override suspend fun createUser(newUser: User): Result<Boolean>{
         return remoteDataSource.createUser(newUser)
     }
+
+    override fun getLiveDone(selectedStartTime: Long,selectedEndTime: Long,user: User):
+            MutableLiveData<List<Plan>>{
+        return remoteDataSource.getLiveDone(selectedStartTime,selectedEndTime,user)
+    }
 }

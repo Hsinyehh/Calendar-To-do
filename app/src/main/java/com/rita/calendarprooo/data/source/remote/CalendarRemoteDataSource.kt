@@ -221,4 +221,32 @@ object CalendarRemoteDataSource : CalendarDataSource {
                 }
             }
     }
+
+    override fun getLiveDone(selectedStartTime: Long,selectedEndTime: Long,user: User):
+            MutableLiveData<List<Plan>>{
+        var livedata = MutableLiveData<List<Plan>>()
+        FirebaseFirestore.getInstance()
+            .collection(PATH_PLAN)
+            .whereArrayContains("collaborator", user.email)
+            .whereGreaterThanOrEqualTo("done_time", selectedStartTime)
+            .whereLessThanOrEqualTo("done_time", selectedEndTime)
+            .addSnapshotListener { snapshot, e ->
+                Log.i("Rita","Today SnapshotListener user email:${user.email} ")
+                e?.let {
+                    Log.i("Rita",
+                        "[${this::class.simpleName}] Error getting documents. ${it.message}")
+                }
+                val list = mutableListOf<Plan>()
+                if (snapshot != null) {
+                    for (item in snapshot) {
+                        Log.i("Rita", "plan:　${item.data}")
+                        val plan= item.toObject(Plan::class.java)
+                        list.add(plan!!)
+                    }
+                }
+                Log.i("Rita", "list onChanged:　$list")
+                livedata.value = list
+            }
+        return livedata
+    }
 }
