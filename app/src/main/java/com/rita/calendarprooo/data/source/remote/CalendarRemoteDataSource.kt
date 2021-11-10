@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.github.mikephil.charting.data.PieEntry
 import com.google.firebase.firestore.FirebaseFirestore
 import com.rita.calendarprooo.CalendarProApplication
 import com.rita.calendarprooo.R
@@ -245,8 +246,9 @@ object CalendarRemoteDataSource : CalendarDataSource {
                     }
                 }
                 Log.i("Rita", "list onChanged:　$list")
-                livedata.value = list
+                    livedata.value = list
             }
+        Log.i("Rita", "livedata:　${livedata.value}")
         return livedata
     }
 }

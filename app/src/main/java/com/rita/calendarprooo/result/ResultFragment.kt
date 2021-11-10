@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
@@ -40,18 +41,35 @@ class ResultFragment:Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        viewModel.doneListReset.observe(viewLifecycleOwner, Observer {
+            Log.d("Rita","result doneListReset, it=$it")
+            it?.let {
+                if (it) {
+                    viewModel.doneList.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
+                        Log.i("Rita","result doneList observe - $it")
+                        it?.let{
+                            viewModel.countForCategory(it)
+                        }
+                    })
+                    //assign the reference by binding the viewModel again
+                    binding.viewModel = viewModel
+                    viewModel.doneListReset.value = null
+                }
+            }
+
+        })
+
         //read Plans when date selected changed
         viewModel.selectedEndTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
             Log.i("Rita","result selectedEndTime observe- $it")
             it?.let{
+
                 viewModel.readDone()
-                viewModel.doneList.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
-                    Log.i("Rita","result doneList observe - $it")
-                    it?.let{
-                        viewModel.countForCategory(it)
-                    }
-                })
                 viewModel.readPlanFromToday()
+
+                //When the livedata is assigned, it will be assigned for different memory reference.
+                //So we need to set Observer here, readListFromToday as lifedata can be observed
+                //for the same reference
                 viewModel.readListFromToday.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
                     Log.i("Rita","result readListFromToday observe - $it")
                     it?.let{
@@ -78,6 +96,7 @@ class ResultFragment:Fragment() {
                 for(item in it){
                     entries.add(PieEntry(item.value,item.key))
                 }
+                binding.viewModel = viewModel
                 viewModel.pieEntryList.value = entries
             }
         })
@@ -97,20 +116,18 @@ class ResultFragment:Fragment() {
             val pieData = PieData(dataSet)
             pieData.setDrawValues(true)
             pieData.setValueTextSize(15f)
-            pieData.setValueTextColor(Color.WHITE)
+            pieData.setValueTextColor(getColorCode(R.color.black_3f3a3a))
 
             pieChart.setData(pieData)
             pieChart.invalidate()
-            pieChart.setEntryLabelColor(Color.WHITE)
+            pieChart.setEntryLabelColor(getColorCode(R.color.black_3f3a3a))
             pieChart.setEntryLabelTextSize(15f)
         }
 
 
         viewModel.pieEntryList.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
-            Log.i("Rita","result categoryForDoneList observe - $it")
-            if(it.isNullOrEmpty()){
-                viewModel.initPieEntryList()
-            }
+            Log.i("Rita","result pieEntryList observe - $it")
+
             setPieChart(it)
         })
 

@@ -42,6 +42,7 @@ class ResultViewModel(val repository: CalendarRepository) : ViewModel() {
     val doneList : LiveData<List<Plan>>
         get() = _doneList
 
+    var doneListReset = MutableLiveData<Boolean>()
 
     var categoryForDoneList = MutableLiveData<MutableMap<String, Float>>()
 
@@ -62,7 +63,7 @@ class ResultViewModel(val repository: CalendarRepository) : ViewModel() {
         _doneList = repository.getLiveDone(selectedStartTime.value!!,
             selectedEndTime.value!!,UserManager.user.value!!)
 
-        _doneList.value = _doneList.value
+        doneListReset.value = true
     }
 
 
@@ -80,7 +81,6 @@ class ResultViewModel(val repository: CalendarRepository) : ViewModel() {
         }
         if (list != null) {
             _todoList.value = list.filter { it -> it.isToDoList==true && !it.isToDoListDone }
-            //_doneList.value= list.filter { it ->  it.isToDoListDone }
         }
     }
 
@@ -89,13 +89,15 @@ class ResultViewModel(val repository: CalendarRepository) : ViewModel() {
         if(!list.isNullOrEmpty()){
             for(item in list){
                 if(!categoryMap.containsKey(item.category)){
-                    categoryMap["${item.category}"] = 1F
+                        categoryMap["${item.category}"] = 1F
                 }
                 else{
                     val count = categoryMap["${item.category}"]
                     count!!.plus(1F)
                 }
             }
+        }else{
+            categoryMap["No Done Task"] = 1F
         }
         categoryForDoneList.value = categoryMap
 
@@ -107,14 +109,14 @@ class ResultViewModel(val repository: CalendarRepository) : ViewModel() {
         selectedEndTime.value = timeList?.get(1)
     }
 
-    fun initPieEntryList(){
-        pieEntryList.value = mutableListOf<PieEntry>(PieEntry(1F,"None"))
-    }
+    /*fun initPieEntryList(){
+        pieEntryList.value = mutableListOf<PieEntry>(PieEntry(0F,"None"))
+    }*/
 
 
     init{
         Log.i("Rita", "${UserManager.user.value}")
-        initPieEntryList()
+        //initPieEntryList()
         selectedTimeSet(getToday())
 
         readDone()
