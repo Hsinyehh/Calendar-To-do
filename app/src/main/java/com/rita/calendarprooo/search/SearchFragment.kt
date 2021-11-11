@@ -1,6 +1,8 @@
 package com.rita.calendarprooo.search
 
 import android.app.Activity
+import android.content.ContentValues.TAG
+import android.content.Intent
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
@@ -19,6 +21,14 @@ import com.rita.calendarprooo.databinding.FragmentSearchBinding
 import java.io.IOException
 import com.google.android.gms.maps.CameraUpdateFactory
 import androidx.navigation.findNavController
+import com.google.android.gms.common.api.Status
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.AutocompleteActivity
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.rita.calendarprooo.NavigationDirections
 import com.rita.calendarprooo.data.Plan
 
@@ -33,12 +43,14 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
 
     private val DEFAULT_ZOOM : Float = 15f
 
+    private val AUTOCOMPLETE_REQUEST_CODE = 1
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        //layout binding
+        // layout binding
         val binding: FragmentSearchBinding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_search, container, false
         )
@@ -46,52 +58,30 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        //google map setup
+        // Google map setup
         val mapFragment =  childFragmentManager
             .findFragmentById(binding.map.id) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        //search place
-        fun geoLocate(){
-            Log.i("Rita","geoLocate init")
-            val geocoder = Geocoder(context)
-            var list = mutableListOf<Address>()
-            val searchText=viewModel.searchText.value.toString()
-            try{
-                Log.i("Rita","geoLocate success")
-                list=geocoder.getFromLocationName(searchText,1)
+        // Google places API
+        // Initialize the SDK
+        Places.initialize(requireContext(), getString(R.string.google_key))
 
-            }
-            catch (e:IOException){
-                Log.e("Rita","geoLocate IOExeption: ${e.message}")
-            }
-            if(list.size>0){
-                val address = list.get(0)
-                viewModel.searchResult.value = list.get(0)
-                viewModel.searchResultAddress.value = list.get(0).getAddressLine(0)
-                viewModel.searchResultName.value = viewModel.searchText.value
+        binding.textSearch.setOnClickListener {
 
-                Log.i("Rita","geoLocate: ${viewModel.searchResult.value}")
-                Log.i("Rita","geoLocate: ${list.get(0).getAddressLine(0)}")
+            // Set the fields to specify which types of place data to
+            // return after the user has made a selection.
+            val fields = listOf(Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS)
 
-                moveCamera(LatLng(address.latitude,address.longitude),DEFAULT_ZOOM,
-                    address.getAddressLine(0))
-            }
+            // Start the autocomplete intent.
+            val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
+                .build(requireContext())
+            startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
+
         }
 
 
-        binding.textSearch.setOnEditorActionListener { textView, i, keyEvent ->
-            if(i==EditorInfo.IME_ACTION_SEARCH||i==EditorInfo.IME_ACTION_DONE
-                ||keyEvent.action==KeyEvent.ACTION_DOWN||keyEvent.action==KeyEvent.KEYCODE_ENTER){
-                Log.i("Rita","setOnEditorActionListener")
-                geoLocate()
-                binding.textSearch.hideKeyboard()
-
-            }
-                false
-        }
-
-        //Edit page navigation
+        // Edit page navigation
         val plan: Plan? = Plan()
         viewModel.navigateToEdit.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             it?.let{
@@ -124,13 +114,41 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
     }
 
 
-    fun View.hideKeyboard(){
-        context?.let{
-            val inputMethodManager =
-                it.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+            when (resultCode) {
+                Activity.RESULT_OK -> {
+                    data?.let {
+                        val place = Autocomplete.getPlaceFromIntent(data)
+                        Log.i(TAG, "Place: ${place.name}, ${place.latLng}, ${place.address}")
+
+                        viewModel.searchResultAddress.value = place.address
+                        viewModel.searchResultName.value = place.name
+                        viewModel.searchText.value = place.name
+                        Log.i(TAG, "Place: ${viewModel.searchResultAddress.value}," +
+                                "${viewModel.searchResultName.value}, " +
+                                "${viewModel.searchText.value}")
+                        moveCamera(place.latLng,DEFAULT_ZOOM,
+                            place.address)
+                    }
+                }
+                AutocompleteActivity.RESULT_ERROR -> {
+                    // Handle the error.
+                    data?.let {
+                        val status = Autocomplete.getStatusFromIntent(data)
+                        Log.i(TAG, status.statusMessage)
+                    }
+                }
+                Activity.RESULT_CANCELED -> {
+                    // The user canceled the operation.
+                }
+            }
+            return
         }
+        super.onActivityResult(requestCode, resultCode, data)
     }
+
 
 
 

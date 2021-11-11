@@ -12,7 +12,6 @@ class SearchViewModel : ViewModel() {
 
     var searchResultAddress = MutableLiveData<String?>()
 
-    var searchResult = MutableLiveData<Address?>()
 
     private var _navigateToEdit = MutableLiveData<Boolean>()
     val navigateToEdit : LiveData<Boolean>
@@ -22,7 +21,6 @@ class SearchViewModel : ViewModel() {
     init{
         searchText.value=""
         searchResultAddress.value=null
-        searchResult.value=null
     }
 
     fun startNavigateToEdit(){
