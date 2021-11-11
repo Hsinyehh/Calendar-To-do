@@ -1,7 +1,10 @@
 package com.rita.calendarprooo.ext
 
+import android.app.Activity
 import android.graphics.Color
 import android.util.Log
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import com.rita.calendarprooo.CalendarProApplication

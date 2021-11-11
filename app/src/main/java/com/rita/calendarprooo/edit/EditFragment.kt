@@ -1,10 +1,14 @@
 package com.rita.calendarprooo.edit
 
+import android.app.Activity
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -86,11 +90,9 @@ class EditFragment : Fragment() {
             }
 
             if(it?.categoryList.isNullOrEmpty()){
-                //viewModel.categoryList.value = categoryList
                 viewModel.getCategoryFromUser()
             }
             else{
-                //viewModel.categoryList.value = it?.categoryList
                 viewModel.getCategoryFromPlan()
             }
 
@@ -162,12 +164,31 @@ class EditFragment : Fragment() {
 
         //add category Button
         binding.btnCategoryPlus.setOnClickListener {
-            //view?.findNavController()?.navigate(R.id.navigate_to_add_category_dialog)
             view?.findNavController()?.navigate(
                 NavigationDirections.navigateToAddCategoryDialog(viewModel.planGet.value))
         }
 
+        //create checkList Item
+        binding.checklistEditText.setOnEditorActionListener { textView, i, keyEvent ->
+            if( i== EditorInfo.IME_ACTION_DONE
+                ||keyEvent.action== KeyEvent.ACTION_DOWN||keyEvent.action== KeyEvent.KEYCODE_ENTER){
+                Log.i("Rita","checklist item setOnEditorActionListener")
+                viewModel.checkListTextCreated()
+                binding.checklistEditText.hideKeyboard()
+            }
+            false
+        }
+
 
         return  binding.root
+    }
+
+
+    fun View.hideKeyboard(){
+        context?.let{
+            val inputMethodManager =
+                it.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
+        }
     }
 }

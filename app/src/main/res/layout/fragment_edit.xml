@@ -188,7 +188,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <EditText
-                        android:id="@+id/checklist_text"
+                        android:id="@+id/checklist_editText"
                         style="@style/check_list"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -197,6 +197,7 @@
                         android:hint="Add your task"
                         android:inputType="textPersonName"
                         android:text="@={viewModel.checkText}"
+                        android:imeOptions="actionDone"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/checklist_image"
                         app:layout_constraintTop_toTopOf="parent" />

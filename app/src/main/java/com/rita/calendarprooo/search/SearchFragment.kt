@@ -68,7 +68,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
             if(list.size>0){
                 val address = list.get(0)
                 viewModel.searchResult.value = list.get(0)
-                viewModel.searchResultAddress.value=list.get(0).getAddressLine(0)
+                viewModel.searchResultAddress.value = list.get(0).getAddressLine(0)
                 viewModel.searchResultName.value = viewModel.searchText.value
 
                 Log.i("Rita","geoLocate: ${viewModel.searchResult.value}")
