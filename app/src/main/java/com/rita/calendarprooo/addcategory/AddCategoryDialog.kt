@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
@@ -34,11 +35,20 @@ class AddCategoryDialog : DialogFragment() {
 
         viewModel.planGet.value= AddCategoryDialogArgs.fromBundle(requireArguments()).plan
 
+
+        viewModel.planGet.observe(viewLifecycleOwner, Observer {
+            Log.i("Rita","planGet.observe $it")
+            it?.let{
+                viewModel.getPlanFromUserFirst()
+            }
+        })
+
+
         viewModel.startToCreate.observe(viewLifecycleOwner, Observer {
             Log.i("Rita","startToCreate.observe $it")
             if(it == true){
                 if(viewModel.planGet.value?.id ==""){
-                    viewModel.getCategoryFromUser()
+                    viewModel.startToPrepare.value = true
                 }else{
                     viewModel.getCategoryFromThePlan()
                 }
@@ -69,6 +79,19 @@ class AddCategoryDialog : DialogFragment() {
                 //viewModel.doneNavigated()
             }
         })
+
+        viewModel.categoryListFromUser.observe(viewLifecycleOwner, Observer {
+            Log.i("Rita","categoryListFromUser.observe $it")
+            it?.let{
+                val adapter = ArrayAdapter<String>(requireContext(),
+                    android.R.layout.simple_dropdown_item_1line, it)
+                binding.inviteEditEmail.setAdapter(adapter)
+            }
+
+        })
+
+
+        binding.inviteEditEmail
 
 
 

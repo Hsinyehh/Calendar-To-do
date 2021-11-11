@@ -16,7 +16,9 @@ class AddCategoryViewModel : ViewModel() {
 
     val currentUser = UserManager.user.value
 
-    private var categoryList = MutableLiveData<MutableList<Category>>()
+    var categoryList = MutableLiveData<MutableList<Category>>()
+
+    var categoryListFromUser = MutableLiveData<MutableList<String>>()
 
     var categoryAdded = MutableLiveData<String>()
 
@@ -62,13 +64,13 @@ class AddCategoryViewModel : ViewModel() {
             .get()
             .addOnSuccessListener { result ->
                 for (item in result) {
-                        Log.d("Rita", "Current plan: $item")
-                        val plan = item.toObject(Plan::class.java)
+                    Log.d("Rita", "Current plan: $item")
+                    val plan = item.toObject(Plan::class.java)
                         categoryList.value = plan.categoryList
-                        Log.i("Rita", "category:　${categoryList.value}")
+                        Log.i("Rita", "getCategoryFromThePlan - category:　${categoryList.value}")
                         startToPrepare.value = true
-                    }
                 }
+            }
             .addOnFailureListener { exception ->
                 Log.w(ContentValues.TAG, "Error getting documents.", exception)
             }
@@ -76,17 +78,19 @@ class AddCategoryViewModel : ViewModel() {
 
 
     //if the plan is at created Status
-    fun getCategoryFromUser() {
+    fun getCategoryFromUser(isCreated: Boolean) {
         db.collection("user")
             .whereEqualTo("email", currentUser!!.email)
             .get()
             .addOnSuccessListener { result ->
                 for (item in result) {
-                        Log.d("Rita", "Current user: $item")
-                        val user = item.toObject(User::class.java)
+                    Log.d("Rita", "Current user: $item")
+                    val user = item.toObject(User::class.java)
+                    categoryListFromUser.value = user.categoryList?.let { convertToStringList(it) }
+                    if(isCreated){
                         categoryList.value = user.categoryList
-                        Log.i("Rita", "category:　${categoryList.value}")
-                        startToPrepare.value = true
+                        Log.i("Rita", "getCategoryFromUser - category:　${categoryList.value}")
+                    }
                 }
             }
             .addOnFailureListener { exception ->
@@ -122,6 +126,22 @@ class AddCategoryViewModel : ViewModel() {
             .addOnFailureListener { e ->
                 Log.w(ContentValues.TAG, "Error updating document", e)
             }
+    }
+
+    fun convertToStringList(list: List<Category>): MutableList<String>{
+        var stringList = mutableListOf<String>()
+        for(item in list){
+            stringList.add(item.name)
+        }
+        return stringList
+    }
+
+    fun getPlanFromUserFirst() {
+        if (planGet.value?.id == "") {
+            getCategoryFromUser(true)
+        } else {
+            getCategoryFromUser(false)
+        }
     }
 
 
