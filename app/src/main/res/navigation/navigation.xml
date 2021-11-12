@@ -55,6 +55,10 @@
         android:id="@+id/loginFragment"
         android:name="com.rita.calendarprooo.login.LoginFragment"
         android:label="LoginFragment" />
+    <fragment
+        android:id="@+id/homeSortFragment"
+        android:name="com.rita.calendarprooo.sort.HomeSortFragment"
+        android:label="HomeSortFragment" />
     <action
         android:id="@+id/navigate_to_edit_fragment"
         app:destination="@id/editFragment" />
@@ -70,4 +74,5 @@
     <action
         android:id="@+id/navigate_to_login_fragment"
         app:destination="@id/loginFragment" />
+
 </navigation>

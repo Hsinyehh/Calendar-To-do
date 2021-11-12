@@ -56,6 +56,20 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/schedule_text_time" />
 
+
+            <TextView
+                android:id="@+id/schedule_text_category"
+                style="@style/plan_time_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                android:background="@drawable/background_gray"
+                android:textColor="@color/white"
+                app:category="@{plan}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Habit" />
+
             <TextView
                 android:id="@+id/schedule_text_title"
                 style="@style/plan_list"
@@ -71,12 +85,14 @@
 
             <ImageView
                 android:id="@+id/schedule_image_account"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginTop="4dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="24dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/schedule_text_time"
+                app:layout_constraintTop_toBottomOf="@id/schedule_text_category"
                 app:srcCompat="@drawable/account" />
 
             <TextView
@@ -84,10 +100,12 @@
                 style="@style/plan_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:layout_marginEnd="6dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/schedule_image_account"
-                app:layout_constraintTop_toBottomOf="@id/schedule_text_time"
+                app:layout_constraintTop_toBottomOf="@id/schedule_text_category"
                 app:owner_name="@{plan}"
                 tools:text="Mia" />
 
@@ -147,14 +165,14 @@
 
             <TextView
                 android:id="@+id/schedule_text_description"
+                style="@style/plan_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                app:layout_constraintTop_toBottomOf="@id/separation_line"
-                app:layout_constraintStart_toEndOf="@id/schedule_image_description"
                 app:description="@{plan}"
-                tools:text="Go Jogging with my friends"
-                style="@style/plan_list"/>
+                app:layout_constraintStart_toEndOf="@id/schedule_image_description"
+                app:layout_constraintTop_toBottomOf="@id/separation_line"
+                tools:text="Go Jogging with my friends" />
 
             <ImageView
                 android:id="@+id/schedule_image_location"

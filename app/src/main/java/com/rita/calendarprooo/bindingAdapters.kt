@@ -37,6 +37,13 @@ fun TextView.bindLocation(item: Plan?) {
     }
 }
 
+@BindingAdapter("category")
+fun TextView.bindCategory(item: Plan?) {
+    item?.let{
+        text="${it.category}"
+    }
+}
+
 @BindingAdapter("owner")
 fun TextView.bindOwner(item: Plan?) {
     item?.let{

@@ -13,7 +13,7 @@
             type="android.view.View" />
         <variable
             name="viewModel"
-            type="com.rita.calendarprooo.home.HomeViewModel" />
+            type="com.rita.calendarprooo.sort.HomeSortViewModel" />
         <variable
             name="position"
             type="Integer" />
@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:background="@drawable/border_round_corner">
+        android:background="@drawable/border_round_corner_gray">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/schedule_overview"
@@ -52,7 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="12dp"
-                android:background="@drawable/background_red"
+                android:background="@drawable/background_gray"
                 android:textColor="@color/white"
                 app:category="@{plan}"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -60,7 +60,7 @@
                 tools:text="Habit" />
 
             <ImageView
-                android:id="@+id/schedule_btn_check"
+                android:id="@+id/schedule_btn_uncheck"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginStart="24dp"
@@ -76,22 +76,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="6dp"
-                app:layout_constraintStart_toEndOf="@+id/schedule_btn_check"
-                app:layout_constraintTop_toBottomOf="@id/schedule_text_time"
+                app:layout_constraintStart_toEndOf="@+id/schedule_btn_uncheck"
+                app:layout_constraintTop_toBottomOf="@id/schedule_text_category"
                 app:title="@{plan}"
                 tools:text="Jogging" />
-
-            <TextView
-                android:id="@+id/schedule_text_done_info"
-                style="@style/plan_list"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="6dp"
-                app:layout_constraintStart_toEndOf="@+id/schedule_btn_check"
-                app:layout_constraintTop_toBottomOf="@id/schedule_text_title"
-                app:done_info="@{plan}"
-                tools:text="11/4 21:00  By Mia" />
 
 
             <ImageView
@@ -100,8 +88,10 @@
                 android:layout_height="22dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="24dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/schedule_text_category"
+                app:layout_constraintTop_toBottomOf="@id/schedule_text_time"
                 app:srcCompat="@drawable/account" />
 
             <TextView
@@ -111,16 +101,19 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="12dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/schedule_image_account"
                 app:layout_constraintTop_toBottomOf="@id/schedule_text_category"
                 app:owner_name="@{plan}"
                 tools:text="Mia" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/schedule_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="@{viewModel.doneViewList[position]? view.VISIBLE:view.GONE }"
+            android:visibility="@{viewModel.todoViewList[position]? view.VISIBLE:view.GONE }"
             app:layout_constraintTop_toBottomOf="@id/schedule_overview"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
@@ -226,7 +219,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="8dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

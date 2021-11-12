@@ -13,7 +13,7 @@
             type="android.view.View" />
         <variable
             name="viewModel"
-            type="com.rita.calendarprooo.home.HomeViewModel" />
+            type="com.rita.calendarprooo.sort.HomeSortViewModel" />
         <variable
             name="position"
             type="Integer" />
@@ -46,6 +46,16 @@
                 app:time="@{plan}"
                 tools:text="17:00-18:00" />
 
+            <ImageView
+                android:id="@+id/schedule_btn_check"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="6dp"
+                android:src="@{plan.isToDoListDone == true?@drawable/check:@drawable/uncheck}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/schedule_text_time" />
+
             <TextView
                 android:id="@+id/schedule_text_category"
                 style="@style/plan_time_list"
@@ -58,16 +68,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Habit" />
-
-            <ImageView
-                android:id="@+id/schedule_btn_check"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="6dp"
-                android:src="@{plan.isToDoListDone == true?@drawable/check:@drawable/uncheck}"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/schedule_text_time" />
 
             <TextView
                 android:id="@+id/schedule_text_title"

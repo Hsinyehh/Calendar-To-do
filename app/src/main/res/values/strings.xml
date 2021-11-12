@@ -18,9 +18,10 @@
     <string name="end_time">End Time</string>
     <string name="set">Set</string>
     <string name="clear">Clear</string>
-    <!--search-->
+    <!--menu-->
+    <string name="sort">Calendar by Category</string>
     <string name="search">GoogleMap Search</string>
-    <string name="result">Result and Profile</string>
+    <string name="result">Todo-Task Result</string>
     <!--invitation-->
     <string name="invitation">Invitation</string>
     <string name="invite_title">LET\'S EDIT TOGETHER</string>

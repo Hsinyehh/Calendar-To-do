@@ -1,8 +1,10 @@
-package com.rita.calendarprooo.home
+package com.rita.calendarprooo.sort
 
-import android.content.ContentValues.TAG
+import android.content.ContentValues
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.rita.calendarprooo.data.Check
@@ -12,11 +14,9 @@ import com.rita.calendarprooo.data.source.CalendarRepository
 import com.rita.calendarprooo.ext.convertToTimeStamp
 import com.rita.calendarprooo.ext.getToday
 import com.rita.calendarprooo.login.UserManager
-import java.text.SimpleDateFormat
 import java.util.*
 
-class HomeViewModel(repository: CalendarRepository) : ViewModel() {
-
+class HomeSortViewModel(repository: CalendarRepository) : ViewModel() {
     private val repository = repository
 
     var currentUser = MutableLiveData<User>()
@@ -112,7 +112,7 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
                 .addOnSuccessListener { result ->
                     val list = mutableListOf<Plan>()
                     for (document in result) {
-                        Log.d(TAG, "${document.id} => ${document.data}")
+                        Log.d(ContentValues.TAG, "${document.id} => ${document.data}")
                         val plan = document.toObject(Plan::class.java)
                         list.add(plan)
                     }
@@ -120,7 +120,7 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
                     readListFromToday.value = list
                 }
                 .addOnFailureListener { exception ->
-                    Log.w(TAG, "Error getting documents.", exception)
+                    Log.w(ContentValues.TAG, "Error getting documents.", exception)
                 }
         }
     }
@@ -136,7 +136,7 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
                 .addOnSuccessListener { result ->
                     val listBefore = mutableListOf<Plan>()
                     for (document in result) {
-                        Log.d(TAG, "${document.id} => ${document.data}")
+                        Log.d(ContentValues.TAG, "${document.id} => ${document.data}")
                         val plan = document.toObject(Plan::class.java)
                         listBefore.add(plan)
                     }
@@ -150,7 +150,7 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
                     readListBeforeToday.value = filteredList
                 }
                 .addOnFailureListener { exception ->
-                    Log.w(TAG, "Error getting documents.", exception)
+                    Log.w(ContentValues.TAG, "Error getting documents.", exception)
                 }
         }
     }
@@ -296,7 +296,7 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
         planRef!!.get()
             .addOnSuccessListener { document ->
                 if (document != null) {
-                    Log.d(TAG, "DocumentSnapshot data: ${document.data}")
+                    Log.d(ContentValues.TAG, "DocumentSnapshot data: ${document.data}")
                     plan = document.toObject(Plan::class.java)
                     if (plan != null) {
                         plan!!.checkList!![position] = item
@@ -306,11 +306,11 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
                         writeCheckItemStatus(item)
                     }
                 } else {
-                    Log.d(TAG, "No such document")
+                    Log.d(ContentValues.TAG, "No such document")
                 }
             }
             .addOnFailureListener { exception ->
-                Log.d(TAG, "get failed with ", exception)
+                Log.d(ContentValues.TAG, "get failed with ", exception)
             }
     }
 
@@ -319,7 +319,7 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
         planRef!!.get()
             .addOnSuccessListener { document ->
                 if (document != null) {
-                    Log.d(TAG, "DocumentSnapshot data: ${document.data}")
+                    Log.d(ContentValues.TAG, "DocumentSnapshot data: ${document.data}")
                     val plan = document.toObject(Plan::class.java)
                     if (plan != null) {
                         plan.checkList!!.removeAt(position)
@@ -329,11 +329,11 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
                         writeCheckItemStatus(item)
                     }
                 } else {
-                    Log.d(TAG, "No such document")
+                    Log.d(ContentValues.TAG, "No such document")
                 }
             }
             .addOnFailureListener { exception ->
-                Log.d(TAG, "get failed with ", exception)
+                Log.d(ContentValues.TAG, "get failed with ", exception)
             }
     }
 
@@ -342,8 +342,8 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
         Log.i("Rita", "writeCheckItemDone-planRef: $planRef")
         planRef!!
             .update("checkList", checkList.value)
-            .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully updated!") }
-            .addOnFailureListener { e -> Log.w(TAG, "Error updating document", e) }
+            .addOnSuccessListener { Log.d(ContentValues.TAG, "DocumentSnapshot successfully updated!") }
+            .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error updating document", e) }
     }
 
     fun readPlanOnChanged() {
@@ -355,7 +355,7 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
                 .whereLessThanOrEqualTo("start_time", selectedEndTime.value!!)
                 .addSnapshotListener { snapshot, e ->
                     if (e != null) {
-                        Log.w(TAG, "Listen failed.", e)
+                        Log.w(ContentValues.TAG, "Listen failed.", e)
                         return@addSnapshotListener
                     }
                     if (snapshot != null && !snapshot.isEmpty) {
@@ -368,7 +368,7 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
                         Log.i("Rita", "list onChanged:　$list")
                         listFromToday.value = list
                     } else {
-                        Log.d(TAG, "Current data: null")
+                        Log.d(ContentValues.TAG, "Current data: null")
                     }
                 }
         }
@@ -379,7 +379,7 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
                 .whereLessThan("start_time", selectedStartTime.value!!)
                 .addSnapshotListener { snapshot, e ->
                     if (e != null) {
-                        Log.w(TAG, "Listen failed.", e)
+                        Log.w(ContentValues.TAG, "Listen failed.", e)
                         return@addSnapshotListener
                     }
                     if (snapshot != null && !snapshot.isEmpty) {
@@ -396,7 +396,7 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
                         Log.i("Rita", "listBeforeToday onChanged:　$filteredList")
                         listBeforeToday.value = filteredList
                     } else {
-                        Log.d(TAG, "Current data: null")
+                        Log.d(ContentValues.TAG, "Current data: null")
                     }
                 }
         }
@@ -436,8 +436,8 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
                 "done_time", item.done_time,
                 "doner", item.doner
             )
-            .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully updated!") }
-            .addOnFailureListener { e -> Log.w(TAG, "Error updating document", e) }
+            .addOnSuccessListener { Log.d(ContentValues.TAG, "DocumentSnapshot successfully updated!") }
+            .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error updating document", e) }
     }
 
 
@@ -458,6 +458,4 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
         selectedTimeSet(getToday())
         UserManager.userToken?.let { getUserData(it) }
     }
-
-
 }

@@ -8,9 +8,6 @@
             name="check"
             type="com.rita.calendarprooo.data.Check" />
         <variable
-            name="viewModel"
-            type="com.rita.calendarprooo.home.HomeViewModel" />
-        <variable
             name="view"
             type="android.view.View" />
     </data>

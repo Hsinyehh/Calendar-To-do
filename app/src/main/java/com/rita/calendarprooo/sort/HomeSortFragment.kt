@@ -1,4 +1,4 @@
-package com.rita.calendarprooo.home
+package com.rita.calendarprooo.sort
 
 import android.os.Bundle
 import android.util.Log
@@ -8,31 +8,27 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.rita.calendarprooo.NavigationDirections
 import com.rita.calendarprooo.R
 import com.rita.calendarprooo.data.Plan
-import com.rita.calendarprooo.databinding.FragmentHomeBinding
-import com.rita.calendarprooo.ext.convertToTimeStamp
+import com.rita.calendarprooo.databinding.FragmentHomeSortBinding
 import com.rita.calendarprooo.ext.getVmFactory
-import com.rita.calendarprooo.login.LoginViewModel
 import com.shrikanthravi.collapsiblecalendarview.widget.CollapsibleCalendar
 
-class HomeFragment : Fragment() {
+class HomeSortFragment : Fragment() {
 
-
-    private val viewModel by viewModels<HomeViewModel> { getVmFactory() }
+    private val viewModel by viewModels<HomeSortViewModel> { getVmFactory() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         //layout binding
-        val binding: FragmentHomeBinding = DataBindingUtil.inflate(
-            inflater, R.layout.fragment_home, container, false
+        val binding: FragmentHomeSortBinding = DataBindingUtil.inflate(
+            inflater, R.layout.fragment_home_sort, container, false
         )
 
         binding.viewModel = viewModel
@@ -251,6 +247,4 @@ class HomeFragment : Fragment() {
 
         return binding.root
     }
-
-
 }
