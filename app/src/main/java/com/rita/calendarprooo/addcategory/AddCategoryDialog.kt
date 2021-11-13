@@ -90,6 +90,11 @@ class AddCategoryDialog : DialogFragment() {
 
         })
 
+        viewModel.categoryList.observe(viewLifecycleOwner, Observer {
+            Log.i("Rita","categoryList.observe $it")
+            viewModel.convertToUnselectedList(it)
+        })
+
 
         binding.inviteEditEmail
 

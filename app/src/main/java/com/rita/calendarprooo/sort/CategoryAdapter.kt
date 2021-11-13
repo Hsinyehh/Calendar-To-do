@@ -20,7 +20,7 @@ class CategoryAdapter(viewModel: HomeSortViewModel) : ListAdapter<Category,
         val item = getItem(position)
         holder.binding.categoryView.setOnClickListener {
             Log.i("Rita", "$selectedItemPosition")
-            //viewModel.changeCategory(position,selectedItemPosition)
+            viewModel.changeCategory(position,selectedItemPosition)
             selectedItemPosition = position
             notifyDataSetChanged()
         }

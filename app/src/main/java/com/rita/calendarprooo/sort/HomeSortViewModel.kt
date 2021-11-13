@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.rita.calendarprooo.data.Category
 import com.rita.calendarprooo.data.Check
 import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.data.User
@@ -20,6 +21,12 @@ class HomeSortViewModel(repository: CalendarRepository) : ViewModel() {
     private val repository = repository
 
     var currentUser = MutableLiveData<User>()
+
+    var categoryStatus = MutableLiveData<String?>()
+
+    var categoryPosition = MutableLiveData<Int?>()
+
+    var categoryList = MutableLiveData<MutableList<Category>?>()
 
     private var _navigateToEdit = MutableLiveData<Boolean>()
     val navigateToEdit: LiveData<Boolean>
@@ -106,6 +113,7 @@ class HomeSortViewModel(repository: CalendarRepository) : ViewModel() {
         currentUser.value?.let {
             db.collection("plan")
                 .whereArrayContains("collaborator", it.email)
+                .whereEqualTo("category",categoryStatus.value)
                 .whereGreaterThanOrEqualTo("start_time", selectedStartTime.value!!)
                 .whereLessThanOrEqualTo("start_time", selectedEndTime.value!!)
                 .get()
@@ -131,6 +139,7 @@ class HomeSortViewModel(repository: CalendarRepository) : ViewModel() {
         currentUser.value?.let {
             db.collection("plan")
                 .whereArrayContains("collaborator", it.email)
+                .whereEqualTo("category",categoryStatus.value)
                 .whereLessThan("start_time", selectedStartTime.value!!)
                 .get()
                 .addOnSuccessListener { result ->
@@ -351,6 +360,7 @@ class HomeSortViewModel(repository: CalendarRepository) : ViewModel() {
         currentUser.value?.let {
             db.collection("plan")
                 .whereArrayContains("collaborator", it.email)
+                .whereEqualTo("category",categoryStatus.value)
                 .whereGreaterThanOrEqualTo("start_time", selectedStartTime.value!!)
                 .whereLessThanOrEqualTo("start_time", selectedEndTime.value!!)
                 .addSnapshotListener { snapshot, e ->
@@ -376,6 +386,7 @@ class HomeSortViewModel(repository: CalendarRepository) : ViewModel() {
         currentUser.value?.let {
             db.collection("plan")
                 .whereArrayContains("collaborator", it.email)
+                .whereEqualTo("category",categoryStatus.value)
                 .whereLessThan("start_time", selectedStartTime.value!!)
                 .addSnapshotListener { snapshot, e ->
                     if (e != null) {
@@ -453,9 +464,42 @@ class HomeSortViewModel(repository: CalendarRepository) : ViewModel() {
         UserManager.user = repository.getUser(userId)
     }
 
+    fun changeCategory(position:Int, lastPosition:Int){
+        Log.i("Rita","$lastPosition")
+        var categoryListGet = categoryList.value
+
+        //deselected the origin position value
+        if(categoryPosition.value!=-1){
+            categoryListGet!![categoryPosition.value!!].isSelected = false
+        }
+
+        if(lastPosition!=-1){
+            categoryListGet!![lastPosition].isSelected = false
+        }
+        categoryListGet!![position].isSelected = true
+        val item = categoryListGet!![position]
+        categoryStatus.value = item.name
+
+        categoryPosition.value = position
+        categoryList.value = categoryListGet
+    }
+
+    fun initCategory(user: User){
+        categoryList.value = user.categoryList
+        categoryPosition.value = 0
+        //init position is 0
+        var categoryListGet = categoryList.value
+        categoryListGet!![0].isSelected = true
+        val item = categoryListGet!![0]
+        categoryStatus.value = item.name
+        categoryList.value = categoryListGet
+
+    }
+
     init {
         _navigateToEdit.value = null
         selectedTimeSet(getToday())
         UserManager.userToken?.let { getUserData(it) }
+
     }
 }

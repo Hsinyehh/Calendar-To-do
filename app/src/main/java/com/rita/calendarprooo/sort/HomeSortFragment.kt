@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -70,8 +71,14 @@ class HomeSortFragment : Fragment() {
             Log.i("Rita","scheduleViewList.observe: $it")
         })
 
+        //init plans
         viewModel.currentUser.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             Log.i("Rita","currentUser.observe: $it")
+            viewModel.initCategory(it)
+        })
+
+        viewModel.categoryStatus.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita","categoryStatus.observe: $it")
             viewModel.readPlanFromToday()
             viewModel.readPlanOnChanged()
         })
@@ -139,6 +146,19 @@ class HomeSortFragment : Fragment() {
             doneAdapter.submitList(it)
             doneAdapter.notifyDataSetChanged()
             viewModel.doneGetViewList()
+        })
+
+
+
+        // category Adapter
+        val categoryAdapter = CategoryAdapter(viewModel)
+        binding.categoryList.adapter = categoryAdapter
+        viewModel.categoryList.observe(viewLifecycleOwner, Observer {
+            Log.i("Rita","categoryList.observe: $it")
+            it?.let{
+                categoryAdapter.submitList(it)
+                categoryAdapter.notifyDataSetChanged()
+            }
         })
 
 

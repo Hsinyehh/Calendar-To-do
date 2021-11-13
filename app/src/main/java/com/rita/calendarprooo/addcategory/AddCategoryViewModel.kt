@@ -2,6 +2,7 @@ package com.rita.calendarprooo.addcategory
 
 import android.content.ContentValues
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
@@ -17,6 +18,8 @@ class AddCategoryViewModel : ViewModel() {
     val currentUser = UserManager.user.value
 
     var categoryList = MutableLiveData<MutableList<Category>>()
+
+    var unselectedCategoryList = MutableLiveData<MutableList<Category>>()
 
     var categoryListFromUser = MutableLiveData<MutableList<String>>()
 
@@ -104,7 +107,7 @@ class AddCategoryViewModel : ViewModel() {
         Log.i("Rita", "updateUser-Ref: $userRef")
         userRef!!
             .update(
-                "categoryList", categoryList.value
+                "categoryList", unselectedCategoryList.value
             )
             .addOnSuccessListener {
                 Log.d(ContentValues.TAG, "User successfully updated!")
@@ -134,6 +137,15 @@ class AddCategoryViewModel : ViewModel() {
             stringList.add(item.name)
         }
         return stringList
+    }
+
+    fun convertToUnselectedList(list: List<Category>) {
+        var newList = mutableListOf<Category>()
+        for(item in list){
+            item.isSelected = false
+            newList.add(item)
+        }
+        unselectedCategoryList.value = newList
     }
 
     fun getPlanFromUserFirst() {
