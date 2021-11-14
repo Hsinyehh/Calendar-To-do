@@ -105,7 +105,7 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
         //plan's start-time from today
         currentUser.value?.let {
             db.collection("plan")
-                .whereArrayContains("collaborator", it.email)
+                .whereArrayContains("collaborator", it.email!!)
                 .whereGreaterThanOrEqualTo("start_time", selectedStartTime.value!!)
                 .whereLessThanOrEqualTo("start_time", selectedEndTime.value!!)
                 .get()
@@ -130,7 +130,7 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
         //plan's start-time before today
         currentUser.value?.let {
             db.collection("plan")
-                .whereArrayContains("collaborator", it.email)
+                .whereArrayContains("collaborator", it.email!!)
                 .whereLessThan("start_time", selectedStartTime.value!!)
                 .get()
                 .addOnSuccessListener { result ->
@@ -350,7 +350,7 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
         Log.i("Rita", "readPlanOnChanged user: ${currentUser.value}")
         currentUser.value?.let {
             db.collection("plan")
-                .whereArrayContains("collaborator", it.email)
+                .whereArrayContains("collaborator", it.email!!)
                 .whereGreaterThanOrEqualTo("start_time", selectedStartTime.value!!)
                 .whereLessThanOrEqualTo("start_time", selectedEndTime.value!!)
                 .addSnapshotListener { snapshot, e ->
@@ -375,7 +375,7 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
         //plan's start-time before today
         currentUser.value?.let {
             db.collection("plan")
-                .whereArrayContains("collaborator", it.email)
+                .whereArrayContains("collaborator", it.email!!)
                 .whereLessThan("start_time", selectedStartTime.value!!)
                 .addSnapshotListener { snapshot, e ->
                     if (e != null) {

@@ -17,12 +17,11 @@ import com.rita.calendarprooo.ext.getToday
 import com.rita.calendarprooo.login.UserManager
 import java.util.*
 
-class HomeSortViewModel(repository: CalendarRepository) : ViewModel() {
-    private val repository = repository
+class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
 
     var currentUser = MutableLiveData<User>()
 
-    var categoryStatus = MutableLiveData<String?>()
+    var categoryStatus = MutableLiveData<String>()
 
     var categoryPosition = MutableLiveData<Int?>()
 
@@ -39,6 +38,10 @@ class HomeSortViewModel(repository: CalendarRepository) : ViewModel() {
     private var _navigateToInvite = MutableLiveData<Plan>()
     val navigateToInvite: LiveData<Plan>
         get() = _navigateToInvite
+
+    private var _navigateToInviteCategory = MutableLiveData<Boolean>()
+    val navigateToInviteCategory: LiveData<Boolean>
+        get() = _navigateToInviteCategory
 
     private var _scheduleList = MutableLiveData<List<Plan>>()
     val scheduleList: LiveData<List<Plan>>
@@ -99,10 +102,15 @@ class HomeSortViewModel(repository: CalendarRepository) : ViewModel() {
         _navigateToInvite.value = plan
     }
 
+    fun startNavigateToInviteCategory() {
+        _navigateToInviteCategory.value = true
+    }
+
     fun doneNavigated() {
         _navigateToEdit.value = null
         _navigateToEditByPlan.value = null
         _navigateToInvite.value = null
+        _navigateToInviteCategory.value = null
     }
 
     fun readPlanFromToday() {
@@ -112,7 +120,7 @@ class HomeSortViewModel(repository: CalendarRepository) : ViewModel() {
         //plan's start-time from today
         currentUser.value?.let {
             db.collection("plan")
-                .whereArrayContains("collaborator", it.email)
+                .whereArrayContains("collaborator", it.email!!)
                 .whereEqualTo("category",categoryStatus.value)
                 .whereGreaterThanOrEqualTo("start_time", selectedStartTime.value!!)
                 .whereLessThanOrEqualTo("start_time", selectedEndTime.value!!)
@@ -138,7 +146,7 @@ class HomeSortViewModel(repository: CalendarRepository) : ViewModel() {
         //plan's start-time before today
         currentUser.value?.let {
             db.collection("plan")
-                .whereArrayContains("collaborator", it.email)
+                .whereArrayContains("collaborator", it.email!!)
                 .whereEqualTo("category",categoryStatus.value)
                 .whereLessThan("start_time", selectedStartTime.value!!)
                 .get()
@@ -359,7 +367,7 @@ class HomeSortViewModel(repository: CalendarRepository) : ViewModel() {
         Log.i("Rita", "readPlanOnChanged user: ${currentUser.value}")
         currentUser.value?.let {
             db.collection("plan")
-                .whereArrayContains("collaborator", it.email)
+                .whereArrayContains("collaborator", it.email!!)
                 .whereEqualTo("category",categoryStatus.value)
                 .whereGreaterThanOrEqualTo("start_time", selectedStartTime.value!!)
                 .whereLessThanOrEqualTo("start_time", selectedEndTime.value!!)
@@ -385,7 +393,7 @@ class HomeSortViewModel(repository: CalendarRepository) : ViewModel() {
         //plan's start-time before today
         currentUser.value?.let {
             db.collection("plan")
-                .whereArrayContains("collaborator", it.email)
+                .whereArrayContains("collaborator", it.email!!)
                 .whereEqualTo("category",categoryStatus.value)
                 .whereLessThan("start_time", selectedStartTime.value!!)
                 .addSnapshotListener { snapshot, e ->

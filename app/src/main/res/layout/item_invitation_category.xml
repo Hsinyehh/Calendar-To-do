@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="invitation"
+            type="com.rita.calendarprooo.data.Invitation" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/border_round_corner">
+
+        <ImageView
+            android:id="@+id/invitation_image_title"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/invitation" />
+
+
+        <TextView
+            android:id="@+id/invitation_text_title"
+            style="@style/invitation_list"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:invitationTitle="@{invitation}"
+            app:layout_constraintStart_toEndOf="@id/invitation_image_title"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Jogging" />
+
+
+        <ImageView
+            android:id="@+id/invitation_image_account"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/invitation_image_title"
+            app:srcCompat="@drawable/account" />
+
+        <TextView
+            android:id="@+id/invitation_text_account"
+            style="@style/invitation_list"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:inviter="@{invitation}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/invitation_image_account"
+            app:layout_constraintTop_toBottomOf="@id/invitation_text_title"
+            tools:text="mia@fake.com" />
+
+        <TextView
+            android:id="@+id/invitation_btn_accept"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/btn_green_background"
+            android:fontFamily="@font/noto_sans"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="@string/accept"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/invitation_btn_decline"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/btn_red_background"
+            android:fontFamily="@font/noto_sans"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="@string/decline"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/invitation_btn_accept" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

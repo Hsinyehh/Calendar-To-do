@@ -9,10 +9,7 @@ import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
-import com.rita.calendarprooo.data.Category
-import com.rita.calendarprooo.data.Check
-import com.rita.calendarprooo.data.Plan
-import com.rita.calendarprooo.data.User
+import com.rita.calendarprooo.data.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -151,6 +148,20 @@ fun bindImage(imgView: ImageView, item: User?) {
                     .placeholder(R.drawable.account)
                     .error(R.drawable.account))
             .into(imgView)
+    }
+}
+
+@BindingAdapter("invitationTitle")
+fun TextView.bindInvitationTitle(item: Invitation?) {
+    item?.let{
+        text="${it.title}"
+    }
+}
+
+@BindingAdapter("inviter")
+fun TextView.bindInviter(item: Invitation?) {
+    item?.let{
+        text="${it.inviter}"
     }
 }
 

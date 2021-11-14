@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.rita.calendarprooo.MainViewModel
 import com.rita.calendarprooo.data.source.CalendarRepository
 import com.rita.calendarprooo.home.HomeViewModel
+import com.rita.calendarprooo.invitation.InvitationViewModel
+import com.rita.calendarprooo.invite.InviteCategoryViewModel
 import com.rita.calendarprooo.sort.HomeSortViewModel
 import com.rita.calendarprooo.login.LoginViewModel
 import com.rita.calendarprooo.result.ResultViewModel
@@ -31,6 +33,12 @@ class RepoViewModelFactory constructor(
 
                 isAssignableFrom(HomeSortViewModel::class.java) ->
                     HomeSortViewModel(repository)
+
+                isAssignableFrom(InviteCategoryViewModel::class.java) ->
+                    InviteCategoryViewModel(repository)
+
+                isAssignableFrom(InvitationViewModel::class.java) ->
+                    InvitationViewModel(repository)
 
                 else ->
                     throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")

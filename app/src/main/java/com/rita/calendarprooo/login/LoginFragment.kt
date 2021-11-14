@@ -125,6 +125,8 @@ class LoginFragment : Fragment() {
             val account = completedTask.getResult(ApiException::class.java)
 
             UserManager.userToken = account.idToken
+            UserManager.userEmail = account.email
+
 
             val idToken = account.idToken
             val displayName = account.displayName

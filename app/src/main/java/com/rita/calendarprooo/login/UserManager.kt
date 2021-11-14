@@ -9,6 +9,7 @@ object UserManager {
 
     private const val USER_DATA = "user_data"
     private const val USER_TOKEN = "user_token"
+    private const val USER_EMAIL = "user_email"
 
     var user = MutableLiveData<User>()
 
@@ -29,6 +30,29 @@ object UserManager {
                     CalendarProApplication.instance
                         .getSharedPreferences(USER_DATA, Context.MODE_PRIVATE).edit()
                         .putString(USER_TOKEN, value)
+                        .apply()
+                    value
+                }
+            }
+        }
+
+    var userEmail: String? = null
+        get() = CalendarProApplication.instance
+            .getSharedPreferences(USER_DATA, Context.MODE_PRIVATE)
+            .getString(USER_EMAIL, null)
+        set(value) {
+            field = when (value) {
+                null -> {
+                    CalendarProApplication.instance
+                        .getSharedPreferences(USER_DATA, Context.MODE_PRIVATE).edit()
+                        .remove(USER_EMAIL)
+                        .apply()
+                    null
+                }
+                else -> {
+                    CalendarProApplication.instance
+                        .getSharedPreferences(USER_DATA, Context.MODE_PRIVATE).edit()
+                        .putString(USER_EMAIL, value)
                         .apply()
                     value
                 }

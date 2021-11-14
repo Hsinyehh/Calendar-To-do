@@ -59,6 +59,22 @@
         android:id="@+id/homeSortFragment"
         android:name="com.rita.calendarprooo.sort.HomeSortFragment"
         android:label="HomeSortFragment" />
+    <dialog
+        android:id="@+id/inviteCategoryDialog"
+        android:name="com.rita.calendarprooo.invite.InviteCategoryDialog"
+        android:label="InviteCategoryDialog" >
+        <argument
+            android:name="category"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="user"
+            app:argType="com.rita.calendarprooo.data.User"
+            app:nullable="true" />
+        <argument
+            android:name="position"
+            app:argType="integer" />
+    </dialog>
     <action
         android:id="@+id/navigate_to_edit_fragment"
         app:destination="@id/editFragment" />
@@ -74,5 +90,7 @@
     <action
         android:id="@+id/navigate_to_login_fragment"
         app:destination="@id/loginFragment" />
-
+    <action
+        android:id="@+id/navigate_to_invite_category_dialog"
+        app:destination="@id/inviteCategoryDialog" />
 </navigation>

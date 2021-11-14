@@ -5,8 +5,6 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import com.rita.calendarprooo.CalendarProApplication
 import com.rita.calendarprooo.R
 import com.rita.calendarprooo.data.Category
@@ -51,15 +49,20 @@ class LoginViewModel(repository: CalendarRepository) : ViewModel() {
     // the Coroutine runs using the Main (UI) dispatcher
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    val categoryList = mutableListOf<Category>(
-        Category("Job", false),
-        Category("Travel", false), Category("Family", false)
-    )
+
+    private fun createCollaborator(email: String): MutableList<Category> {
+        val collaborator = mutableListOf<String>(email)
+        return mutableListOf(
+            Category("Job", false, collaborator),
+            Category("Travel", false, collaborator),
+            Category("Family", false, collaborator)
+        )
+    }
 
     fun createUser(token: String, email: String, name: String, photo: Uri) {
         val user = User(
             id = token,
-            categoryList = categoryList,
+            categoryList = createCollaborator(email),
             email = email, name = name, photo = photo.toString()
         )
         Log.i("Rita", "new plan: $user")
