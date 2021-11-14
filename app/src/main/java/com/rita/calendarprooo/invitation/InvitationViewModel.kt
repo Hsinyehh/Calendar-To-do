@@ -23,11 +23,19 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
     var invitationForCategoryList = MutableLiveData<MutableList<Invitation>>()
 
     var invitationListSize : LiveData<Int> =Transformations.map(invitationList){
-        it.size
+        var size = 0
+        if(!it.isNullOrEmpty()){
+            size = it.size
+        }
+        size
     }
 
     var invitationForCategoryListSize : LiveData<Int> =Transformations.map(invitationForCategoryList){
-        it.size
+        var size = 0
+        if(!it.isNullOrEmpty()){
+            size = it.size
+        }
+        size
     }
 
     // Category

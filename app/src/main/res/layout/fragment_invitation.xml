@@ -92,7 +92,7 @@
             android:text="@string/no_invitation"
             android:textColor="@color/gray_808080"
             android:textSize="28sp"
-            android:visibility="@{viewModel.invitationListSize &lt;1 &amp; viewModel.invitationForCategoryList &lt;1? view.VISIBLE:view.GONE}"
+            android:visibility="@{viewModel.invitationListSize &lt;1 &amp; viewModel.invitationForCategoryListSize &lt;1? view.VISIBLE:view.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

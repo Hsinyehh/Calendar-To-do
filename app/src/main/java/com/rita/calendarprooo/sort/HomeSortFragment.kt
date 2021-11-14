@@ -197,7 +197,7 @@ class HomeSortFragment : Fragment() {
 
         viewModel.navigateToInviteCategory.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             Log.i("Rita","navigateToInviteCategory.observe: $it")
-            if(it == true){
+            it?.let{
                     view?.findNavController()?.navigate(
                         NavigationDirections.navigateToInviteCategoryDialog(
                             viewModel.categoryStatus.value, viewModel.currentUser.value,

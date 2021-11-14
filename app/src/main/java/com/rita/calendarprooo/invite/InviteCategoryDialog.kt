@@ -43,6 +43,13 @@ class InviteCategoryDialog : DialogFragment() {
             dismiss()
         }
 
+        viewModel.userTobeInvited.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
+            Log.i("Rita","userTobeInvited observe- $it")
+            it?.let{
+                viewModel.createInvitation()
+            }
+        })
+
         viewModel.invitationList.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
             Log.i("Rita","invitationList observe- $it")
             it?.let{

@@ -8,17 +8,18 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.rita.calendarprooo.R
 import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.databinding.FragmentInvitationBinding
+import com.rita.calendarprooo.ext.getVmFactory
 import com.rita.calendarprooo.home.TodoAdapter
+import com.rita.calendarprooo.sort.HomeSortViewModel
 
 
 class InvitationFragment : Fragment() {
-    private val viewModel: InvitationViewModel by lazy {
-        ViewModelProvider(this).get(InvitationViewModel::class.java)
-    }
+    private val viewModel by viewModels<InvitationViewModel> { getVmFactory() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,7 +34,7 @@ class InvitationFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
 
-        viewModel.readInvitation()
+
 
 
         //invitation adapter
@@ -53,6 +54,7 @@ class InvitationFragment : Fragment() {
         viewModel.user.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             Log.i("Rita","user.observe: $it")
             it?.let{
+                viewModel.readInvitation()
                 viewModel.invitationForCategoryList.value = it.invitationList
             }
         })

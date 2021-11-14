@@ -20,6 +20,8 @@ class InviteCategoryViewModel(val repository: CalendarRepository) : ViewModel() 
 
     var user = MutableLiveData<User>()
 
+    var userTobeInvited = MutableLiveData<User>()
+
     var email = MutableLiveData<String>()
 
     var invitation = MutableLiveData<Invitation>()
@@ -38,8 +40,10 @@ class InviteCategoryViewModel(val repository: CalendarRepository) : ViewModel() 
 
 
     fun createInvitation() {
-        var list = user.value?.invitationList
-        invitation.value = Invitation(title = category.value, inviter = user.value?.email,
+        var list = userTobeInvited.value?.invitationList
+        invitation.value = Invitation(
+            title = category.value,
+            inviter = user.value?.email,
             collaborator =  user.value?.categoryList?.get(categoryPosition.value!!)!!.collaborator)
 
         if (list != null) {
@@ -55,8 +59,28 @@ class InviteCategoryViewModel(val repository: CalendarRepository) : ViewModel() 
 
     }
 
+    // to be revised
+    fun getTheUser(){
+        email.value?.let {
+            db.collection("user")
+                .whereEqualTo("email", it)
+                .get()
+                .addOnSuccessListener { result ->
+                    for (document in result) {
+                        Log.d(ContentValues.TAG, "${document.id} => ${document.data}")
+                        val user = document.toObject(User::class.java)
+                        userTobeInvited.value = user
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.w(ContentValues.TAG, "Error getting documents.", exception)
+                }
+        }
+    }
+
     fun updateInvitation(list : MutableList<Invitation>){
-        val userRef = user.value?.let { db.collection("user").document(it.id!!) }
+        val userRef = userTobeInvited.value?.let {
+            db.collection("user").document(it.id!!) }
         Log.i("Rita", "updateInvitation-userRef: $userRef")
         userRef!!
             .update(
@@ -72,8 +96,8 @@ class InviteCategoryViewModel(val repository: CalendarRepository) : ViewModel() 
 
 
     fun doneWritten(){
-        //invitation.value = null
-        //isInvited.value = null
+        invitation.value = null
+        isInvited.value = null
         updateSuccess.value = null
     }
 

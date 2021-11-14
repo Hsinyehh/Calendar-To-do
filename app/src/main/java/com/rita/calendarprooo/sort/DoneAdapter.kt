@@ -53,6 +53,10 @@ class DoneAdapter (val viewModel: HomeSortViewModel) : ListAdapter<Plan,
             viewModel.startNavigateToEditByPlan(item)
         }
 
+        holder.binding.scheduleImageInvite.setOnClickListener {
+            viewModel.startNavigateToInvite(item)
+        }
+
         holder.bind(item, position,viewModel)
 
     }

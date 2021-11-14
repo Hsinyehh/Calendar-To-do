@@ -118,7 +118,7 @@
             android:text="@string/invite"
             android:textColor="@color/white"
             android:textSize="16sp"
-            android:onClick="@{()->viewModel.createInvitation()}"
+            android:onClick="@{()->viewModel.getTheUser()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
