@@ -48,7 +48,8 @@
                     android:onClick="@{()->viewModel.startNavigateToInviteCategory()}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/invite2" />
+                    app:srcCompat="@drawable/invite2"
+                    android:visibility="gone"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/category_list"
