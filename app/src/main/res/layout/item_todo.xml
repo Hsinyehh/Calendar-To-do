@@ -5,12 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View"></import>
         <variable
             name="plan"
             type="com.rita.calendarprooo.data.Plan" />
-        <variable
-            name="view"
-            type="android.view.View" />
         <variable
             name="viewModel"
             type="com.rita.calendarprooo.home.HomeViewModel" />
@@ -52,7 +50,7 @@
                 android:layout_height="20dp"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="6dp"
-                android:src="@{plan.isToDoListDone == true?@drawable/check:@drawable/uncheck}"
+                android:src="@{plan.isToDoListDone == true ? @drawable/check : @drawable/uncheck}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/schedule_text_time" />
 
@@ -115,7 +113,7 @@
             android:id="@+id/schedule_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="@{viewModel.todoViewList[position]? view.VISIBLE:view.GONE }"
+            android:visibility="@{viewModel.todoViewList[position] ? View.VISIBLE : View.GONE }"
             app:layout_constraintTop_toBottomOf="@id/schedule_overview"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">

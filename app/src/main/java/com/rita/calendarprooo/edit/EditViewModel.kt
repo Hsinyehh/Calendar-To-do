@@ -62,21 +62,21 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
     val emptyCheckList = mutableListOf<Check>()
 
     fun toToListModeChanged() {
-        Log.i("Rita","editVM isTodoList ${isTodoList.value}")
+        Log.i("Rita", "editVM isTodoList ${isTodoList.value}")
         isTodoList.value = isTodoList.value == false
-        Log.i("Rita","editVM isTodoList changed ${isTodoList.value}")
+        Log.i("Rita", "editVM isTodoList changed ${isTodoList.value}")
     }
 
     fun checkListTextCreated() {
         val editCheckList = checkList.value
         Log.i("Rita", "checkListTextCreated()")
-        if(planGet.value?.id.isNullOrEmpty()){
+        if (planGet.value?.id.isNullOrEmpty()) {
             val newCheck = Check(
                 checkText.value, false, 0, "", "", 1,
                 newPlanRef.id
             )
             editCheckList?.add(newCheck)
-        }else{
+        } else {
             val newCheck = Check(
                 checkText.value, false, 0, "", "", 1,
                 planGet.value!!.id
@@ -143,10 +143,10 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
                 "title", title.value,
                 "description", description.value,
                 "location", location.value,
-                "start_time",start_time.value,
-                "end_time",end_time.value,
-                "start_time_detail",start_time_detail.value,
-                "end_time_detail",end_time_detail.value,
+                "start_time", start_time.value,
+                "end_time", end_time.value,
+                "start_time_detail", start_time_detail.value,
+                "end_time_detail", end_time_detail.value,
                 "category", categoryStatus.value?.name,
                 "categoryPosition", categoryPosition.value,
                 "categoryList", categoryList.value,
@@ -158,8 +158,8 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
 
     }
 
-    fun getCategoryFromUser(){
-        Log.i("Rita","EditVM getCategoryFromUser")
+    fun getCategoryFromUser() {
+        Log.i("Rita", "EditVM getCategoryFromUser")
         db.collection("user")
             .whereEqualTo("email", currentUser!!.email)
             .addSnapshotListener { snapshot, e ->
@@ -180,8 +180,8 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
             }
     }
 
-    fun getCategoryFromPlan(){
-        Log.i("Rita","EditVM getCategoryFromPlan")
+    fun getCategoryFromPlan() {
+        Log.i("Rita", "EditVM getCategoryFromPlan")
         db.collection("plan")
             .whereEqualTo("id", "${planGet.value?.id}")
             .addSnapshotListener { snapshot, e ->
@@ -202,16 +202,16 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
             }
     }
 
-    fun changeCategory(position:Int, lastPosition:Int){
-        Log.i("Rita","$lastPosition")
+    fun changeCategory(position: Int, lastPosition: Int) {
+        Log.i("Rita", "$lastPosition")
         var categoryListGet = categoryList.value
 
         //deselected the origin position value
-        if(categoryPosition.value!=-1){
+        if (categoryPosition.value != -1) {
             categoryListGet!![categoryPosition.value!!].isSelected = false
         }
 
-        if(lastPosition!=-1){
+        if (lastPosition != -1) {
             categoryListGet!![lastPosition].isSelected = false
         }
         categoryListGet!![position].isSelected = true

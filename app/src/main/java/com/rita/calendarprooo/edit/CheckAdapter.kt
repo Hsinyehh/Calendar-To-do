@@ -12,18 +12,17 @@ import com.rita.calendarprooo.databinding.ItemCheckBinding
 import com.rita.calendarprooo.login.UserManager
 import java.util.*
 
-class CheckAdapter (val viewModel: EditViewModel) : ListAdapter<Check,
+class CheckAdapter(val viewModel: EditViewModel) : ListAdapter<Check,
         CheckAdapter.ViewHolder>(CheckDiffCallback()) {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
         holder.binding.checklistImage.setOnClickListener {
-            if(item.isDone){
+            if (item.isDone) {
                 item.isDone = false
                 item.done_time = null
                 item.doner = null
-            }
-            else if(!item.isDone){
+            } else if (!item.isDone) {
                 item.isDone = true
                 item.done_time = Calendar.getInstance().timeInMillis
                 item.doner = UserManager.user.value?.name
@@ -31,7 +30,7 @@ class CheckAdapter (val viewModel: EditViewModel) : ListAdapter<Check,
             notifyDataSetChanged()
         }
         holder.binding.checklistBtnRemoved.setOnClickListener {
-            Log.i("Rita","edit remove btn clicked")
+            Log.i("Rita", "edit remove btn clicked")
             viewModel.checkListTextRemoved(position)
             notifyDataSetChanged()
         }
@@ -44,8 +43,8 @@ class CheckAdapter (val viewModel: EditViewModel) : ListAdapter<Check,
         return ViewHolder.from(parent)
     }
 
-    class ViewHolder private constructor(val binding: ItemCheckBinding)
-        : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder private constructor(val binding: ItemCheckBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Check) {
             binding.check = item

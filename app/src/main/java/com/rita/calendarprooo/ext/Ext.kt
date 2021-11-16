@@ -12,20 +12,20 @@ import com.rita.calendarprooo.R
 import java.text.SimpleDateFormat
 import java.util.*
 
-fun getToday() : String {
+fun getToday(): String {
     val df = SimpleDateFormat("dd-MM-yyyy");
     val today = df.format(Calendar.getInstance().getTime())
-    Log.i("Rita","getToday() - $today")
+    Log.i("Rita", "getToday() - $today")
     return today
 }
 
-fun convertToTimeStamp(dateSelected:String) : List<Long>? {
+fun convertToTimeStamp(dateSelected: String): List<Long>? {
     try {
-        var selectedStartTime:Long = 0L
-        var selectedEndTime:Long = 0L
+        var selectedStartTime: Long = 0L
+        var selectedEndTime: Long = 0L
 
-        val startTime= "$dateSelected 00:00"
-        val endTime= "$dateSelected 23:59"
+        val startTime = "$dateSelected 00:00"
+        val endTime = "$dateSelected 23:59"
 
         val startDateSelectedFormat = SimpleDateFormat("dd-MM-yyyy HH:mm").parse(startTime)
         val endDateSelectedFormat = SimpleDateFormat("dd-MM-yyyy HH:mm").parse(endTime)
@@ -33,17 +33,16 @@ fun convertToTimeStamp(dateSelected:String) : List<Long>? {
 
         selectedStartTime = startDateSelectedFormat.time
         selectedEndTime = endDateSelectedFormat.time
-        var list = listOf<Long>(selectedStartTime,selectedEndTime)
+        var list = listOf<Long>(selectedStartTime, selectedEndTime)
 
         return list
-    }
-    catch(e:java.text.ParseException){
-        Log.i("Rita","$e")
+    } catch (e: java.text.ParseException) {
+        Log.i("Rita", "$e")
         return null
     }
 }
 
-fun getColorCode(color: Int) : Int{
+fun getColorCode(color: Int): Int {
     return ContextCompat.getColor(CalendarProApplication.appContext!!, color)
 }
 

@@ -74,6 +74,9 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
 
     var startToGetViewListForDoneMode = MutableLiveData<Boolean>()
 
+    // the variable is used after viewList is created so that the recyclerView can show
+    var getViewListAlready = MutableLiveData<Boolean>()
+
     fun swapCheckListItem(start: Int, end: Int) {
         val todoListGet = _todoList.value
         Collections.swap(todoListGet, start, end)
@@ -100,7 +103,8 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
 
     fun readPlanFromToday() {
         Log.i("Rita", "readPlanFromToday user: ${currentUser.value}")
-
+        // reGet viewList
+        getViewListAlready.value = null
 
         //plan's start-time from today
         currentUser.value?.let {
@@ -211,6 +215,7 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
             }
             doneViewList.value = doneList
         }
+        getViewListAlready.value = true
     }
 
     fun getViewListForTodoMode() {

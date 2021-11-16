@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -39,6 +40,12 @@ class HomeFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
 
+        viewModel.currentUser.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita","currentUser.observe: $it")
+            viewModel.readPlanFromToday()
+            viewModel.readPlanOnChanged()
+        })
+
 
         //read Plans when date selected changed
         viewModel.selectedEndTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
@@ -63,7 +70,8 @@ class HomeFragment : Fragment() {
         })
 
         viewModel.startToGetViewList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            if(it==true){
+            Log.e("Rita","startToGetViewList observe - $it")
+            it?.let{
                 viewModel.getViewList()
                 viewModel.doneGetViewList()
             }
@@ -72,12 +80,6 @@ class HomeFragment : Fragment() {
         //test
         viewModel.scheduleViewList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             Log.i("Rita","scheduleViewList.observe: $it")
-        })
-
-        viewModel.currentUser.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.i("Rita","currentUser.observe: $it")
-            viewModel.readPlanFromToday()
-            viewModel.readPlanOnChanged()
         })
 
 
@@ -90,60 +92,96 @@ class HomeFragment : Fragment() {
         })
 
         viewModel.listBeforeToday.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.e("Rita","listBeforeToday observe - $it")
             it?.let{
                 Log.i("Rita","listBeforeToday.observe: $it")
                 viewModel.getTotalListBefore()
             }
         })
 
+        fun createScheduleRecyclerview() {
+            // bind adapter again before the adapter submit list so the position item is right
+            val adapter = ScheduleAdapter(viewModel)
+            binding.homeScheduleList.adapter = adapter
+            adapter.submitList(viewModel.scheduleList.value)
+            adapter.notifyDataSetChanged()
+        }
+
+
+        fun createTodoRecyclerview() {
+            val todoAdapter = TodoAdapter(viewModel)
+            binding.homeTodoList.adapter = todoAdapter
+            todoAdapter.submitList(viewModel.todoList.value)
+            todoAdapter.notifyDataSetChanged()
+        }
+
+
+        fun createDoneRecyclerview() {
+            val doneAdapter = DoneAdapter(viewModel)
+            binding.homeDoneList.adapter = doneAdapter
+            doneAdapter.submitList(viewModel.doneList.value)
+            doneAdapter.notifyDataSetChanged()
+        }
 
 
         //schedule adapter
-        val adapter = ScheduleAdapter(viewModel)
-        binding.homeScheduleList.adapter = adapter
         viewModel.scheduleList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             Log.i("Rita","scheduleList.observe: $it")
-            adapter.submitList(it)
-            adapter.notifyDataSetChanged()
+            if(viewModel.getViewListAlready.value == true) {
+                createScheduleRecyclerview()
+            }
         })
 
 
 
         //to-do adapter
-        val todoAdapter = TodoAdapter(viewModel)
-        binding.homeTodoList.adapter = todoAdapter
         viewModel.todoList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             Log.i("Rita","todoList.observe: $it")
 
             //get size again for to-do/done mode changed
             Log.i("Rita","todoList.observe: ${viewModel.startToGetViewListForTodoMode.value}")
-            if(viewModel.startToGetViewListForTodoMode.value==true){
+            if(viewModel.startToGetViewListForTodoMode.value == true){
+                //Because the size of todoList and doneList may change
                 viewModel.getViewListForTodoMode()
-                viewModel.startToGetViewListForTodoMode.value=null
+                viewModel.startToGetViewListForTodoMode.value = null
             }
 
-            todoAdapter.submitList(it)
-            todoAdapter.notifyDataSetChanged()
-            viewModel.doneGetViewList()
+            if(viewModel.getViewListAlready.value == true) {
+                createTodoRecyclerview()
+            }
         })
 
         //done adapter
-        val doneAdapter = DoneAdapter(viewModel)
-        binding.homeDoneList.adapter = doneAdapter
         viewModel.doneList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             Log.i("Rita","doneList.observe: $it")
 
             //get size again for to-do/done mode changed
             Log.i("Rita","doneList.observe: ${viewModel.startToGetViewListForDoneMode.value}")
-            if(viewModel.startToGetViewListForDoneMode.value==true){
+            if(viewModel.startToGetViewListForDoneMode.value == true){
+                //Because the size of todoList and doneList may change
                 viewModel.getViewListForTodoMode()
-                viewModel.startToGetViewListForDoneMode.value=null
+                viewModel.startToGetViewListForDoneMode.value = null
             }
 
-            doneAdapter.submitList(it)
-            doneAdapter.notifyDataSetChanged()
-            viewModel.doneGetViewList()
+            if(viewModel.getViewListAlready.value == true){
+                Log.e("Rita","viewModel.getViewListAlready.value == true, submit")
+                createDoneRecyclerview()
+            }
         })
+
+        // After the viewList is got, the recyclerView will show
+        viewModel.getViewListAlready.observe(viewLifecycleOwner, Observer {
+            Log.e("Rita","getViewListAlready observe - $it")
+            it?.let{
+                if(it){
+                    createScheduleRecyclerview()
+                    createTodoRecyclerview()
+                    createDoneRecyclerview()
+                }
+            }
+        })
+
+
 
 
 

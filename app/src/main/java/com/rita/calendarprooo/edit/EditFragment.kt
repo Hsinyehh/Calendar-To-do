@@ -45,28 +45,28 @@ class EditFragment : Fragment() {
 
 
         //get safe argument from previous fragment
-        viewModel.planGet.value= EditFragmentArgs.fromBundle(requireArguments()).plan
-        viewModel.location.value= EditFragmentArgs.fromBundle(requireArguments()).address
+        viewModel.planGet.value = EditFragmentArgs.fromBundle(requireArguments()).plan
+        viewModel.location.value = EditFragmentArgs.fromBundle(requireArguments()).address
 
         //Time&Date Picker binding
-        val startTimePicker=binding.startTimepicker
-        val startDatePicker=binding.startDatepicker
-        val endTimePicker=binding.endTimepicker
-        val endDatePicker=binding.endDatepicker
+        val startTimePicker = binding.startTimepicker
+        val startDatePicker = binding.startDatepicker
+        val endTimePicker = binding.endTimepicker
+        val endDatePicker = binding.endDatepicker
 
 
         val adapter = CategoryAdapter(viewModel)
-        binding.categoryList.adapter=adapter
+        binding.categoryList.adapter = adapter
         viewModel.categoryList.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
             adapter.notifyDataSetChanged()
         })
 
         //checkAdapter
-        val checkAdapter= CheckAdapter(viewModel)
-        binding.checkList.adapter=checkAdapter
+        val checkAdapter = CheckAdapter(viewModel)
+        binding.checkList.adapter = checkAdapter
         viewModel.checkList.observe(viewLifecycleOwner, Observer {
-            Log.i("Rita","viewModel.checkList.observe")
+            Log.i("Rita", "viewModel.checkList.observe")
             checkAdapter.submitList(it)
             checkAdapter.notifyDataSetChanged()
             viewModel.clearText()
@@ -86,57 +86,55 @@ class EditFragment : Fragment() {
             it?.end_time_detail?.let {
                 endTimePicker.currentHour = it[3]
                 endTimePicker.currentMinute = it[4]
-                endDatePicker.init(it[0], it[1]-1, it[2],null)
+                endDatePicker.init(it[0], it[1] - 1, it[2], null)
             }
 
-            if(it?.categoryList.isNullOrEmpty()){
+            if (it?.categoryList.isNullOrEmpty()) {
                 viewModel.getCategoryFromUser()
-            }
-            else{
+            } else {
                 viewModel.getCategoryFromPlan()
             }
 
-            Log.i("Rita","plan.location.observe: ${viewModel.location.value}")
+            Log.i("Rita", "plan.location.observe: ${viewModel.location.value}")
 
         })
 
 
         //save button
         binding.buttonSave.setOnClickListener { view: View ->
-                //StartTime
-                viewModel.start_time_detail.value = listOf<Int>(
-                    startDatePicker.year,
-                    startDatePicker.month + 1, startDatePicker.dayOfMonth, startTimePicker.hour,
-                    startTimePicker.minute
-                )
+            //StartTime
+            viewModel.start_time_detail.value = listOf<Int>(
+                startDatePicker.year,
+                startDatePicker.month + 1, startDatePicker.dayOfMonth, startTimePicker.hour,
+                startTimePicker.minute
+            )
 
-                val startDateSelected = "" + startDatePicker.dayOfMonth +
-                        "-" + (startDatePicker.month + 1) + "-" + startDatePicker.year + " " +
-                        startTimePicker.hour + ":" + startTimePicker.minute
-                viewModel.convertToStartTimeStamp(startDateSelected)
+            val startDateSelected = "" + startDatePicker.dayOfMonth +
+                    "-" + (startDatePicker.month + 1) + "-" + startDatePicker.year + " " +
+                    startTimePicker.hour + ":" + startTimePicker.minute
+            viewModel.convertToStartTimeStamp(startDateSelected)
 
-                //EndTime
-                viewModel.end_time_detail.value = listOf<Int>(
-                    endDatePicker.year,
-                    endDatePicker.month + 1, endDatePicker.dayOfMonth, endTimePicker.hour,
-                    endTimePicker.minute
-                )
+            //EndTime
+            viewModel.end_time_detail.value = listOf<Int>(
+                endDatePicker.year,
+                endDatePicker.month + 1, endDatePicker.dayOfMonth, endTimePicker.hour,
+                endTimePicker.minute
+            )
 
-                val endDateSelected = "" + endDatePicker.dayOfMonth +
-                        "-" + (endDatePicker.month + 1) + "-" + endDatePicker.year + " " +
-                        endTimePicker.hour + ":" + endTimePicker.minute
-                viewModel.convertToEndTimeStamp(endDateSelected)
+            val endDateSelected = "" + endDatePicker.dayOfMonth +
+                    "-" + (endDatePicker.month + 1) + "-" + endDatePicker.year + " " +
+                    endTimePicker.hour + ":" + endTimePicker.minute
+            viewModel.convertToEndTimeStamp(endDateSelected)
         }
 
         viewModel.createStatus.observe(viewLifecycleOwner, Observer {
-            if(it==true){
-                Log.i("Rita","viewModel.createStatus.observe ${viewModel.editStatus.value}")
-                if(viewModel.editStatus.value == true){
+            if (it == true) {
+                Log.i("Rita", "viewModel.createStatus.observe ${viewModel.editStatus.value}")
+                if (viewModel.editStatus.value == true) {
                     viewModel.updatePlan()
                     view?.findNavController()?.navigate(R.id.navigate_to_home_fragment)
                     viewModel.doneNavigated()
-                }
-                else {
+                } else {
                     Log.i("Rita", "viewModel.create_status.observe")
                     viewModel.createNewPlan()
                     viewModel.doneConverted()
@@ -146,7 +144,7 @@ class EditFragment : Fragment() {
 
 
         viewModel.newPlan.observe(viewLifecycleOwner, Observer {
-            it?.let{
+            it?.let {
                 viewModel.writeNewPlan()
                 view?.findNavController()?.navigate(R.id.navigate_to_home_fragment)
                 viewModel.doneNavigated()
@@ -165,14 +163,16 @@ class EditFragment : Fragment() {
         //add category Button
         binding.btnCategoryPlus.setOnClickListener {
             view?.findNavController()?.navigate(
-                NavigationDirections.navigateToAddCategoryDialog(viewModel.planGet.value))
+                NavigationDirections.navigateToAddCategoryDialog(viewModel.planGet.value)
+            )
         }
 
         //create checkList Item
         binding.checklistEditText.setOnEditorActionListener { textView, i, keyEvent ->
-            if( i== EditorInfo.IME_ACTION_DONE
-                ||keyEvent.action== KeyEvent.ACTION_DOWN||keyEvent.action== KeyEvent.KEYCODE_ENTER){
-                Log.i("Rita","checklist item setOnEditorActionListener")
+            if (i == EditorInfo.IME_ACTION_DONE
+                || keyEvent.action == KeyEvent.ACTION_DOWN || keyEvent.action == KeyEvent.KEYCODE_ENTER
+            ) {
+                Log.i("Rita", "checklist item setOnEditorActionListener")
                 viewModel.checkListTextCreated()
                 binding.checklistEditText.hideKeyboard()
             }
@@ -180,12 +180,12 @@ class EditFragment : Fragment() {
         }
 
 
-        return  binding.root
+        return binding.root
     }
 
 
-    fun View.hideKeyboard(){
-        context?.let{
+    fun View.hideKeyboard() {
+        context?.let {
             val inputMethodManager =
                 it.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)

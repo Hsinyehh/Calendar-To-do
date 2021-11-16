@@ -35,7 +35,17 @@ class HomeSortFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        //init plans
+        viewModel.currentUser.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita","currentUser.observe: $it")
+            viewModel.initCategory(it)
+        })
 
+        viewModel.categoryStatus.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita","categoryStatus.observe: $it")
+            viewModel.readPlanFromToday()
+            viewModel.readPlanOnChanged()
+        })
 
         //read Plans when date selected changed
         viewModel.selectedEndTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
@@ -71,18 +81,6 @@ class HomeSortFragment : Fragment() {
             Log.i("Rita","scheduleViewList.observe: $it")
         })
 
-        //init plans
-        viewModel.currentUser.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.i("Rita","currentUser.observe: $it")
-            viewModel.initCategory(it)
-        })
-
-        viewModel.categoryStatus.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.i("Rita","categoryStatus.observe: $it")
-            viewModel.readPlanFromToday()
-            viewModel.readPlanOnChanged()
-        })
-
 
         //update plans on home pages when data changed
         viewModel.listFromToday.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
@@ -99,6 +97,29 @@ class HomeSortFragment : Fragment() {
             }
         })
 
+        fun createScheduleRecyclerview() {
+            // bind adapter again before the adapter submit list so the position item is right
+            val adapter = ScheduleAdapter(viewModel)
+            binding.homeScheduleList.adapter = adapter
+            adapter.submitList(viewModel.scheduleList.value)
+            adapter.notifyDataSetChanged()
+        }
+
+
+        fun createTodoRecyclerview() {
+            val todoAdapter = TodoAdapter(viewModel)
+            binding.homeTodoList.adapter = todoAdapter
+            todoAdapter.submitList(viewModel.todoList.value)
+            todoAdapter.notifyDataSetChanged()
+        }
+
+
+        fun createDoneRecyclerview() {
+            val doneAdapter = DoneAdapter(viewModel)
+            binding.homeDoneList.adapter = doneAdapter
+            doneAdapter.submitList(viewModel.doneList.value)
+            doneAdapter.notifyDataSetChanged()
+        }
 
 
         //schedule adapter
@@ -106,8 +127,9 @@ class HomeSortFragment : Fragment() {
         binding.homeScheduleList.adapter = adapter
         viewModel.scheduleList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             Log.i("Rita","scheduleList.observe: $it")
-            adapter.submitList(it)
-            adapter.notifyDataSetChanged()
+            if(viewModel.getViewListAlready.value == true) {
+                createScheduleRecyclerview()
+            }
         })
 
 
@@ -125,9 +147,9 @@ class HomeSortFragment : Fragment() {
                 viewModel.startToGetViewListForTodoMode.value=null
             }
 
-            todoAdapter.submitList(it)
-            todoAdapter.notifyDataSetChanged()
-            viewModel.doneGetViewList()
+            if(viewModel.getViewListAlready.value == true) {
+                createTodoRecyclerview()
+            }
         })
 
         //done adapter
@@ -143,11 +165,23 @@ class HomeSortFragment : Fragment() {
                 viewModel.startToGetViewListForDoneMode.value=null
             }
 
-            doneAdapter.submitList(it)
-            doneAdapter.notifyDataSetChanged()
-            viewModel.doneGetViewList()
+            if(viewModel.getViewListAlready.value == true){
+                Log.e("Rita","viewModel.getViewListAlready.value == true, submit")
+                createDoneRecyclerview()
+            }
         })
 
+        // After the viewList is got, the recyclerView will show
+        viewModel.getViewListAlready.observe(viewLifecycleOwner, Observer {
+            Log.e("Rita","getViewListAlready observe - $it")
+            it?.let{
+                if(it){
+                    createScheduleRecyclerview()
+                    createTodoRecyclerview()
+                    createDoneRecyclerview()
+                }
+            }
+        })
 
 
         // category Adapter

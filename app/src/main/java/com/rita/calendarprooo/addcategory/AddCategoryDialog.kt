@@ -33,39 +33,39 @@ class AddCategoryDialog : DialogFragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        viewModel.planGet.value= AddCategoryDialogArgs.fromBundle(requireArguments()).plan
+        viewModel.planGet.value = AddCategoryDialogArgs.fromBundle(requireArguments()).plan
 
 
         viewModel.planGet.observe(viewLifecycleOwner, Observer {
-            Log.i("Rita","planGet.observe $it")
-            it?.let{
+            Log.i("Rita", "planGet.observe $it")
+            it?.let {
                 viewModel.getPlanFromUserFirst()
             }
         })
 
 
         viewModel.startToCreate.observe(viewLifecycleOwner, Observer {
-            Log.i("Rita","startToCreate.observe $it")
-            if(it == true){
-                if(viewModel.planGet.value?.id ==""){
+            Log.i("Rita", "startToCreate.observe $it")
+            if (it == true) {
+                if (viewModel.planGet.value?.id == "") {
                     viewModel.startToPrepare.value = true
-                }else{
+                } else {
                     viewModel.getCategoryFromThePlan()
                 }
             }
         })
 
         viewModel.startToPrepare.observe(viewLifecycleOwner, Observer {
-            Log.i("Rita","startToPrepare.observe $it")
-            if(it == true){
+            Log.i("Rita", "startToPrepare.observe $it")
+            if (it == true) {
                 viewModel.prepareForCategory()
             }
         })
 
         viewModel.startToUpdate.observe(viewLifecycleOwner, Observer {
-            Log.i("Rita","startToUpdate.observe $it")
-            if(it == true){
-                if(viewModel.planGet.value?.id !== "") {
+            Log.i("Rita", "startToUpdate.observe $it")
+            if (it == true) {
+                if (viewModel.planGet.value?.id !== "") {
                     viewModel.updateThePlan()
                 }
                 viewModel.updateUser()
@@ -73,25 +73,27 @@ class AddCategoryDialog : DialogFragment() {
         })
 
         viewModel.startToNavigate.observe(viewLifecycleOwner, Observer {
-            Log.i("Rita","startToNavigate.observe $it")
-            if(it == true){
+            Log.i("Rita", "startToNavigate.observe $it")
+            if (it == true) {
                 dismiss()
                 //viewModel.doneNavigated()
             }
         })
 
         viewModel.categoryListFromUser.observe(viewLifecycleOwner, Observer {
-            Log.i("Rita","categoryListFromUser.observe $it")
-            it?.let{
-                val adapter = ArrayAdapter<String>(requireContext(),
-                    android.R.layout.simple_dropdown_item_1line, it)
+            Log.i("Rita", "categoryListFromUser.observe $it")
+            it?.let {
+                val adapter = ArrayAdapter<String>(
+                    requireContext(),
+                    android.R.layout.simple_dropdown_item_1line, it
+                )
                 binding.inviteEditEmail.setAdapter(adapter)
             }
 
         })
 
         viewModel.categoryList.observe(viewLifecycleOwner, Observer {
-            Log.i("Rita","categoryList.observe $it")
+            Log.i("Rita", "categoryList.observe $it")
             viewModel.convertToUnselectedList(it)
         })
 

@@ -9,21 +9,21 @@ import com.rita.calendarprooo.data.source.CalendarDataSource
 import com.rita.calendarprooo.data.Result
 
 class CalendarLocalDataSource(val context: Context) : CalendarDataSource {
-    override fun getLivePlansFromToday(selectedStartTime: Long,selectedEndTime: Long,user: User):
+    override fun getLivePlansFromToday(selectedStartTime: Long, selectedEndTime: Long, user: User):
             MutableLiveData<List<Plan>> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun getLivePlansBeforeToday(selectedStartTime:Long, user:User):
+    override fun getLivePlansBeforeToday(selectedStartTime: Long, user: User):
             MutableLiveData<List<Plan>> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override suspend fun createPlan(plan: Plan): Result<Boolean>{
+    override suspend fun createPlan(plan: Plan): Result<Boolean> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override suspend fun updatePlan(plan: Plan): Result<Boolean>{
+    override suspend fun updatePlan(plan: Plan): Result<Boolean> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
@@ -50,16 +50,16 @@ class CalendarLocalDataSource(val context: Context) : CalendarDataSource {
         TODO("Not yet implemented")
     }
 
-    override fun getUser (id:String) : MutableLiveData<User>{
+    override fun getUser(id: String): MutableLiveData<User> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun createUser(newUser: User): Result<Boolean>{
+    override suspend fun createUser(newUser: User): Result<Boolean> {
         TODO("Not yet implemented")
     }
 
-    override fun getLiveDone(selectedStartTime: Long,selectedEndTime: Long,user: User):
-            MutableLiveData<List<Plan>>{
+    override fun getLiveDone(selectedStartTime: Long, selectedEndTime: Long, user: User):
+            MutableLiveData<List<Plan>> {
         TODO("Not yet implemented")
     }
 

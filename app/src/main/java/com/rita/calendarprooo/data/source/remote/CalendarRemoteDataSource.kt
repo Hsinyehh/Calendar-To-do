@@ -22,7 +22,7 @@ object CalendarRemoteDataSource : CalendarDataSource {
     private const val PATH_PLAN = "plan"
     private const val PATH_USER = "user"
 
-    override fun getLivePlansFromToday(selectedStartTime: Long,selectedEndTime: Long, user: User):
+    override fun getLivePlansFromToday(selectedStartTime: Long, selectedEndTime: Long, user: User):
             MutableLiveData<List<Plan>> {
         var livedata = MutableLiveData<List<Plan>>()
         FirebaseFirestore.getInstance()
@@ -31,15 +31,17 @@ object CalendarRemoteDataSource : CalendarDataSource {
             .whereGreaterThanOrEqualTo("start_time", selectedStartTime)
             .whereLessThanOrEqualTo("start_time", selectedEndTime)
             .addSnapshotListener { snapshot, e ->
-                Log.i("Rita","Today SnapshotListener user email:${user.email} ")
+                Log.i("Rita", "Today SnapshotListener user email:${user.email} ")
                 e?.let {
-                    Log.i("Rita",
-                        "[${this::class.simpleName}] Error getting documents. ${it.message}")
+                    Log.i(
+                        "Rita",
+                        "[${this::class.simpleName}] Error getting documents. ${it.message}"
+                    )
                 }
                 val list = mutableListOf<Plan>()
                 for (item in snapshot!!) {
                     Log.i("Rita", "plan:　${item.data}")
-                    val plan= item.toObject(Plan::class.java)
+                    val plan = item.toObject(Plan::class.java)
                     list.add(plan!!)
                 }
                 Log.i("Rita", "list onChanged:　$list")
@@ -49,8 +51,7 @@ object CalendarRemoteDataSource : CalendarDataSource {
     }
 
 
-
-    override fun getLivePlansBeforeToday(selectedStartTime:Long, user:User):
+    override fun getLivePlansBeforeToday(selectedStartTime: Long, user: User):
             MutableLiveData<List<Plan>> {
         var livedata = MutableLiveData<List<Plan>>()
         FirebaseFirestore.getInstance()
@@ -58,15 +59,17 @@ object CalendarRemoteDataSource : CalendarDataSource {
             .whereArrayContains("collaborator", user.email)
             .whereLessThanOrEqualTo("start_time", selectedStartTime)
             .addSnapshotListener { snapshot, e ->
-                Log.i("Rita","Before SnapshotListener user email:${user.email} ")
+                Log.i("Rita", "Before SnapshotListener user email:${user.email} ")
 
                 e?.let {
-                    Log.i("Rita",
-                        "[${this::class.simpleName}] Error getting documents. ${it.message}")
+                    Log.i(
+                        "Rita",
+                        "[${this::class.simpleName}] Error getting documents. ${it.message}"
+                    )
                 }
                 val list = mutableListOf<Plan>()
                 for (item in snapshot!!) {
-                    val plan= item.toObject(Plan::class.java)
+                    val plan = item.toObject(Plan::class.java)
                     list.add(plan!!)
                 }
                 Log.i("Rita", "list onChanged:　$list")
@@ -76,46 +79,50 @@ object CalendarRemoteDataSource : CalendarDataSource {
         return livedata
     }
 
-    override suspend fun createPlan(plan: Plan): Result<Boolean> = suspendCoroutine{ continuation ->
-        val newPlanRef = FirebaseFirestore.getInstance().collection("plan").document()
-        newPlanRef
-            .set(plan)
-            .addOnSuccessListener { documentReference ->
-                Log.d(ContentValues.TAG, "DocumentSnapshot added with ID: $newPlanRef.id")
-                continuation.resume(Result.Success(true))
-            }
-            .addOnFailureListener {
-                Log.w(ContentValues.TAG, "Error adding document", it)
-                continuation.resume(Result.Error(it))
-            }
-    }
+    override suspend fun createPlan(plan: Plan): Result<Boolean> =
+        suspendCoroutine { continuation ->
+            val newPlanRef = FirebaseFirestore.getInstance().collection("plan").document()
+            newPlanRef
+                .set(plan)
+                .addOnSuccessListener { documentReference ->
+                    Log.d(ContentValues.TAG, "DocumentSnapshot added with ID: $newPlanRef.id")
+                    continuation.resume(Result.Success(true))
+                }
+                .addOnFailureListener {
+                    Log.w(ContentValues.TAG, "Error adding document", it)
+                    continuation.resume(Result.Error(it))
+                }
+        }
 
-    override suspend fun updatePlan(plan: Plan): Result<Boolean>
-    = suspendCoroutine{ continuation ->
-        val planRef = plan.id?.let {
-            FirebaseFirestore.getInstance().collection(PATH_PLAN).document(it) }
-        planRef!!
-            .update("isToDoListDone", plan.isToDoListDone)
-            .addOnSuccessListener{
-                Log.d(ContentValues.TAG, "DocumentSnapshot successfully updated!")
-                continuation.resume(Result.Success(true))
+    override suspend fun updatePlan(plan: Plan): Result<Boolean> =
+        suspendCoroutine { continuation ->
+            val planRef = plan.id?.let {
+                FirebaseFirestore.getInstance().collection(PATH_PLAN).document(it)
             }
-            .addOnFailureListener {
-                Log.w(ContentValues.TAG, "Error updating document", it)
-                continuation.resume(Result.Error(it))
-            }
-    }
+            planRef!!
+                .update("isToDoListDone", plan.isToDoListDone)
+                .addOnSuccessListener {
+                    Log.d(ContentValues.TAG, "DocumentSnapshot successfully updated!")
+                    continuation.resume(Result.Success(true))
+                }
+                .addOnFailureListener {
+                    Log.w(ContentValues.TAG, "Error updating document", it)
+                    continuation.resume(Result.Error(it))
+                }
+        }
 
-    override suspend fun updatePlanByCheck(check: Check,
-                                           checkList: MutableLiveData<MutableList<Check>>):
-            Result<Boolean>
-    = suspendCoroutine{ continuation ->
+    override suspend fun updatePlanByCheck(
+        check: Check,
+        checkList: MutableLiveData<MutableList<Check>>
+    ):
+            Result<Boolean> = suspendCoroutine { continuation ->
         val planRef = check.plan_id?.let {
             FirebaseFirestore.getInstance()
-            .collection(PATH_PLAN).document(it) }
-        Log.i("Rita","writeCheckItemDone-planRef: $planRef")
+                .collection(PATH_PLAN).document(it)
+        }
+        Log.i("Rita", "writeCheckItemDone-planRef: $planRef")
         planRef!!
-            .update("checkList",checkList.value)
+            .update("checkList", checkList.value)
             .addOnSuccessListener {
                 Log.d(ContentValues.TAG, "DocumentSnapshot successfully updated!")
                 continuation.resume(Result.Success(true))
@@ -126,22 +133,24 @@ object CalendarRemoteDataSource : CalendarDataSource {
             }
     }
 
-    override suspend fun getCheckAndChangeStatus(check:Check, position:Int,
-                                                 checkList:MutableLiveData<MutableList<Check>>):
-            Result<Boolean>
-    = suspendCoroutine{ continuation ->
+    override suspend fun getCheckAndChangeStatus(
+        check: Check, position: Int,
+        checkList: MutableLiveData<MutableList<Check>>
+    ):
+            Result<Boolean> = suspendCoroutine { continuation ->
         val planRef = check.plan_id?.let {
-            FirebaseFirestore.getInstance().collection(PATH_PLAN).document(it) }
-        var plan : Plan? = null
+            FirebaseFirestore.getInstance().collection(PATH_PLAN).document(it)
+        }
+        var plan: Plan? = null
         planRef!!.get()
             .addOnSuccessListener { document ->
                 if (document != null) {
                     Log.d(ContentValues.TAG, "DocumentSnapshot data: ${document.data}")
-                    plan= document.toObject(Plan::class.java)
+                    plan = document.toObject(Plan::class.java)
                     if (plan != null) {
                         plan!!.checkList!![position] = check
                         checkList.value = plan!!.checkList
-                        Log.i("Rita"," getCheckList-itemUpdate as $check")
+                        Log.i("Rita", " getCheckList-itemUpdate as $check")
                         //Store isDone status
                         //updatePlanByCheck(check, checkList)
                     }
@@ -156,22 +165,25 @@ object CalendarRemoteDataSource : CalendarDataSource {
             }
     }
 
-    override suspend fun getCheckAndRemoveItem(check:Check, position:Int,
-                                               checkList: MutableLiveData<MutableList<Check>>):
-            Result<Boolean> = suspendCoroutine{ continuation ->
+    override suspend fun getCheckAndRemoveItem(
+        check: Check, position: Int,
+        checkList: MutableLiveData<MutableList<Check>>
+    ):
+            Result<Boolean> = suspendCoroutine { continuation ->
         val planRef = check.plan_id?.let {
-            FirebaseFirestore.getInstance().collection(PATH_PLAN).document(it) }
+            FirebaseFirestore.getInstance().collection(PATH_PLAN).document(it)
+        }
 
         planRef!!.get()
             .addOnSuccessListener { document ->
                 if (document != null) {
                     Log.d(ContentValues.TAG, "DocumentSnapshot data: ${document.data}")
-                    val plan= document.toObject(Plan::class.java)
-                        plan!!.checkList!!.removeAt(position)
-                        checkList.value = plan.checkList
-                        Log.i("Rita"," getCheckList-itemRemoved as $check")
-                        //Store isDone status
-                        //updatePlanByCheck(item)
+                    val plan = document.toObject(Plan::class.java)
+                    plan!!.checkList!!.removeAt(position)
+                    checkList.value = plan.checkList
+                    Log.i("Rita", " getCheckList-itemRemoved as $check")
+                    //Store isDone status
+                    //updatePlanByCheck(item)
                 } else {
                     Log.d(ContentValues.TAG, "No such document")
                 }
@@ -182,7 +194,7 @@ object CalendarRemoteDataSource : CalendarDataSource {
             }
     }
 
-    override fun getUser (id: String) : MutableLiveData<User>{
+    override fun getUser(id: String): MutableLiveData<User> {
         val liveData = MutableLiveData<User>()
 
         FirebaseFirestore.getInstance()
@@ -202,29 +214,33 @@ object CalendarRemoteDataSource : CalendarDataSource {
         return liveData
     }
 
-    override suspend fun createUser(newUser: User): Result<Boolean> = suspendCoroutine { continuation ->
-        val db = FirebaseFirestore.getInstance()
+    override suspend fun createUser(newUser: User): Result<Boolean> =
+        suspendCoroutine { continuation ->
+            val db = FirebaseFirestore.getInstance()
 
-        db.collection(PATH_USER).document(newUser.id)
-            .set(newUser)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Log.i("Rita","Create: $newUser")
-                    continuation.resume(Result.Success(true))
-                } else {
-                    task.exception?.let {
+            db.collection(PATH_USER).document(newUser.id)
+                .set(newUser)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.i("Rita", "Create: $newUser")
+                        continuation.resume(Result.Success(true))
+                    } else {
+                        task.exception?.let {
 
-                        Log.i("Rita","[${this::class.simpleName}] Error getting documents. ${it.message}")
-                        continuation.resume(Result.Error(it))
-                        return@addOnCompleteListener
+                            Log.i(
+                                "Rita",
+                                "[${this::class.simpleName}] Error getting documents. ${it.message}"
+                            )
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(Result.Fail(CalendarProApplication.instance.getString(R.string.Error)))
                     }
-                    continuation.resume(Result.Fail(CalendarProApplication.instance.getString(R.string.Error)))
                 }
-            }
-    }
+        }
 
-    override fun getLiveDone(selectedStartTime: Long,selectedEndTime: Long,user: User):
-            MutableLiveData<List<Plan>>{
+    override fun getLiveDone(selectedStartTime: Long, selectedEndTime: Long, user: User):
+            MutableLiveData<List<Plan>> {
         var livedata = MutableLiveData<List<Plan>>()
         FirebaseFirestore.getInstance()
             .collection(PATH_PLAN)
@@ -232,21 +248,23 @@ object CalendarRemoteDataSource : CalendarDataSource {
             .whereGreaterThanOrEqualTo("done_time", selectedStartTime)
             .whereLessThanOrEqualTo("done_time", selectedEndTime)
             .addSnapshotListener { snapshot, e ->
-                Log.i("Rita","Today SnapshotListener user email:${user.email} ")
+                Log.i("Rita", "Today SnapshotListener user email:${user.email} ")
                 e?.let {
-                    Log.i("Rita",
-                        "[${this::class.simpleName}] Error getting documents. ${it.message}")
+                    Log.i(
+                        "Rita",
+                        "[${this::class.simpleName}] Error getting documents. ${it.message}"
+                    )
                 }
                 val list = mutableListOf<Plan>()
                 if (snapshot != null) {
                     for (item in snapshot) {
                         Log.i("Rita", "plan:　${item.data}")
-                        val plan= item.toObject(Plan::class.java)
+                        val plan = item.toObject(Plan::class.java)
                         list.add(plan!!)
                     }
                 }
                 Log.i("Rita", "list onChanged:　$list")
-                    livedata.value = list
+                livedata.value = list
             }
         Log.i("Rita", "livedata:　${livedata.value}")
         return livedata

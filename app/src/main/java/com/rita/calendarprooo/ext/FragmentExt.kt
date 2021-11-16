@@ -9,7 +9,7 @@ import com.rita.calendarprooo.factory.ViewModelFactory
 
 fun Fragment.getVmFactory(plan: Plan?): ViewModelFactory {
     val repository = (requireContext().applicationContext as CalendarProApplication).repository
-    return ViewModelFactory(plan,repository)
+    return ViewModelFactory(plan, repository)
 }
 
 fun Fragment.getVmFactory(): RepoViewModelFactory {

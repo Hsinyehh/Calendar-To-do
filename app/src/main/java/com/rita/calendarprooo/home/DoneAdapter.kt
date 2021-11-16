@@ -21,16 +21,18 @@ class DoneAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
         DoneAdapter.ViewHolder>(DoneDiffCallback()) {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        Log.i("Rita", "onBindViewHolder position=$position")
         val item = getItem(position)
 
 
         //checkAdapter
-        val adapter=CheckAdapter(viewModel)
-        holder.binding.scheduleCheckList.adapter=adapter
+        val adapter = CheckAdapter(viewModel)
+        holder.binding.scheduleCheckList.adapter = adapter
         adapter.submitList(item.checkList)
         adapter.notifyDataSetChanged()
 
         holder.binding.scheduleOverview.setOnClickListener {
+            Log.i("Rita", "holder.binding.scheduleOverview click position=$position")
             viewModel.changeDoneView(position)
         }
 

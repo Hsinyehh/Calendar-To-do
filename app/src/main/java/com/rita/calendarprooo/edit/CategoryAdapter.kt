@@ -10,26 +10,24 @@ import com.rita.calendarprooo.data.Category
 import com.rita.calendarprooo.databinding.ItemCategoryBinding
 
 
-
-
-class CategoryAdapter (viewModel: EditViewModel) : ListAdapter <Category,
+class CategoryAdapter(viewModel: EditViewModel) : ListAdapter<Category,
         CategoryAdapter.ViewHolder>(CategoryDiffCallback()) {
 
-    val viewModel=viewModel
-    var selectedItemPosition : Int=-1
+    val viewModel = viewModel
+    var selectedItemPosition: Int = -1
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
         holder.binding.categoryView.setOnClickListener {
-            Log.i("Rita","$selectedItemPosition")
+            Log.i("Rita", "$selectedItemPosition")
             /*viewModel.categoryStatus.value = item
             if(selectedItemPosition!=-1){
                 val lastSelectedItem=getItem(selectedItemPosition)
                 lastSelectedItem.isSelected=false
             }
             item.isSelected=true*/
-            viewModel.changeCategory(position,selectedItemPosition)
-            selectedItemPosition=position
+            viewModel.changeCategory(position, selectedItemPosition)
+            selectedItemPosition = position
             notifyDataSetChanged()
         }
         holder.bind(item)
@@ -39,8 +37,8 @@ class CategoryAdapter (viewModel: EditViewModel) : ListAdapter <Category,
         return ViewHolder.from(parent)
     }
 
-    class ViewHolder private constructor(val binding: ItemCategoryBinding)
-        : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder private constructor(val binding: ItemCategoryBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Category) {
             binding.category = item
@@ -60,7 +58,7 @@ class CategoryAdapter (viewModel: EditViewModel) : ListAdapter <Category,
 }
 
 
-class CategoryDiffCallback : DiffUtil.ItemCallback <Category>() {
+class CategoryDiffCallback : DiffUtil.ItemCallback<Category>() {
     override fun areItemsTheSame(oldItem: Category, newItem: Category): Boolean {
         return oldItem == newItem
     }
