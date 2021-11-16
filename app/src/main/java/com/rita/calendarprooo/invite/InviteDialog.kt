@@ -38,31 +38,32 @@ class InviteDialog : DialogFragment() {
         }
 
 
-        viewModel.invitation.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
-            Log.i("Rita","invitation observe- $it")
-            it?.let{
+        viewModel.invitation.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita", "invitation observe- $it")
+            it?.let {
                 viewModel.writeInvitation()
             }
         })
 
 
-        viewModel.isInvited.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
-            Log.i("Rita","isInvited observe- $it")
-            if(it==true){
+        viewModel.isInvited.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita", "isInvited observe- $it")
+            if (it == true) {
                 Toast.makeText(context, "The person is invited already.", Toast.LENGTH_LONG).show()
             }
         })
 
-        viewModel.isCollaborator.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
-            Log.i("Rita","isInvited observe- $it")
-            if(it==true){
-                Toast.makeText(context, "The person is collaborator already.", Toast.LENGTH_LONG).show()
+        viewModel.isCollaborator.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita", "isInvited observe- $it")
+            if (it == true) {
+                Toast.makeText(context, "The person is collaborator already.", Toast.LENGTH_LONG)
+                    .show()
             }
         })
 
-        viewModel.updateSuccess.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
-            Log.i("Rita","isInvited observe- $it")
-            if(it==true){
+        viewModel.updateSuccess.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita", "isInvited observe- $it")
+            if (it == true) {
                 Toast.makeText(context, "Update success", Toast.LENGTH_LONG).show()
                 dismiss()
                 viewModel.doneWritten()

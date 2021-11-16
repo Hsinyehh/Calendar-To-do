@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
 
 
         viewModel.navigateToHome.observe(this, Observer {
-            if(it==true){
+            if (it == true) {
                 findNavController(R.id.myNavHostFragment)
                     .navigate(NavigationDirections.navigateToHomeFragment())
                 toolbar.visibility = View.VISIBLE
@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         viewModel.navigateToLogin.observe(this, Observer {
-            if(it==true){
+            if (it == true) {
                 findNavController(R.id.myNavHostFragment)
                     .navigate(NavigationDirections.navigateToLoginFragment())
                 toolbar.visibility = View.GONE
@@ -89,7 +89,10 @@ class MainActivity : AppCompatActivity() {
 
         auth = Firebase.auth
         var currentUser = auth.currentUser
-        Log.i("Rita","MainActivity currentUser: ${currentUser} , userToken: ${UserManager.userToken}")
+        Log.i(
+            "Rita",
+            "MainActivity currentUser: ${currentUser} , userToken: ${UserManager.userToken}"
+        )
         if (currentUser == null) {
             //login first
             if (!UserManager.isLoggedIn) {

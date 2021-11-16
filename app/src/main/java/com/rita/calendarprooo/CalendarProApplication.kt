@@ -17,7 +17,7 @@ class CalendarProApplication : Application() {
     }
 
     companion object {
-        lateinit var instance : CalendarProApplication
+        lateinit var instance: CalendarProApplication
         var appContext: Context? = null
 
         /*fun getContext(): Context? {

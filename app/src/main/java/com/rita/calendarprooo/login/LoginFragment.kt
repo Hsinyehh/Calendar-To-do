@@ -43,7 +43,6 @@ class LoginFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
 
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -58,7 +57,7 @@ class LoginFragment : Fragment() {
 
         val signInBtn = binding.signInButton
 
-        signInBtn.setOnClickListener{
+        signInBtn.setOnClickListener {
             signIn()
         }
 
@@ -67,14 +66,14 @@ class LoginFragment : Fragment() {
 
 
         viewModel.newUser.observe(viewLifecycleOwner, Observer {
-            it?.let{
+            it?.let {
                 viewModel.addUser(it)
             }
         })
 
         viewModel.navigateToHome.observe(viewLifecycleOwner, Observer {
-            Log.i("Rita","navigateToHome observe: ${it}")
-            if(it == true){
+            Log.i("Rita", "navigateToHome observe: ${it}")
+            if (it == true) {
                 findNavController().navigate(NavigationDirections.navigateToHomeFragment())
                 viewModel.doneNavigated()
             }
@@ -83,7 +82,6 @@ class LoginFragment : Fragment() {
 
         return binding.root
     }
-
 
 
     // [END handleSignInResult]
@@ -134,8 +132,10 @@ class LoginFragment : Fragment() {
             val photoUrl = account.photoUrl
             viewModel.createUser(idToken, email, displayName, photoUrl)
 
-            Log.i("Rita","Sign-in success id:$idToken, displayName:$displayName" +
-                    "email:$email, photo:$photoUrl ")
+            Log.i(
+                "Rita", "Sign-in success id:$idToken, displayName:$displayName" +
+                        "email:$email, photo:$photoUrl "
+            )
         } catch (e: ApiException) {
             Log.w(TAG, "signInResult:failed code=" + e.statusCode)
         }

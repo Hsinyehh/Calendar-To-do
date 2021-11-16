@@ -37,40 +37,40 @@ class HomeSortFragment : Fragment() {
 
         //init plans
         viewModel.currentUser.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.i("Rita","currentUser.observe: $it")
+            Log.i("Rita", "currentUser.observe: $it")
             viewModel.initCategory(it)
         })
 
         viewModel.categoryStatus.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.i("Rita","categoryStatus.observe: $it")
+            Log.i("Rita", "categoryStatus.observe: $it")
             viewModel.readPlanFromToday()
             viewModel.readPlanOnChanged()
         })
 
         //read Plans when date selected changed
-        viewModel.selectedEndTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
-            Log.i("Rita","selectedEndTime observe- $it")
-            it?.let{
+        viewModel.selectedEndTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita", "selectedEndTime observe- $it")
+            it?.let {
                 viewModel.readPlanFromToday()
             }
         })
 
-        viewModel.readListFromToday.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
-            Log.i("Rita","readListFromToday observe - $it")
-            it?.let{
+        viewModel.readListFromToday.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita", "readListFromToday observe - $it")
+            it?.let {
                 viewModel.readPlanBeforeToday()
             }
         })
 
-        viewModel.readListBeforeToday.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
-            Log.i("Rita","readListBeforeToday observe - $it")
-            it?.let{
+        viewModel.readListBeforeToday.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita", "readListBeforeToday observe - $it")
+            it?.let {
                 viewModel.readPlanInTotal()
             }
         })
 
         viewModel.startToGetViewList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            if(it==true){
+            if (it == true) {
                 viewModel.getViewList()
                 viewModel.doneGetViewList()
             }
@@ -78,21 +78,21 @@ class HomeSortFragment : Fragment() {
 
         //test
         viewModel.scheduleViewList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.i("Rita","scheduleViewList.observe: $it")
+            Log.i("Rita", "scheduleViewList.observe: $it")
         })
 
 
         //update plans on home pages when data changed
         viewModel.listFromToday.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            it?.let{
-                Log.i("Rita","listFromToday.observe: $it")
+            it?.let {
+                Log.i("Rita", "listFromToday.observe: $it")
                 viewModel.getTotalList()
             }
         })
 
         viewModel.listBeforeToday.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            it?.let{
-                Log.i("Rita","listBeforeToday.observe: $it")
+            it?.let {
+                Log.i("Rita", "listBeforeToday.observe: $it")
                 viewModel.getTotalListBefore()
             }
         })
@@ -126,28 +126,27 @@ class HomeSortFragment : Fragment() {
         val adapter = ScheduleAdapter(viewModel)
         binding.homeScheduleList.adapter = adapter
         viewModel.scheduleList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.i("Rita","scheduleList.observe: $it")
-            if(viewModel.getViewListAlready.value == true) {
+            Log.i("Rita", "scheduleList.observe: $it")
+            if (viewModel.getViewListAlready.value == true) {
                 createScheduleRecyclerview()
             }
         })
-
 
 
         //to-do adapter
         val todoAdapter = TodoAdapter(viewModel)
         binding.homeTodoList.adapter = todoAdapter
         viewModel.todoList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.i("Rita","todoList.observe: $it")
+            Log.i("Rita", "todoList.observe: $it")
 
             //get size again for to-do/done mode changed
-            Log.i("Rita","todoList.observe: ${viewModel.startToGetViewListForTodoMode.value}")
-            if(viewModel.startToGetViewListForTodoMode.value==true){
+            Log.i("Rita", "todoList.observe: ${viewModel.startToGetViewListForTodoMode.value}")
+            if (viewModel.startToGetViewListForTodoMode.value == true) {
                 viewModel.getViewListForTodoMode()
-                viewModel.startToGetViewListForTodoMode.value=null
+                viewModel.startToGetViewListForTodoMode.value = null
             }
 
-            if(viewModel.getViewListAlready.value == true) {
+            if (viewModel.getViewListAlready.value == true) {
                 createTodoRecyclerview()
             }
         })
@@ -156,26 +155,26 @@ class HomeSortFragment : Fragment() {
         val doneAdapter = DoneAdapter(viewModel)
         binding.homeDoneList.adapter = doneAdapter
         viewModel.doneList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.i("Rita","doneList.observe: $it")
+            Log.i("Rita", "doneList.observe: $it")
 
             //get size again for to-do/done mode changed
-            Log.i("Rita","doneList.observe: ${viewModel.startToGetViewListForDoneMode.value}")
-            if(viewModel.startToGetViewListForDoneMode.value==true){
+            Log.i("Rita", "doneList.observe: ${viewModel.startToGetViewListForDoneMode.value}")
+            if (viewModel.startToGetViewListForDoneMode.value == true) {
                 viewModel.getViewListForTodoMode()
-                viewModel.startToGetViewListForDoneMode.value=null
+                viewModel.startToGetViewListForDoneMode.value = null
             }
 
-            if(viewModel.getViewListAlready.value == true){
-                Log.e("Rita","viewModel.getViewListAlready.value == true, submit")
+            if (viewModel.getViewListAlready.value == true) {
+                Log.e("Rita", "viewModel.getViewListAlready.value == true, submit")
                 createDoneRecyclerview()
             }
         })
 
         // After the viewList is got, the recyclerView will show
         viewModel.getViewListAlready.observe(viewLifecycleOwner, Observer {
-            Log.e("Rita","getViewListAlready observe - $it")
-            it?.let{
-                if(it){
+            Log.e("Rita", "getViewListAlready observe - $it")
+            it?.let {
+                if (it) {
                     createScheduleRecyclerview()
                     createTodoRecyclerview()
                     createDoneRecyclerview()
@@ -188,70 +187,77 @@ class HomeSortFragment : Fragment() {
         val categoryAdapter = CategoryAdapter(viewModel)
         binding.categoryList.adapter = categoryAdapter
         viewModel.categoryList.observe(viewLifecycleOwner, Observer {
-            Log.i("Rita","categoryList.observe: $it")
-            it?.let{
+            Log.i("Rita", "categoryList.observe: $it")
+            it?.let {
                 categoryAdapter.submitList(it)
                 categoryAdapter.notifyDataSetChanged()
             }
         })
 
 
-
         val address = ""
         val plan: Plan? = Plan()
         //Edit page navigation
         viewModel.navigateToEdit.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            it?.let{
+            it?.let {
                 view?.findNavController()?.navigate(
                     NavigationDirections.navigateToEditFragment(
-                        address, plan))
+                        address, plan
+                    )
+                )
                 viewModel.doneNavigated()
             }
         })
 
         viewModel.navigateToEditByPlan.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            it?.let{
-                Log.i("Rita","navigateToEditByPlan.observe: $it")
+            it?.let {
+                Log.i("Rita", "navigateToEditByPlan.observe: $it")
                 view?.findNavController()?.navigate(
                     NavigationDirections.navigateToEditFragment(
-                        address, viewModel.navigateToEditByPlan.value))
+                        address, viewModel.navigateToEditByPlan.value
+                    )
+                )
                 viewModel.doneNavigated()
             }
         })
 
         viewModel.navigateToInvite.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            it?.let{
-                Log.i("Rita","navigateToInvite.observe: $it")
+            it?.let {
+                Log.i("Rita", "navigateToInvite.observe: $it")
                 view?.findNavController()?.navigate(
                     NavigationDirections.navigateToInviteFragment(
-                        viewModel.navigateToInvite.value))
+                        viewModel.navigateToInvite.value
+                    )
+                )
                 viewModel.doneNavigated()
             }
         })
 
         viewModel.navigateToInviteCategory.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.i("Rita","navigateToInviteCategory.observe: $it")
-            it?.let{
-                    view?.findNavController()?.navigate(
-                        NavigationDirections.navigateToInviteCategoryDialog(
-                            viewModel.categoryStatus.value, viewModel.currentUser.value,
-                            viewModel.categoryPosition.value!!))
-                    viewModel.doneNavigated()
+            Log.i("Rita", "navigateToInviteCategory.observe: $it")
+            it?.let {
+                view?.findNavController()?.navigate(
+                    NavigationDirections.navigateToInviteCategoryDialog(
+                        viewModel.categoryStatus.value, viewModel.currentUser.value,
+                        viewModel.categoryPosition.value!!
+                    )
+                )
+                viewModel.doneNavigated()
             }
         })
-
 
 
         //to-do adapter drag item
         var simpleCallback = object : ItemTouchHelper.SimpleCallback(
             ItemTouchHelper.UP or (ItemTouchHelper.DOWN),
-            0){
+            0
+        ) {
 
             override fun getMovementFlags(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder
             ): Int {
-                val  dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
+                val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
                 val swipeFlags = 0
                 return makeMovementFlags(dragFlags, swipeFlags)
             }
@@ -265,8 +271,8 @@ class HomeSortFragment : Fragment() {
                 var endPosition = target.adapterPosition
 
                 //swap position
-                viewModel.swapCheckListItem(startPosition,endPosition)
-                recyclerView.adapter?.notifyItemMoved(startPosition,endPosition)
+                viewModel.swapCheckListItem(startPosition, endPosition)
+                recyclerView.adapter?.notifyItemMoved(startPosition, endPosition)
                 return true
             }
 
@@ -288,7 +294,6 @@ class HomeSortFragment : Fragment() {
         itemTouchHelper.attachToRecyclerView(toToListRecyclerView)
 
 
-
         //calendar
         val collapsibleCalendar: CollapsibleCalendar = binding.calendarView
         collapsibleCalendar.setCalendarListener(object : CollapsibleCalendar.CalendarListener {
@@ -296,7 +301,7 @@ class HomeSortFragment : Fragment() {
             override fun onClickListener() {}
             override fun onDaySelect() {
                 val day = collapsibleCalendar.selectedDay
-                val dateSelected = ""+day!!.day + "-" + (day.month + 1) + "-" + day.year
+                val dateSelected = "" + day!!.day + "-" + (day.month + 1) + "-" + day.year
 
                 viewModel.selectedTimeSet(dateSelected)
 

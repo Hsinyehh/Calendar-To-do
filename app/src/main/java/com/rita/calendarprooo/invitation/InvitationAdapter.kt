@@ -11,18 +11,18 @@ import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.databinding.ItemInvitationBinding
 
 
-class InvitationAdapter (val viewModel: InvitationViewModel) : ListAdapter<Plan,
+class InvitationAdapter(val viewModel: InvitationViewModel) : ListAdapter<Plan,
         InvitationAdapter.ViewHolder>(InvitationDiffCallback()) {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
 
         holder.binding.invitationBtnAccept.setOnClickListener {
-            viewModel.acceptOrDeclineInvitation(item,true)
+            viewModel.acceptOrDeclineInvitation(item, true)
         }
 
         holder.binding.invitationBtnDecline.setOnClickListener {
-            viewModel.acceptOrDeclineInvitation(item,false)
+            viewModel.acceptOrDeclineInvitation(item, false)
         }
 
         holder.bind(item)
@@ -32,8 +32,8 @@ class InvitationAdapter (val viewModel: InvitationViewModel) : ListAdapter<Plan,
         return ViewHolder.from(parent)
     }
 
-    class ViewHolder private constructor(val binding: ItemInvitationBinding)
-        : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder private constructor(val binding: ItemInvitationBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Plan) {
             binding.plan = item

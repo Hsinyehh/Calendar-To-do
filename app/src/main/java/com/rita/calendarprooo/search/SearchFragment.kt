@@ -35,13 +35,13 @@ import com.rita.calendarprooo.data.Plan
 
 class SearchFragment : Fragment(), OnMapReadyCallback {
 
-    private val viewModel : SearchViewModel by lazy {
+    private val viewModel: SearchViewModel by lazy {
         ViewModelProvider(this).get(SearchViewModel::class.java)
     }
 
-    private lateinit var mMap : GoogleMap
+    private lateinit var mMap: GoogleMap
 
-    private val DEFAULT_ZOOM : Float = 15f
+    private val DEFAULT_ZOOM: Float = 15f
 
     private val AUTOCOMPLETE_REQUEST_CODE = 1
 
@@ -59,7 +59,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         binding.lifecycleOwner = viewLifecycleOwner
 
         // Google map setup
-        val mapFragment =  childFragmentManager
+        val mapFragment = childFragmentManager
             .findFragmentById(binding.map.id) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
@@ -84,10 +84,12 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         // Edit page navigation
         val plan: Plan? = Plan()
         viewModel.navigateToEdit.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            it?.let{
+            it?.let {
                 view?.findNavController()?.navigate(
                     NavigationDirections.navigateToEditFragment(
-                    viewModel.searchResultAddress.value, plan))
+                        viewModel.searchResultAddress.value, plan
+                    )
+                )
                 viewModel.doneNavigated()
             }
         })
@@ -105,14 +107,13 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
     }
 
-    fun moveCamera(latLng: LatLng, zoom:Float, title: String){
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,zoom))
+    fun moveCamera(latLng: LatLng, zoom: Float, title: String) {
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom))
 
         val options = MarkerOptions().position(latLng).title(title)
 
         mMap.addMarker(options)
     }
-
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -126,11 +127,15 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
                         viewModel.searchResultAddress.value = place.address
                         viewModel.searchResultName.value = place.name
                         viewModel.searchText.value = place.name
-                        Log.i(TAG, "Place: ${viewModel.searchResultAddress.value}," +
-                                "${viewModel.searchResultName.value}, " +
-                                "${viewModel.searchText.value}")
-                        moveCamera(place.latLng,DEFAULT_ZOOM,
-                            place.address)
+                        Log.i(
+                            TAG, "Place: ${viewModel.searchResultAddress.value}," +
+                                    "${viewModel.searchResultName.value}, " +
+                                    "${viewModel.searchText.value}"
+                        )
+                        moveCamera(
+                            place.latLng, DEFAULT_ZOOM,
+                            place.address
+                        )
                     }
                 }
                 AutocompleteActivity.RESULT_ERROR -> {
@@ -148,8 +153,6 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
-
-
 
 
 }

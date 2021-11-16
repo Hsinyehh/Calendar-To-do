@@ -446,7 +446,7 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
     }
 
 
-    fun selectedTimeSet(date: String){
+    fun selectedTimeSet(date: String) {
         val timeList = convertToTimeStamp(date)
         selectedStartTime.value = timeList?.get(0)
         selectedEndTime.value = timeList?.get(1)

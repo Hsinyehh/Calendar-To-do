@@ -22,21 +22,22 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
 
     var invitationForCategoryList = MutableLiveData<MutableList<Invitation>>()
 
-    var invitationListSize : LiveData<Int> =Transformations.map(invitationList){
+    var invitationListSize: LiveData<Int> = Transformations.map(invitationList) {
         var size = 0
-        if(!it.isNullOrEmpty()){
+        if (!it.isNullOrEmpty()) {
             size = it.size
         }
         size
     }
 
-    var invitationForCategoryListSize : LiveData<Int> =Transformations.map(invitationForCategoryList){
-        var size = 0
-        if(!it.isNullOrEmpty()){
-            size = it.size
+    var invitationForCategoryListSize: LiveData<Int> =
+        Transformations.map(invitationForCategoryList) {
+            var size = 0
+            if (!it.isNullOrEmpty()) {
+                size = it.size
+            }
+            size
         }
-        size
-    }
 
     // Category
     var invitationAccepted = MutableLiveData<Invitation>()
@@ -61,7 +62,7 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
     //Firebase
     private val db = Firebase.firestore
 
-    fun readInvitation(){
+    fun readInvitation() {
         db.collection("plan")
             .whereArrayContains("invitation", user.value!!.email)
             .addSnapshotListener { snapshot, e ->
@@ -72,7 +73,7 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
                 if (snapshot != null && !snapshot.isEmpty) {
                     var list = mutableListOf<Plan>()
                     for (item in snapshot) {
-                        val plan= item.toObject(Plan::class.java)
+                        val plan = item.toObject(Plan::class.java)
                         list.add(plan!!)
                     }
                     Log.i("Rita", "Invitation list onChanged:　$list")
@@ -85,25 +86,26 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
             }
     }
 
-    fun acceptOrDeclineInvitation(plan: Plan, isAccepted: Boolean){
+    fun acceptOrDeclineInvitation(plan: Plan, isAccepted: Boolean) {
         //update plan collaborator & invitation
         val invitationGet = plan.invitation
         val collaboratorGet = plan.collaborator
 
         val indexRemoved = invitationGet?.indexOf(user.value!!.email)
-        if (indexRemoved != null && indexRemoved >= 0 ) {
+        if (indexRemoved != null && indexRemoved >= 0) {
             invitationGet?.removeAt(indexRemoved)
         }
-        if(isAccepted){
+        if (isAccepted) {
             collaboratorGet?.add(user.value!!.email)
         }
 
-        val planRef =  db.collection("plan").document(plan.id!!)
+        val planRef = db.collection("plan").document(plan.id!!)
         Log.i("Rita", "updatePlan-planRef: $planRef")
         planRef!!
             .update(
                 "invitation", invitationGet,
-                "collaborator", collaboratorGet,)
+                "collaborator", collaboratorGet,
+            )
             .addOnSuccessListener { Log.d(ContentValues.TAG, "successfully updated!") }
             .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error updating document", e) }
     }
@@ -135,11 +137,11 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
         }
     }
 
-    fun addCollaboratorForPlan(){
+    fun addCollaboratorForPlan() {
         val list = plans.value
         if (list != null) {
-            for(item in list){
-                if(!item.collaborator!!.contains(user.value?.email)){
+            for (item in list) {
+                if (!item.collaborator!!.contains(user.value?.email)) {
                     user.value?.email?.let { item.collaborator!!.add(it) }
                 }
             }
@@ -162,21 +164,20 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
     }
 
 
-
     // update Users' category's collaborator
-    fun getUsers(){
+    fun getUsers() {
         val collaboratorFromCategory = invitationAccepted.value?.collaborator!!
-        Log.i("Rita","collaboratorFromCategory: $collaboratorFromCategory")
+        Log.i("Rita", "collaboratorFromCategory: $collaboratorFromCategory")
 
         val list = mutableListOf<User>()
-        for(user in collaboratorFromCategory){
+        for (user in collaboratorFromCategory) {
             db.collection("user")
                 .whereEqualTo("email", user)
                 .get()
                 .addOnSuccessListener { result ->
                     for (document in result) {
                         val user = document.toObject(User::class.java)
-                        if(!list.contains(user)){
+                        if (!list.contains(user)) {
                             list.add(user)
                         }
                     }
@@ -191,16 +192,16 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
     }
 
 
-    fun addCollaboratorForUser(){
+    fun addCollaboratorForUser() {
         val list = userList.value
         if (list != null) {
-            for(userGet in list){
+            for (userGet in list) {
                 val category = invitationAccepted.value?.title
                 val email = user.value?.email
                 val index = userGet.categoryList.indexOfFirst { it.name == category }
                 val categoryFromUser = userGet.categoryList[index]
 
-                if(!categoryFromUser.collaborator!!.contains(email)){
+                if (!categoryFromUser.collaborator!!.contains(email)) {
                     email?.let { userGet.categoryList[index].collaborator.add(it) }
                 }
             }
@@ -209,7 +210,7 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
         userList.value = list
     }
 
-    fun updateCategoryForUser(user: User){
+    fun updateCategoryForUser(user: User) {
         val userRef = user.let { db.collection("user").document(it.id!!) }
         Log.i("Rita", "updatePlan-planRef: $userRef")
         userRef!!
@@ -222,11 +223,7 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
     }
 
 
-
-
-
-
-    fun doneWritten(){
+    fun doneWritten() {
 
         addCollaboratorForPlan.value = null
         updatePlan.value = null

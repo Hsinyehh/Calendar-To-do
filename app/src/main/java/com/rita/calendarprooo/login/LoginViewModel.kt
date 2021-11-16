@@ -103,11 +103,11 @@ class LoginViewModel(repository: CalendarRepository) : ViewModel() {
         UserManager.user = repository.getUser(id)
     }
 
-    fun  startToNavigateToHome(){
+    fun startToNavigateToHome() {
         navigateToHome.value = true
     }
 
-    fun  doneNavigated(){
+    fun doneNavigated() {
         navigateToHome.value = null
     }
 

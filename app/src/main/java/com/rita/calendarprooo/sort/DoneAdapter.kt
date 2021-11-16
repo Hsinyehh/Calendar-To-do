@@ -11,7 +11,7 @@ import com.rita.calendarprooo.databinding.ItemDoneSortBinding
 import com.rita.calendarprooo.login.UserManager
 import java.util.*
 
-class DoneAdapter (val viewModel: HomeSortViewModel) : ListAdapter<Plan,
+class DoneAdapter(val viewModel: HomeSortViewModel) : ListAdapter<Plan,
         DoneAdapter.ViewHolder>(DoneDiffCallback()) {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -19,8 +19,8 @@ class DoneAdapter (val viewModel: HomeSortViewModel) : ListAdapter<Plan,
 
 
         //checkAdapter
-        val adapter= CheckAdapter(viewModel)
-        holder.binding.scheduleCheckList.adapter=adapter
+        val adapter = CheckAdapter(viewModel)
+        holder.binding.scheduleCheckList.adapter = adapter
         adapter.submitList(item.checkList)
         adapter.notifyDataSetChanged()
 
@@ -33,11 +33,11 @@ class DoneAdapter (val viewModel: HomeSortViewModel) : ListAdapter<Plan,
         }*/
 
         holder.binding.scheduleBtnCheck.setOnClickListener {
-            if(!item.isToDoListDone){
+            if (!item.isToDoListDone) {
                 item.isToDoListDone = true
                 item.done_time = Calendar.getInstance().timeInMillis
                 item.doner = UserManager.user.value?.name
-            }else if(item.isToDoListDone){
+            } else if (item.isToDoListDone) {
                 item.isToDoListDone = false
                 item.done_time = null
                 item.doner = null
@@ -57,7 +57,7 @@ class DoneAdapter (val viewModel: HomeSortViewModel) : ListAdapter<Plan,
             viewModel.startNavigateToInvite(item)
         }
 
-        holder.bind(item, position,viewModel)
+        holder.bind(item, position, viewModel)
 
     }
 
@@ -65,10 +65,10 @@ class DoneAdapter (val viewModel: HomeSortViewModel) : ListAdapter<Plan,
         return ViewHolder.from(parent)
     }
 
-    class ViewHolder private constructor(val binding: ItemDoneSortBinding)
-        : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder private constructor(val binding: ItemDoneSortBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: Plan, position: Int ,viewModel: HomeSortViewModel) {
+        fun bind(item: Plan, position: Int, viewModel: HomeSortViewModel) {
             binding.plan = item
             binding.position = position
             binding.viewModel = viewModel

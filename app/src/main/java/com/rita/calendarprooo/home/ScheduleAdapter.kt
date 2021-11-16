@@ -14,7 +14,7 @@ import com.rita.calendarprooo.databinding.ItemScheduleBinding
 import com.rita.calendarprooo.edit.EditViewModel
 import java.util.Observer
 
-class ScheduleAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
+class ScheduleAdapter(val viewModel: HomeViewModel) : ListAdapter<Plan,
         ScheduleAdapter.ViewHolder>(ScheduleDiffCallback()) {
 
 
@@ -23,13 +23,13 @@ class ScheduleAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
 
 
         //checkAdapter
-        val adapter=CheckAdapter(viewModel)
+        val adapter = CheckAdapter(viewModel)
         holder.binding.scheduleCheckList.adapter = adapter
         adapter.submitList(item.checkList)
         adapter.notifyDataSetChanged()
 
         holder.binding.scheduleOverview.setOnClickListener {
-            Log.i("Rita","scheduleOverview onclick")
+            Log.i("Rita", "scheduleOverview onclick")
             viewModel.changeScheduleView(position)
         }
 
@@ -54,8 +54,8 @@ class ScheduleAdapter (val viewModel: HomeViewModel) : ListAdapter<Plan,
         return ViewHolder.from(parent)
     }
 
-    class ViewHolder private constructor(val binding: ItemScheduleBinding)
-        : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder private constructor(val binding: ItemScheduleBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Plan, position: Int, viewModel: HomeViewModel) {
             binding.plan = item

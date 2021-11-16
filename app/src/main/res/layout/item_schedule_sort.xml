@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View"></import>
+
         <variable
             name="plan"
             type="com.rita.calendarprooo.data.Plan" />
+
         <variable
             name="viewModel"
             type="com.rita.calendarprooo.sort.HomeSortViewModel" />
+
         <variable
             name="position"
             type="Integer" />
@@ -107,6 +110,7 @@
                 app:owner_name="@{plan}"
                 tools:text="Mia" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/schedule_detail"
             android:layout_width="match_parent"

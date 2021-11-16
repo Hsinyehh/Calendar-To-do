@@ -6,8 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.rita.calendarprooo.data.source.CalendarRepository
 import com.rita.calendarprooo.login.UserManager
 
-class MainViewModel(repository: CalendarRepository)
-    : ViewModel() {
+class MainViewModel(repository: CalendarRepository) : ViewModel() {
 
     val currentUser = UserManager.user
 
@@ -23,7 +22,7 @@ class MainViewModel(repository: CalendarRepository)
         Log.d("Rita", "mainActivity VM getUserData: ${UserManager.user.value}")
     }
 
-    fun doneNavigated(){
+    fun doneNavigated() {
         navigateToHome.value = null
         navigateToLogin.value = null
     }

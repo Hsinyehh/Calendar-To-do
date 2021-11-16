@@ -26,26 +26,24 @@ class InviteViewModel : ViewModel() {
     //Firebase
     private val db = Firebase.firestore
 
-    fun createInvitation(){
+    fun createInvitation() {
         val invitationGet = plan.value?.invitation
         val collaboratorGet = plan.value?.collaborator
 
-        val isInvitedCheck:Boolean? = invitationGet?.contains(email.value) ?: null
-        val isCollaboratorCheck:Boolean? = collaboratorGet?.contains(email.value) ?: null
+        val isInvitedCheck: Boolean? = invitationGet?.contains(email.value) ?: null
+        val isCollaboratorCheck: Boolean? = collaboratorGet?.contains(email.value) ?: null
 
-        if(isInvitedCheck==false && isCollaboratorCheck==false){
+        if (isInvitedCheck == false && isCollaboratorCheck == false) {
             email.value?.let { invitationGet?.add(it) }
             invitation.value = invitationGet
-        }
-        else if(isInvitedCheck==true){
+        } else if (isInvitedCheck == true) {
             isInvited.value = isInvitedCheck
-        }
-        else if(isCollaboratorCheck==true){
+        } else if (isCollaboratorCheck == true) {
             isCollaborator.value = isCollaboratorCheck
         }
     }
 
-    fun writeInvitation(){
+    fun writeInvitation() {
         val planRef = plan.value?.id?.let { db.collection("plan").document(it) }
         planRef!!
             .update(
@@ -53,11 +51,12 @@ class InviteViewModel : ViewModel() {
             )
             .addOnSuccessListener {
                 Log.d(ContentValues.TAG, "successfully updated!")
-                updateSuccess.value = true}
+                updateSuccess.value = true
+            }
             .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error updating document", e) }
     }
 
-    fun doneWritten(){
+    fun doneWritten() {
         invitation.value = null
         isInvited.value = null
         updateSuccess.value = null

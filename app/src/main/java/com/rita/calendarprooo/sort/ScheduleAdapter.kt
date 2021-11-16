@@ -11,7 +11,7 @@ import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.databinding.ItemScheduleSortBinding
 
 
-class ScheduleAdapter  (val viewModel: HomeSortViewModel) : ListAdapter<Plan,
+class ScheduleAdapter(val viewModel: HomeSortViewModel) : ListAdapter<Plan,
         ScheduleAdapter.ViewHolder>(ScheduleDiffCallback()) {
 
 
@@ -20,13 +20,13 @@ class ScheduleAdapter  (val viewModel: HomeSortViewModel) : ListAdapter<Plan,
 
 
         //checkAdapter
-        val adapter= CheckAdapter(viewModel)
+        val adapter = CheckAdapter(viewModel)
         holder.binding.scheduleCheckList.adapter = adapter
         adapter.submitList(item.checkList)
         adapter.notifyDataSetChanged()
 
         holder.binding.scheduleOverview.setOnClickListener {
-            Log.i("Rita","scheduleOverview onclick")
+            Log.i("Rita", "scheduleOverview onclick")
             viewModel.changeScheduleView(position)
         }
 
@@ -51,8 +51,8 @@ class ScheduleAdapter  (val viewModel: HomeSortViewModel) : ListAdapter<Plan,
         return ViewHolder.from(parent)
     }
 
-    class ViewHolder private constructor(val binding: ItemScheduleSortBinding)
-        : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder private constructor(val binding: ItemScheduleSortBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Plan, position: Int, viewModel: HomeSortViewModel) {
             binding.plan = item

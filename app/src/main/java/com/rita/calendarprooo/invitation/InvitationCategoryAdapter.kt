@@ -10,7 +10,7 @@ import com.rita.calendarprooo.data.Invitation
 import com.rita.calendarprooo.databinding.ItemInvitationCategoryBinding
 
 
-class InvitationCategoryAdapter (val viewModel: InvitationViewModel) : ListAdapter<Invitation,
+class InvitationCategoryAdapter(val viewModel: InvitationViewModel) : ListAdapter<Invitation,
         InvitationCategoryAdapter.ViewHolder>(InvitationCategoryDiffCallback()) {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -31,8 +31,8 @@ class InvitationCategoryAdapter (val viewModel: InvitationViewModel) : ListAdapt
         return ViewHolder.from(parent)
     }
 
-    class ViewHolder private constructor(val binding: ItemInvitationCategoryBinding)
-        : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder private constructor(val binding: ItemInvitationCategoryBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Invitation) {
             binding.invitation = item

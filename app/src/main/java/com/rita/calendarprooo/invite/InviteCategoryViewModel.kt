@@ -26,7 +26,7 @@ class InviteCategoryViewModel(val repository: CalendarRepository) : ViewModel() 
 
     var invitation = MutableLiveData<Invitation>()
 
-    var invitationList =  MutableLiveData<MutableList<Invitation>>()
+    var invitationList = MutableLiveData<MutableList<Invitation>>()
 
     var isInvited = MutableLiveData<Boolean>()
 
@@ -38,19 +38,18 @@ class InviteCategoryViewModel(val repository: CalendarRepository) : ViewModel() 
     private val db = Firebase.firestore
 
 
-
     fun createInvitation() {
         var list = userTobeInvited.value?.invitationList
         invitation.value = Invitation(
             title = category.value,
             inviter = user.value?.email,
-            collaborator =  user.value?.categoryList?.get(categoryPosition.value!!)!!.collaborator)
+            collaborator = user.value?.categoryList?.get(categoryPosition.value!!)!!.collaborator
+        )
 
         if (list != null) {
-            if(list!!.contains(invitation.value!!)){
+            if (list!!.contains(invitation.value!!)) {
                 isInvited.value = true
-            }
-            else{
+            } else {
                 list!!.add(invitation.value!!)
             }
         }
@@ -60,7 +59,7 @@ class InviteCategoryViewModel(val repository: CalendarRepository) : ViewModel() 
     }
 
     // to be revised
-    fun getTheUser(){
+    fun getTheUser() {
         email.value?.let {
             db.collection("user")
                 .whereEqualTo("email", it)
@@ -78,9 +77,10 @@ class InviteCategoryViewModel(val repository: CalendarRepository) : ViewModel() 
         }
     }
 
-    fun updateInvitation(list : MutableList<Invitation>){
+    fun updateInvitation(list: MutableList<Invitation>) {
         val userRef = userTobeInvited.value?.let {
-            db.collection("user").document(it.id!!) }
+            db.collection("user").document(it.id!!)
+        }
         Log.i("Rita", "updateInvitation-userRef: $userRef")
         userRef!!
             .update(
@@ -88,14 +88,14 @@ class InviteCategoryViewModel(val repository: CalendarRepository) : ViewModel() 
             )
             .addOnSuccessListener {
                 Log.d(ContentValues.TAG, "successfully updated!")
-                updateSuccess.value = true }
+                updateSuccess.value = true
+            }
             .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error updating document", e) }
 
     }
 
 
-
-    fun doneWritten(){
+    fun doneWritten() {
         invitation.value = null
         isInvited.value = null
         updateSuccess.value = null

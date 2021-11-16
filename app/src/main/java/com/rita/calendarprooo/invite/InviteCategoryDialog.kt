@@ -43,31 +43,31 @@ class InviteCategoryDialog : DialogFragment() {
             dismiss()
         }
 
-        viewModel.userTobeInvited.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
-            Log.i("Rita","userTobeInvited observe- $it")
-            it?.let{
+        viewModel.userTobeInvited.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita", "userTobeInvited observe- $it")
+            it?.let {
                 viewModel.createInvitation()
             }
         })
 
-        viewModel.invitationList.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
-            Log.i("Rita","invitationList observe- $it")
-            it?.let{
+        viewModel.invitationList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita", "invitationList observe- $it")
+            it?.let {
                 viewModel.updateInvitation(it)
             }
         })
 
-        viewModel.isInvited.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
-            Log.i("Rita","isInvited observe- $it")
-            if(it==true){
+        viewModel.isInvited.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita", "isInvited observe- $it")
+            if (it == true) {
                 Toast.makeText(context, "The person is invited already.", Toast.LENGTH_LONG).show()
             }
         })
 
 
-        viewModel.updateSuccess.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
-            Log.i("Rita","updateSuccess observe- $it")
-            if(it==true){
+        viewModel.updateSuccess.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita", "updateSuccess observe- $it")
+            if (it == true) {
                 Toast.makeText(context, "Invite success", Toast.LENGTH_LONG).show()
                 dismiss()
                 viewModel.doneWritten()

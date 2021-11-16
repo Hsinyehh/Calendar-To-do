@@ -125,7 +125,7 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
         currentUser.value?.let {
             db.collection("plan")
                 .whereArrayContains("collaborator", it.email!!)
-                .whereEqualTo("category",categoryStatus.value)
+                .whereEqualTo("category", categoryStatus.value)
                 .whereGreaterThanOrEqualTo("start_time", selectedStartTime.value!!)
                 .whereLessThanOrEqualTo("start_time", selectedEndTime.value!!)
                 .get()
@@ -151,7 +151,7 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
         currentUser.value?.let {
             db.collection("plan")
                 .whereArrayContains("collaborator", it.email!!)
-                .whereEqualTo("category",categoryStatus.value)
+                .whereEqualTo("category", categoryStatus.value)
                 .whereLessThan("start_time", selectedStartTime.value!!)
                 .get()
                 .addOnSuccessListener { result ->
@@ -364,7 +364,12 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
         Log.i("Rita", "writeCheckItemDone-planRef: $planRef")
         planRef!!
             .update("checkList", checkList.value)
-            .addOnSuccessListener { Log.d(ContentValues.TAG, "DocumentSnapshot successfully updated!") }
+            .addOnSuccessListener {
+                Log.d(
+                    ContentValues.TAG,
+                    "DocumentSnapshot successfully updated!"
+                )
+            }
             .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error updating document", e) }
     }
 
@@ -373,7 +378,7 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
         currentUser.value?.let {
             db.collection("plan")
                 .whereArrayContains("collaborator", it.email!!)
-                .whereEqualTo("category",categoryStatus.value)
+                .whereEqualTo("category", categoryStatus.value)
                 .whereGreaterThanOrEqualTo("start_time", selectedStartTime.value!!)
                 .whereLessThanOrEqualTo("start_time", selectedEndTime.value!!)
                 .addSnapshotListener { snapshot, e ->
@@ -399,7 +404,7 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
         currentUser.value?.let {
             db.collection("plan")
                 .whereArrayContains("collaborator", it.email!!)
-                .whereEqualTo("category",categoryStatus.value)
+                .whereEqualTo("category", categoryStatus.value)
                 .whereLessThan("start_time", selectedStartTime.value!!)
                 .addSnapshotListener { snapshot, e ->
                     if (e != null) {
@@ -460,12 +465,17 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
                 "done_time", item.done_time,
                 "doner", item.doner
             )
-            .addOnSuccessListener { Log.d(ContentValues.TAG, "DocumentSnapshot successfully updated!") }
+            .addOnSuccessListener {
+                Log.d(
+                    ContentValues.TAG,
+                    "DocumentSnapshot successfully updated!"
+                )
+            }
             .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error updating document", e) }
     }
 
 
-    fun selectedTimeSet(date: String){
+    fun selectedTimeSet(date: String) {
         val timeList = convertToTimeStamp(date)
         selectedStartTime.value = timeList?.get(0)
         selectedEndTime.value = timeList?.get(1)
@@ -477,16 +487,16 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
         UserManager.user = repository.getUser(userId)
     }
 
-    fun changeCategory(position:Int, lastPosition:Int){
-        Log.i("Rita","$lastPosition")
+    fun changeCategory(position: Int, lastPosition: Int) {
+        Log.i("Rita", "$lastPosition")
         var categoryListGet = categoryList.value
 
         //deselected the origin position value
-        if(categoryPosition.value!=-1){
+        if (categoryPosition.value != -1) {
             categoryListGet!![categoryPosition.value!!].isSelected = false
         }
 
-        if(lastPosition!=-1){
+        if (lastPosition != -1) {
             categoryListGet!![lastPosition].isSelected = false
         }
         categoryListGet!![position].isSelected = true
@@ -497,7 +507,7 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
         categoryList.value = categoryListGet
     }
 
-    fun initCategory(user: User){
+    fun initCategory(user: User) {
         categoryList.value = user.categoryList
         categoryPosition.value = 0
         //init position is 0

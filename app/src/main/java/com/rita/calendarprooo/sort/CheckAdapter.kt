@@ -10,20 +10,20 @@ import com.rita.calendarprooo.data.Check
 import com.rita.calendarprooo.databinding.ItemCheckBinding
 
 
-class CheckAdapter (val viewModel: HomeSortViewModel) : ListAdapter<Check,
+class CheckAdapter(val viewModel: HomeSortViewModel) : ListAdapter<Check,
         CheckAdapter.ViewHolder>(CheckDiffCallback()) {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
 
-        Log.i("Rita","CheckAdapter dataSetChanged")
+        Log.i("Rita", "CheckAdapter dataSetChanged")
 
         holder.binding.checklistImage.setOnClickListener {
             viewModel.getCheckAndChangeStatus(item, position)
         }
         holder.binding.checklistBtnRemoved.setOnClickListener {
-            Log.i("Rita","homeSort remove btn clicked")
-            viewModel.getCheckAndRemoveItem(item,position)
+            Log.i("Rita", "homeSort remove btn clicked")
+            viewModel.getCheckAndRemoveItem(item, position)
             notifyDataSetChanged()
         }
 
@@ -35,8 +35,8 @@ class CheckAdapter (val viewModel: HomeSortViewModel) : ListAdapter<Check,
         return ViewHolder.from(parent)
     }
 
-    class ViewHolder private constructor(val binding: ItemCheckBinding)
-        : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder private constructor(val binding: ItemCheckBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Check) {
             binding.check = item

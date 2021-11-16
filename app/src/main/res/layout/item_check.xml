@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
     <data>
+
         <variable
             name="check"
             type="com.rita.calendarprooo.data.Check" />
+
         <variable
             name="view"
             type="android.view.View" />
@@ -37,7 +39,7 @@
             app:layout_constraintStart_toEndOf="@+id/checklist_image"
             app:checkTitle="@{check}"
             tools:text="Jogging"
-            style="@style/check_list"/>
+            style="@style/check_list" />
 
         <ImageView
             android:id="@+id/checklist_btn_removed"

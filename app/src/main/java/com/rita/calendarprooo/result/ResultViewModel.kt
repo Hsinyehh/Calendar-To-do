@@ -27,19 +27,19 @@ class ResultViewModel(val repository: CalendarRepository) : ViewModel() {
     var selectedEndTime = MutableLiveData<Long>()
 
     private var _todoList = MutableLiveData<List<Plan>>()
-    val todoList : LiveData<List<Plan>>
+    val todoList: LiveData<List<Plan>>
         get() = _todoList
 
-    val todoListSize : LiveData<Int> = Transformations.map(todoList){
+    val todoListSize: LiveData<Int> = Transformations.map(todoList) {
         var size = 0
-        if(!todoList.value.isNullOrEmpty()){
+        if (!todoList.value.isNullOrEmpty()) {
             size = todoList.value?.size!!
         }
         size
     }
 
     private var _doneList = MutableLiveData<List<Plan>>()
-    val doneList : LiveData<List<Plan>>
+    val doneList: LiveData<List<Plan>>
         get() = _doneList
 
     var doneListReset = MutableLiveData<Boolean>()
@@ -49,61 +49,66 @@ class ResultViewModel(val repository: CalendarRepository) : ViewModel() {
     var pieEntryList = MutableLiveData<MutableList<PieEntry>>()
 
 
-    fun readPlanFromToday(){
-        readListFromToday = repository.getLivePlansFromToday(selectedStartTime.value!!,
-            selectedEndTime.value!!,UserManager.user.value!!)
+    fun readPlanFromToday() {
+        readListFromToday = repository.getLivePlansFromToday(
+            selectedStartTime.value!!,
+            selectedEndTime.value!!, UserManager.user.value!!
+        )
     }
 
-    fun readPlanBeforeToday(){
-        readListBeforeToday = repository.getLivePlansBeforeToday(selectedStartTime.value!!,
-            UserManager.user.value!!)
+    fun readPlanBeforeToday() {
+        readListBeforeToday = repository.getLivePlansBeforeToday(
+            selectedStartTime.value!!,
+            UserManager.user.value!!
+        )
     }
 
-    fun readDone(){
-        _doneList = repository.getLiveDone(selectedStartTime.value!!,
-            selectedEndTime.value!!,UserManager.user.value!!)
+    fun readDone() {
+        _doneList = repository.getLiveDone(
+            selectedStartTime.value!!,
+            selectedEndTime.value!!, UserManager.user.value!!
+        )
 
         doneListReset.value = true
     }
 
 
-    fun readPlanInTotal(){
+    fun readPlanInTotal() {
         var list = readListFromToday.value?.toMutableList()
         var listBefore = readListBeforeToday.value?.toMutableList()
-        if(list!= null){
+        if (list != null) {
             if (listBefore != null) {
                 list.addAll(listBefore)
             }
-        }else{
+        } else {
             if (listBefore != null) {
                 list = listBefore
             }
         }
         if (list != null) {
-            _todoList.value = list.filter { it -> it.isToDoList==true && !it.isToDoListDone }
+            _todoList.value = list.filter { it -> it.isToDoList == true && !it.isToDoListDone }
         }
     }
 
-    fun countForCategory(list: List<Plan>){
+    fun countForCategory(list: List<Plan>) {
         var categoryMap = mutableMapOf<String, Float>()
-        if(!list.isNullOrEmpty()){
-            for(item in list){
-                if(!categoryMap.containsKey(item.category)){
-                        categoryMap["${item.category}"] = 1F
-                }
-                else{
+        if (!list.isNullOrEmpty()) {
+            for (item in list) {
+                if (!categoryMap.containsKey(item.category)) {
+                    categoryMap["${item.category}"] = 1F
+                } else {
                     val count = categoryMap["${item.category}"]
                     count!!.plus(1F)
                 }
             }
-        }else{
+        } else {
             categoryMap["No Done Task"] = 1F
         }
         categoryForDoneList.value = categoryMap
 
     }
 
-    fun selectedTimeSet(date: String){
+    fun selectedTimeSet(date: String) {
         val timeList = convertToTimeStamp(date)
         selectedStartTime.value = timeList?.get(0)
         selectedEndTime.value = timeList?.get(1)
@@ -114,7 +119,7 @@ class ResultViewModel(val repository: CalendarRepository) : ViewModel() {
     }*/
 
 
-    init{
+    init {
         Log.i("Rita", "${UserManager.user.value}")
         //initPieEntryList()
         selectedTimeSet(getToday())

@@ -34,15 +34,12 @@ class InvitationFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
 
-
-
-
         //invitation adapter
         val adapter = InvitationAdapter(viewModel)
         binding.invitationList.adapter = adapter
 
         viewModel.invitationList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.i("Rita","invitationList.observe: $it")
+            Log.i("Rita", "invitationList.observe: $it")
             adapter.submitList(it)
             adapter.notifyDataSetChanged()
         })
@@ -52,40 +49,42 @@ class InvitationFragment : Fragment() {
         binding.invitationCategoryList.adapter = categoryAdapter
 
         viewModel.user.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.i("Rita","user.observe: $it")
-            it?.let{
+            Log.i("Rita", "user.observe: $it")
+            it?.let {
                 viewModel.readInvitation()
                 viewModel.invitationForCategoryList.value = it.invitationList
             }
         })
 
-        viewModel.invitationForCategoryList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.i("Rita","invitationForCategoryList.observe: $it")
-            it?.let{
-                categoryAdapter.submitList(it)
-                categoryAdapter.notifyDataSetChanged()
-            }
-        })
+        viewModel.invitationForCategoryList.observe(
+            viewLifecycleOwner,
+            androidx.lifecycle.Observer {
+                Log.i("Rita", "invitationForCategoryList.observe: $it")
+                it?.let {
+                    categoryAdapter.submitList(it)
+                    categoryAdapter.notifyDataSetChanged()
+                }
+            })
 
         // Accept invitation Category
-        viewModel.invitationAccepted.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
-            it?.let{
+        viewModel.invitationAccepted.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            it?.let {
                 viewModel.getPlans(it)
             }
         })
 
-        viewModel.addCollaboratorForPlan.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
-            Log.i("Rita","addCollaboratorForPlan observe- $it")
-            if(it==true){
+        viewModel.addCollaboratorForPlan.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita", "addCollaboratorForPlan observe- $it")
+            if (it == true) {
                 viewModel.addCollaboratorForPlan()
             }
         })
 
-        viewModel.updatePlan.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
-            Log.i("Rita","updatePlan observe- $it")
-            if(it==true){
-                viewModel.plans.value?.let{
-                    for(plan in it){
+        viewModel.updatePlan.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita", "updatePlan observe- $it")
+            if (it == true) {
+                viewModel.plans.value?.let {
+                    for (plan in it) {
                         viewModel.updatePlan(plan)
                     }
                 }
@@ -93,25 +92,25 @@ class InvitationFragment : Fragment() {
             }
         })
 
-        viewModel.getUsers.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
-            Log.i("Rita","getUsers observe- $it")
-            if(it==true){
+        viewModel.getUsers.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita", "getUsers observe- $it")
+            if (it == true) {
                 viewModel.getUsers()
             }
         })
 
-        viewModel.addCollaboratorForUser.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
-            Log.i("Rita","addCollaboratorForUser observe- $it")
-            if(it==true){
+        viewModel.addCollaboratorForUser.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita", "addCollaboratorForUser observe- $it")
+            if (it == true) {
                 viewModel.addCollaboratorForUser()
             }
         })
 
-        viewModel.updateCategoryForUser.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
-            Log.i("Rita","updateCategoryForUser observe- $it")
-            if(it==true){
-                viewModel.userList.value?.let{
-                    for(user in it){
+        viewModel.updateCategoryForUser.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita", "updateCategoryForUser observe- $it")
+            if (it == true) {
+                viewModel.userList.value?.let {
+                    for (user in it) {
                         viewModel.updateCategoryForUser(user)
                     }
                 }

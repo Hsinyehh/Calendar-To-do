@@ -25,7 +25,7 @@ import com.rita.calendarprooo.login.UserManager
 import com.shrikanthravi.collapsiblecalendarview.widget.CollapsibleCalendar
 
 
-class ResultFragment:Fragment() {
+class ResultFragment : Fragment() {
 
     private val viewModel by viewModels<ResultViewModel> { getVmFactory() }
 
@@ -42,12 +42,12 @@ class ResultFragment:Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         viewModel.doneListReset.observe(viewLifecycleOwner, Observer {
-            Log.d("Rita","result doneListReset, it=$it")
+            Log.d("Rita", "result doneListReset, it=$it")
             it?.let {
                 if (it) {
-                    viewModel.doneList.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
-                        Log.i("Rita","result doneList observe - $it")
-                        it?.let{
+                    viewModel.doneList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+                        Log.i("Rita", "result doneList observe - $it")
+                        it?.let {
                             viewModel.countForCategory(it)
                         }
                     })
@@ -60,9 +60,9 @@ class ResultFragment:Fragment() {
         })
 
         //read Plans when date selected changed
-        viewModel.selectedEndTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
-            Log.i("Rita","result selectedEndTime observe- $it")
-            it?.let{
+        viewModel.selectedEndTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita", "result selectedEndTime observe- $it")
+            it?.let {
 
                 viewModel.readDone()
                 viewModel.readPlanFromToday()
@@ -70,18 +70,22 @@ class ResultFragment:Fragment() {
                 //When the livedata is assigned, it will be assigned for different memory reference.
                 //So we need to set Observer here, readListFromToday as lifedata can be observed
                 //for the same reference
-                viewModel.readListFromToday.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
-                    Log.i("Rita","result readListFromToday observe - $it")
-                    it?.let{
-                        viewModel.readPlanBeforeToday()
-                        viewModel.readListBeforeToday.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
-                            Log.i("Rita","result readListBeforeToday observe - $it")
-                            it?.let{
-                                viewModel.readPlanInTotal()
-                            }
-                        })
-                    }
-                })
+                viewModel.readListFromToday.observe(
+                    viewLifecycleOwner,
+                    androidx.lifecycle.Observer {
+                        Log.i("Rita", "result readListFromToday observe - $it")
+                        it?.let {
+                            viewModel.readPlanBeforeToday()
+                            viewModel.readListBeforeToday.observe(
+                                viewLifecycleOwner,
+                                androidx.lifecycle.Observer {
+                                    Log.i("Rita", "result readListBeforeToday observe - $it")
+                                    it?.let {
+                                        viewModel.readPlanInTotal()
+                                    }
+                                })
+                        }
+                    })
             }
         })
 
@@ -89,27 +93,29 @@ class ResultFragment:Fragment() {
         // pie chart setup
         val pieChart = binding.barPie
 
-        viewModel.categoryForDoneList.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
-            Log.i("Rita","result categoryForDoneList observe - $it")
-            it?.let{
+        viewModel.categoryForDoneList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita", "result categoryForDoneList observe - $it")
+            it?.let {
                 val entries = mutableListOf<PieEntry>()
-                for(item in it){
-                    entries.add(PieEntry(item.value,item.key))
+                for (item in it) {
+                    entries.add(PieEntry(item.value, item.key))
                 }
                 binding.viewModel = viewModel
                 viewModel.pieEntryList.value = entries
             }
         })
 
-        val colors = mutableListOf<Int>( getColorCode(R.color.pink_F2E5D9),
+        val colors = mutableListOf<Int>(
+            getColorCode(R.color.pink_F2E5D9),
             getColorCode(R.color.red_CF6E62),
-            getColorCode(R.color.green_97A97C),getColorCode(R.color.pink_CCB7AE),
+            getColorCode(R.color.green_97A97C), getColorCode(R.color.pink_CCB7AE),
             getColorCode(R.color.yellow_F6BD60), getColorCode(R.color.black_424B54),
-            getColorCode(R.color.green_84A59D),getColorCode(R.color.red_DDA098),
-            getColorCode(R.color.red_9B6A6C),getColorCode(R.color.purple_706677))
+            getColorCode(R.color.green_84A59D), getColorCode(R.color.red_DDA098),
+            getColorCode(R.color.red_9B6A6C), getColorCode(R.color.purple_706677)
+        )
 
-        fun setPieChart(list:MutableList<PieEntry>){
-            var dataSet = PieDataSet(list,"label")
+        fun setPieChart(list: MutableList<PieEntry>) {
+            var dataSet = PieDataSet(list, "label")
 
             dataSet.setColors(colors)
 
@@ -125,15 +131,11 @@ class ResultFragment:Fragment() {
         }
 
 
-        viewModel.pieEntryList.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
-            Log.i("Rita","result pieEntryList observe - $it")
+        viewModel.pieEntryList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita", "result pieEntryList observe - $it")
 
             setPieChart(it)
         })
-
-
-
-
 
 
         //calendar
@@ -143,7 +145,7 @@ class ResultFragment:Fragment() {
             override fun onClickListener() {}
             override fun onDaySelect() {
                 val day = collapsibleCalendar.selectedDay
-                val dateSelected = ""+day!!.day + "-" + (day.month + 1) + "-" + day.year
+                val dateSelected = "" + day!!.day + "-" + (day.month + 1) + "-" + day.year
 
                 viewModel.selectedTimeSet(dateSelected)
 

@@ -1,103 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
     <data>
+
         <variable
             name="viewModel"
             type="com.rita.calendarprooo.invitation.InvitationViewModel" />
+
         <variable
             name="view"
             type="android.view.View" />
     </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <ScrollView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/invitation_title_plan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:fontFamily="@font/noto_sans"
-            android:text="@string/plan"
-            android:textColor="@color/black_3f3a3a"
-            android:textSize="20sp"
-            android:visibility="@{viewModel.invitationListSize>0? view.VISIBLE:view.GONE}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/invitation_list"
+        <ScrollView
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/invitation_title_plan"
-            tools:itemCount="3"
-            tools:listitem="@layout/item_invitation" />
-
-        <TextView
-            android:id="@+id/invitation_title_category"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:fontFamily="@font/noto_sans"
-            android:text="@string/category"
-            android:textColor="@color/black_3f3a3a"
-            android:textSize="20sp"
-            android:visibility="@{viewModel.invitationForCategoryListSize>0? view.VISIBLE:view.GONE}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/invitation_list" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/invitation_category_list"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/invitation_title_category"
-            tools:itemCount="3"
-            tools:listitem="@layout/item_invitation_category" />
-        <TextView
-            android:id="@+id/invitation_title_no_invitation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="150dp"
-            android:fontFamily="@font/noto_sans"
-            android:text="@string/no_invitation"
-            android:textColor="@color/gray_808080"
-            android:textSize="28sp"
-            android:visibility="@{viewModel.invitationListSize &lt;1 &amp; viewModel.invitationForCategoryListSize &lt;1? view.VISIBLE:view.GONE}"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/invitation_title_plan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/noto_sans"
+                    android:text="@string/plan"
+                    android:textColor="@color/black_3f3a3a"
+                    android:textSize="20sp"
+                    android:visibility="@{viewModel.invitationListSize>0? view.VISIBLE:view.GONE}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/invitation_list"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/invitation_title_plan"
+                    tools:itemCount="3"
+                    tools:listitem="@layout/item_invitation" />
+
+                <TextView
+                    android:id="@+id/invitation_title_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/noto_sans"
+                    android:text="@string/category"
+                    android:textColor="@color/black_3f3a3a"
+                    android:textSize="20sp"
+                    android:visibility="@{viewModel.invitationForCategoryListSize>0? view.VISIBLE:view.GONE}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/invitation_list" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/invitation_category_list"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/invitation_title_category"
+                    tools:itemCount="3"
+                    tools:listitem="@layout/item_invitation_category" />
+
+                <TextView
+                    android:id="@+id/invitation_title_no_invitation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginBottom="150dp"
+                    android:fontFamily="@font/noto_sans"
+                    android:text="@string/no_invitation"
+                    android:textColor="@color/gray_808080"
+                    android:textSize="28sp"
+                    android:visibility="@{viewModel.invitationListSize &lt;1 &amp; viewModel.invitationForCategoryListSize &lt;1? view.VISIBLE:view.GONE}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
