@@ -25,14 +25,12 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.rita.calendarprooo.MainActivity
 import com.rita.calendarprooo.NavigationDirections
 import com.rita.calendarprooo.ext.getVmFactory
 
 
 class LoginFragment : Fragment() {
-    /*private val viewModel: LoginViewModel by lazy {
-        ViewModelProvider(this).get(LoginViewModel::class.java)
-    }*/
 
     private val viewModel by viewModels<LoginViewModel> { getVmFactory() }
 
@@ -56,7 +54,6 @@ class LoginFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         val signInBtn = binding.signInButton
-
         signInBtn.setOnClickListener {
             signIn()
         }
@@ -69,7 +66,6 @@ class LoginFragment : Fragment() {
             Log.i("Rita", "newUser observe: $it")
             it?.let {
                 viewModel.checkUserCreated(it)
-                //viewModel.addUser(it)
             }
         })
 
@@ -82,9 +78,8 @@ class LoginFragment : Fragment() {
                 else{
                     viewModel.newUser.value?.let { it1 -> viewModel.addUser(it1) }
                 }
+                viewModel.startToNavigateToHome()
             }
-
-            viewModel.startToNavigateToHome()
         })
 
         viewModel.navigateToHome.observe(viewLifecycleOwner, Observer {
@@ -139,7 +134,6 @@ class LoginFragment : Fragment() {
             val account = completedTask.getResult(ApiException::class.java)
 
             UserManager.userToken = account.idToken
-            UserManager.userEmail = account.email
 
 
             val idToken = account.idToken

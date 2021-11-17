@@ -69,6 +69,7 @@ class LoginViewModel(repository: CalendarRepository) : ViewModel() {
         )
         Log.i("Rita", "new user: $user")
         newUser.value = user
+        UserManager.user.value = user
     }
 
     fun addUser(user: User) {

@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity() {
         var currentUser = auth.currentUser
         Log.i(
             "Rita",
-            "MainActivity currentUser: ${currentUser} , userToken: ${UserManager.userToken}"
+            "MainActivity currentUser: $currentUser , userToken: ${UserManager.userToken}"
         )
         if (currentUser == null) {
             //login first
@@ -127,12 +127,6 @@ class MainActivity : AppCompatActivity() {
             Log.i("Rita","onResume mainActivity.currentUser observe - $it")
         })
 
-    }
-
-    fun observeUser(){
-        viewModel.currentUser.observe(this, Observer {
-            Log.i("Rita","onResume mainActivity.currentUser observe - $it")
-        })
     }
 
     override fun onSupportNavigateUp(): Boolean {
