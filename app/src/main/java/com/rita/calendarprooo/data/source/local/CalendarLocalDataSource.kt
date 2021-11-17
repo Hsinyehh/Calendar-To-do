@@ -58,6 +58,14 @@ class CalendarLocalDataSource(val context: Context) : CalendarDataSource {
         TODO("Not yet implemented")
     }
 
+    override suspend fun updateUser(user: User): Result<Boolean>{
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun checkUserCreated(user: User): Result<Boolean>{
+        TODO("Not yet implemented")
+    }
+
     override fun getLiveDone(selectedStartTime: Long, selectedEndTime: Long, user: User):
             MutableLiveData<List<Plan>> {
         TODO("Not yet implemented")

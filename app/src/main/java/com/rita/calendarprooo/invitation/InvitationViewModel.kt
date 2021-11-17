@@ -211,7 +211,7 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
     }
 
     fun updateCategoryForUser(user: User) {
-        val userRef = user.let { db.collection("user").document(it.id!!) }
+        val userRef = user.let { db.collection("user").document(it.email!!) }
         Log.i("Rita", "updatePlan-planRef: $userRef")
         userRef!!
             .update(

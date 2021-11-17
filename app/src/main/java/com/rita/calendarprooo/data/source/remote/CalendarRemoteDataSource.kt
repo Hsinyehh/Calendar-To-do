@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.github.mikephil.charting.data.PieEntry
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.rita.calendarprooo.CalendarProApplication
 import com.rita.calendarprooo.R
 import com.rita.calendarprooo.data.Check
@@ -217,12 +218,14 @@ object CalendarRemoteDataSource : CalendarDataSource {
     override suspend fun createUser(newUser: User): Result<Boolean> =
         suspendCoroutine { continuation ->
             val db = FirebaseFirestore.getInstance()
+            Log.i("Rita", "createUser - newUser: $newUser")
+            Log.i("Rita", "createUser - ref: ${db.collection(PATH_USER).document(newUser.email)}")
 
-            db.collection(PATH_USER).document(newUser.id)
+            db.collection(PATH_USER).document(newUser.email)
                 .set(newUser)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        Log.i("Rita", "Create: $newUser")
+                        Log.i("Rita", "createUser Success Task $newUser")
                         continuation.resume(Result.Success(true))
                     } else {
                         task.exception?.let {
@@ -238,6 +241,62 @@ object CalendarRemoteDataSource : CalendarDataSource {
                     }
                 }
         }
+
+    override suspend fun updateUser(user: User): Result<Boolean> =
+    suspendCoroutine { continuation ->
+        val userRef = user.email?.let {
+            FirebaseFirestore.getInstance().collection(PATH_USER).document(it)
+        }
+        Log.i("Rita", "updateUser - user: $user")
+        Log.i("Rita", "updateUser - userRef: $userRef")
+
+        userRef!!
+            .update("id", user.id)
+            .addOnSuccessListener {
+                Log.d(ContentValues.TAG, "DocumentSnapshot successfully updated!")
+                continuation.resume(Result.Success(true))
+            }
+            .addOnFailureListener {
+                Log.w(ContentValues.TAG, "Error updating document", it)
+                continuation.resume(Result.Error(it))
+            }
+    }
+
+    override suspend fun checkUserCreated(user: User): Result<Boolean>
+     = suspendCoroutine { continuation ->
+        FirebaseFirestore.getInstance()
+            .collection(PATH_USER)
+            .whereEqualTo("email", user.email)
+            .get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.i("Rita","checkUserCreated")
+                    val list = mutableListOf<User>()
+                    for (document in task.result!!) {
+                        Log.d("Rita",document.id + " => " + document.data)
+                        val user = document.toObject(User::class.java)
+                        list.add(user)
+                    }
+                    var isUserExisted: Boolean? = null
+                    if (list.size > 0) {
+                        isUserExisted = true
+                    } else {
+                        isUserExisted = false
+                        Log.d(TAG, "No such document")
+                    }
+                    Log.i("Rita","checkUserCreated - $isUserExisted")
+                    continuation.resume(Result.Success(isUserExisted))
+                } else {
+                    task.exception?.let {
+                        Log.d(TAG, "[${this::class.simpleName}] Error getting documents. ${it.message}")
+                        continuation.resume(Result.Error(it))
+                        return@addOnCompleteListener
+                    }
+                    continuation.resume(Result.Fail(CalendarProApplication.instance.getString(R.string.error)))
+                }
+            }
+    }
+
 
     override fun getLiveDone(selectedStartTime: Long, selectedEndTime: Long, user: User):
             MutableLiveData<List<Plan>> {

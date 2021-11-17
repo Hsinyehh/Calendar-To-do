@@ -85,7 +85,9 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-
+        viewModel.currentUser.observe(this, Observer {
+            Log.i("Rita","Create mainActivity.currentUser observe - $it")
+        })
 
         auth = Firebase.auth
         var currentUser = auth.currentUser
@@ -120,6 +122,17 @@ class MainActivity : AppCompatActivity() {
         // this new line is important to get notifications about livedata-changes!!!
         headerViewBinding.lifecycleOwner = this
 
+
+        viewModel.currentUser.observe(this, Observer {
+            Log.i("Rita","onResume mainActivity.currentUser observe - $it")
+        })
+
+    }
+
+    fun observeUser(){
+        viewModel.currentUser.observe(this, Observer {
+            Log.i("Rita","onResume mainActivity.currentUser observe - $it")
+        })
     }
 
     override fun onSupportNavigateUp(): Boolean {

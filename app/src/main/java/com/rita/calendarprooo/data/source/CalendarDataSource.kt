@@ -38,6 +38,10 @@ interface CalendarDataSource {
 
     suspend fun createUser(newUser: User): Result<Boolean>
 
+    suspend fun updateUser(user: User): Result<Boolean>
+
+    suspend fun checkUserCreated(user: User): Result<Boolean>
+
     fun getLiveDone(selectedStartTime: Long, selectedEndTime: Long, user: User):
             MutableLiveData<List<Plan>>
 }

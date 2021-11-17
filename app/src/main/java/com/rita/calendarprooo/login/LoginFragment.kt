@@ -66,9 +66,25 @@ class LoginFragment : Fragment() {
 
 
         viewModel.newUser.observe(viewLifecycleOwner, Observer {
+            Log.i("Rita", "newUser observe: $it")
             it?.let {
-                viewModel.addUser(it)
+                viewModel.checkUserCreated(it)
+                //viewModel.addUser(it)
             }
+        })
+
+        viewModel.isUserCreated.observe(viewLifecycleOwner, Observer {
+            Log.i("Rita", "isUserCreated observe: $it")
+            it?.let {
+                if(it){
+                    viewModel.newUser.value?.let { it1 -> viewModel.updateUser(it1) }
+                }
+                else{
+                    viewModel.newUser.value?.let { it1 -> viewModel.addUser(it1) }
+                }
+            }
+
+            viewModel.startToNavigateToHome()
         })
 
         viewModel.navigateToHome.observe(viewLifecycleOwner, Observer {
@@ -150,7 +166,6 @@ class LoginFragment : Fragment() {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithCredential:success")
                     val user = auth.currentUser
-                    viewModel.startToNavigateToHome()
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithCredential:failure", task.exception)

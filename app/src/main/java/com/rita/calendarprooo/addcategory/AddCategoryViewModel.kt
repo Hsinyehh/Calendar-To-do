@@ -103,7 +103,7 @@ class AddCategoryViewModel : ViewModel() {
 
     //Both Conditions Needs the function below
     fun updateUser() {
-        val userRef = db.collection("user").document(currentUser!!.id)
+        val userRef = db.collection("user").document(currentUser!!.email)
         Log.i("Rita", "updateUser-Ref: $userRef")
         userRef!!
             .update(

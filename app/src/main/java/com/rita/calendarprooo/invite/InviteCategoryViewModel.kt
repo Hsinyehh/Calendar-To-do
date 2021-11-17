@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.rita.calendarprooo.data.Invitation
-import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.data.User
 import com.rita.calendarprooo.data.source.CalendarRepository
 
@@ -79,7 +78,7 @@ class InviteCategoryViewModel(val repository: CalendarRepository) : ViewModel() 
 
     fun updateInvitation(list: MutableList<Invitation>) {
         val userRef = userTobeInvited.value?.let {
-            db.collection("user").document(it.id!!)
+            db.collection("user").document(it.email!!)
         }
         Log.i("Rita", "updateInvitation-userRef: $userRef")
         userRef!!

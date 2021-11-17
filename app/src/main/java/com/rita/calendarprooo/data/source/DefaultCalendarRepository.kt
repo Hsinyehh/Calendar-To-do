@@ -60,6 +60,14 @@ class DefaultCalendarRepository(
         return remoteDataSource.createUser(newUser)
     }
 
+    override suspend fun updateUser(user: User): Result<Boolean>{
+        return remoteDataSource.updateUser(user)
+    }
+
+    override suspend fun checkUserCreated(user: User): Result<Boolean>{
+        return remoteDataSource.checkUserCreated(user)
+    }
+
     override fun getLiveDone(selectedStartTime: Long, selectedEndTime: Long, user: User):
             MutableLiveData<List<Plan>> {
         return remoteDataSource.getLiveDone(selectedStartTime, selectedEndTime, user)

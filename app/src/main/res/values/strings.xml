@@ -43,4 +43,6 @@
     <string name="to_do_task">To-do Task</string>
     <string name="done_task">Done Task</string>
     <string name="done_task_category">Done Task Category</string>
+
+    <string name="error">Error</string>
 </resources>

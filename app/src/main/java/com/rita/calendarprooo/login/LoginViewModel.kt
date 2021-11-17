@@ -23,6 +23,8 @@ class LoginViewModel(repository: CalendarRepository) : ViewModel() {
 
     val newUser = MutableLiveData<User>()
 
+    val isUserCreated = MutableLiveData<Boolean>()
+
     val navigateToHome = MutableLiveData<Boolean>()
 
     // status: The internal MutableLiveData that stores the status of the most recent request
@@ -65,7 +67,7 @@ class LoginViewModel(repository: CalendarRepository) : ViewModel() {
             categoryList = createCollaborator(email),
             email = email, name = name, photo = photo.toString()
         )
-        Log.i("Rita", "new plan: $user")
+        Log.i("Rita", "new user: $user")
         newUser.value = user
     }
 
@@ -77,10 +79,9 @@ class LoginViewModel(repository: CalendarRepository) : ViewModel() {
 
             when (val result = repository.createUser(user)) {
                 is Result.Success -> {
+                    getUserData(user.id)
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    getUserData(user.id)
-                    //startToNavigateToHome()
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -98,6 +99,76 @@ class LoginViewModel(repository: CalendarRepository) : ViewModel() {
             }
         }
     }
+
+    fun updateUser(user: User) {
+
+        coroutineScope.launch {
+
+            _status.value = LoadApiStatus.LOADING
+
+            when (val result = repository.updateUser(user)) {
+                is Result.Success -> {
+                    getUserData(user.id)
+                    Log.i("Rita","${UserManager.user.value}")
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                }
+                else -> {
+                    _error.value =
+                        CalendarProApplication.instance.getString(R.string.Error)
+                    _status.value = LoadApiStatus.ERROR
+                }
+            }
+        }
+    }
+
+    fun checkUserCreated(user: User) {
+        Log.i("Rita","checkUserCreated")
+
+        coroutineScope.launch {
+
+            _status.value = LoadApiStatus.LOADING
+
+            val result = repository.checkUserCreated(user)
+            Log.i("Rita","checkUserCreated result: $result")
+
+            isUserCreated.value = when (result) {
+                is Result.Success -> {
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
+                    Log.i("Rita","checkUserCreated result.data: ${result.data}")
+                    result.data
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                    null
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                    null
+                }
+                else -> {
+                    _error.value = CalendarProApplication.instance.getString(R.string.error)
+                    _status.value = LoadApiStatus.ERROR
+                    null
+                }
+            }
+            isUserCreated.value = isUserCreated.value
+            Log.i("Rita","checkUserCreated - ${isUserCreated.value}")
+            _refreshStatus.value = false
+        }
+    }
+
 
     fun getUserData(id: String) {
         UserManager.user = repository.getUser(id)
