@@ -17,12 +17,12 @@ class InvitationCategoryAdapter(val viewModel: InvitationViewModel) : ListAdapte
         val item = getItem(position)
 
         holder.binding.invitationBtnAccept.setOnClickListener {
-            viewModel.invitationAccepted.value = item
+            viewModel.updateInvitation(item, true)
         }
 
-        /*holder.binding.invitationBtnDecline.setOnClickListener {
-            viewModel.acceptOrDeclineInvitation(item,false)
-        }*/
+        holder.binding.invitationBtnDecline.setOnClickListener {
+            viewModel.updateInvitation(item,false)
+        }
 
         holder.bind(item)
     }

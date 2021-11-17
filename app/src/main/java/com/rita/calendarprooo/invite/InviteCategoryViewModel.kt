@@ -57,7 +57,7 @@ class InviteCategoryViewModel(val repository: CalendarRepository) : ViewModel() 
 
     }
 
-    // to be revised
+
     fun getTheUser() {
         email.value?.let {
             db.collection("user")

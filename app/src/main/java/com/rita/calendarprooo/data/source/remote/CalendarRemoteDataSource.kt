@@ -251,7 +251,8 @@ object CalendarRemoteDataSource : CalendarDataSource {
         Log.i("Rita", "updateUser - userRef: $userRef")
 
         userRef!!
-            .update("id", user.id)
+            .update("id", user.id,
+                "photo",user.photo, "name",user.name)
             .addOnSuccessListener {
                 Log.d(ContentValues.TAG, "DocumentSnapshot successfully updated!")
                 continuation.resume(Result.Success(true))

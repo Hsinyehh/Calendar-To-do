@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.rita.calendarprooo.R
 import com.rita.calendarprooo.data.Plan
@@ -66,12 +67,22 @@ class InvitationFragment : Fragment() {
                 }
             })
 
-        // Accept invitation Category
-        viewModel.invitationAccepted.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            it?.let {
-                viewModel.getPlans(it)
+        // Accept Category invitation
+
+        viewModel.invitationListUpdated.observe(viewLifecycleOwner, Observer {
+            Log.i("Rita", "invitationListUpdated observe- $it")
+            it?.let{
+                viewModel.updateInvitationList(it)
             }
         })
+
+        viewModel.updateSuccess.observe(viewLifecycleOwner, Observer {
+            Log.i("Rita", "updateSuccess observe- $it")
+            it?.let{
+                viewModel.getPlans()
+            }
+        })
+
 
         viewModel.addCollaboratorForPlan.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             Log.i("Rita", "addCollaboratorForPlan observe- $it")
@@ -88,35 +99,10 @@ class InvitationFragment : Fragment() {
                         viewModel.updatePlan(plan)
                     }
                 }
-                viewModel.getUsers.value = true
-            }
-        })
-
-        viewModel.getUsers.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.i("Rita", "getUsers observe- $it")
-            if (it == true) {
-                viewModel.getUsers()
-            }
-        })
-
-        viewModel.addCollaboratorForUser.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.i("Rita", "addCollaboratorForUser observe- $it")
-            if (it == true) {
-                viewModel.addCollaboratorForUser()
-            }
-        })
-
-        viewModel.updateCategoryForUser.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.i("Rita", "updateCategoryForUser observe- $it")
-            if (it == true) {
-                viewModel.userList.value?.let {
-                    for (user in it) {
-                        viewModel.updateCategoryForUser(user)
-                    }
-                }
                 viewModel.updateSuccess.value = true
             }
         })
+
 
 
         return binding.root

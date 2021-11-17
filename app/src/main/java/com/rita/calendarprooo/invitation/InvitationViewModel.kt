@@ -40,7 +40,11 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
         }
 
     // Category
+    var isAccepted = MutableLiveData<Boolean>()
+
     var invitationAccepted = MutableLiveData<Invitation>()
+
+    var invitationListUpdated = MutableLiveData<MutableList<Invitation>>()
 
     var plans = MutableLiveData<MutableList<Plan>>()
 
@@ -48,15 +52,8 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
 
     var updatePlan = MutableLiveData<Boolean>()
 
-    var getUsers = MutableLiveData<Boolean>()
-
-    var userList = MutableLiveData<MutableList<User>>()
-
-    var addCollaboratorForUser = MutableLiveData<Boolean>()
-
-    var updateCategoryForUser = MutableLiveData<Boolean>()
-
     var updateSuccess = MutableLiveData<Boolean>()
+
 
 
     //Firebase
@@ -111,11 +108,50 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
     }
 
 
-    // get All plans with query for the category
-    fun getPlans(item: Invitation) {
-        Log.i("Rita", "readPlans user: ${user.value}")
+    // update category
 
-        item.let {
+    fun updateInvitation(item: Invitation, accepted: Boolean){
+        isAccepted.value = accepted
+
+        invitationAccepted.value = item
+        val title = item.title
+        val inviter = item.inviter
+        val invitationList = user.value!!.invitationList
+        val indexRemoved = invitationList.indexOfFirst { it.title == title && it.inviter == inviter }
+
+        if (indexRemoved != null && indexRemoved >= 0) {
+            invitationList.removeAt(indexRemoved)
+        }
+
+        invitationListUpdated.value = invitationList
+    }
+
+
+    fun updateInvitationList(list: MutableList<Invitation>) {
+        val userRef =
+            db.collection("user").document(user.value!!.email!!)
+
+        Log.i("Rita", "updateInvitation-userRef: $userRef")
+        userRef!!
+            .update("invitationList", list)
+            .addOnSuccessListener {
+                Log.d(ContentValues.TAG, "successfully updated!")
+
+                if(isAccepted.value == true){
+                    updateSuccess.value = true
+                }
+            }
+            .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error updating document", e) }
+
+    }
+
+
+    // get All plans with query for the category
+    fun getPlans() {
+        Log.i("Rita", "readPlans user: ${user.value}")
+        val item = invitationAccepted.value
+
+        item?.let {
             db.collection("plan")
                 .whereArrayContains("collaborator", it.inviter!!)
                 .whereEqualTo("category", it.title)
@@ -164,72 +200,10 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
     }
 
 
-    // update Users' category's collaborator
-    fun getUsers() {
-        val collaboratorFromCategory = invitationAccepted.value?.collaborator!!
-        Log.i("Rita", "collaboratorFromCategory: $collaboratorFromCategory")
-
-        val list = mutableListOf<User>()
-        for (user in collaboratorFromCategory) {
-            db.collection("user")
-                .whereEqualTo("email", user)
-                .get()
-                .addOnSuccessListener { result ->
-                    for (document in result) {
-                        val user = document.toObject(User::class.java)
-                        if (!list.contains(user)) {
-                            list.add(user)
-                        }
-                    }
-                    Log.i("Rita", "list: $list")
-                }
-                .addOnFailureListener { exception ->
-                    Log.w(ContentValues.TAG, "Error getting documents.", exception)
-                }
-        }
-        userList.value = list
-        addCollaboratorForUser.value = true
-    }
-
-
-    fun addCollaboratorForUser() {
-        val list = userList.value
-        if (list != null) {
-            for (userGet in list) {
-                val category = invitationAccepted.value?.title
-                val email = user.value?.email
-                val index = userGet.categoryList.indexOfFirst { it.name == category }
-                val categoryFromUser = userGet.categoryList[index]
-
-                if (!categoryFromUser.collaborator!!.contains(email)) {
-                    email?.let { userGet.categoryList[index].collaborator.add(it) }
-                }
-            }
-        }
-        Log.i("Rita", "addCollaboratorForUser- $list")
-        userList.value = list
-    }
-
-    fun updateCategoryForUser(user: User) {
-        val userRef = user.let { db.collection("user").document(it.email!!) }
-        Log.i("Rita", "updatePlan-planRef: $userRef")
-        userRef!!
-            .update(
-                "category", user.categoryList,
-            )
-            .addOnSuccessListener { Log.d(ContentValues.TAG, "successfully updated!") }
-            .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error updating document", e) }
-
-    }
-
-
     fun doneWritten() {
-
+        invitationAccepted.value = null
         addCollaboratorForPlan.value = null
         updatePlan.value = null
-        getUsers.value = null
-        addCollaboratorForUser.value = null
-        updateCategoryForUser.value = null
         updateSuccess.value = null
     }
 
@@ -242,13 +216,10 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
 
 
     init {
-        //readInvitation()
+
         invitationList.value = null
         addCollaboratorForPlan.value = null
         updatePlan.value = null
-        getUsers.value = null
-        addCollaboratorForUser.value = null
-        updateCategoryForUser.value = null
         updateSuccess.value = null
 
         UserManager.userToken?.let { getUserData(it) }
