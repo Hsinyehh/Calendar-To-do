@@ -76,7 +76,7 @@ class InvitationFragment : Fragment() {
             }
         })
 
-        viewModel.updateSuccess.observe(viewLifecycleOwner, Observer {
+        viewModel.startToUpdate.observe(viewLifecycleOwner, Observer {
             Log.i("Rita", "updateSuccess observe- $it")
             it?.let{
                 viewModel.getPlans()
@@ -99,7 +99,29 @@ class InvitationFragment : Fragment() {
                         viewModel.updatePlan(plan)
                     }
                 }
-                viewModel.updateSuccess.value = true
+                viewModel.updateCategories.value = true
+            }
+        })
+
+        viewModel.updateCategories.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita", "updateCategories observe- $it")
+            if (it == true) {
+                viewModel.updateCategories()
+            }
+        })
+
+        viewModel.updateCategories.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita", "updateCategories observe- $it")
+            if (it == true) {
+                viewModel.updateCategories()
+            }
+        })
+
+        viewModel.updateCategoriesForUser.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            Log.i("Rita", "updateCategoriesForUser.observe- $it")
+            if (it == true) {
+                viewModel.updateCategoriesForUser()
+                viewModel.doneWritten()
             }
         })
 

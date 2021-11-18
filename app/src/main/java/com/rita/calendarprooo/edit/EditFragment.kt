@@ -99,9 +99,16 @@ class EditFragment : Fragment() {
 
         })
 
+        // test
+        viewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
+            Log.i("Rita", "loadingStatus.observe: ${it}")
+        })
+
+
 
         //save button
         binding.buttonSave.setOnClickListener { view: View ->
+            viewModel.loadingStatus.value = true
             //StartTime
             viewModel.start_time_detail.value = listOf<Int>(
                 startDatePicker.year,

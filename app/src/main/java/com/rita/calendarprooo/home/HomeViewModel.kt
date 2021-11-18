@@ -17,6 +17,8 @@ import java.util.*
 
 class HomeViewModel(repository: CalendarRepository) : ViewModel() {
 
+    val loadingStatus = MutableLiveData<Boolean?>()
+
     private val repository = repository
 
     var currentUser = MutableLiveData<User>()
@@ -102,6 +104,8 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
     }
 
     fun readPlanFromToday() {
+        loadingStatus.value = true
+
         Log.i("Rita", "readPlanFromToday user: ${currentUser.value}")
         // reGet viewList
         getViewListAlready.value = null
@@ -177,6 +181,7 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
             _doneList.value = list.filter { it -> it.isToDoListDone }
             startToGetViewList.value = true
         }
+        loadingStatus.value = false
     }
 
     fun doneGetViewList() {
@@ -359,6 +364,8 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
                 .whereGreaterThanOrEqualTo("start_time", selectedStartTime.value!!)
                 .whereLessThanOrEqualTo("start_time", selectedEndTime.value!!)
                 .addSnapshotListener { snapshot, e ->
+                    loadingStatus.value = true
+
                     if (e != null) {
                         Log.w(TAG, "Listen failed.", e)
                         return@addSnapshotListener
@@ -418,6 +425,8 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
             list?.filter { it -> it.isToDoList == true && !it.isToDoListDone }
         _doneList.value =
             list?.filter { it -> it.isToDoListDone }
+
+        loadingStatus.value = false
     }
 
     fun getTotalListBefore() {
@@ -431,6 +440,8 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
             list?.filter { it -> it.isToDoList == true && !it.isToDoListDone }
         _doneList.value =
             list?.filter { it -> it.isToDoListDone }
+
+        loadingStatus.value = false
     }
 
     fun getPlanAndChangeStatus(item: Plan) {
@@ -459,6 +470,7 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
     }
 
     init {
+        loadingStatus.value = true
         _navigateToEdit.value = null
         selectedTimeSet(getToday())
         UserManager.userToken?.let { getUserData(it) }

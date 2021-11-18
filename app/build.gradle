@@ -86,4 +86,7 @@ dependencies {
     //google place api
     implementation 'com.google.android.libraries.places:places:2.5.0'
 
+    // lottie
+    implementation "com.airbnb.android:lottie:4.2.1"
+
 }

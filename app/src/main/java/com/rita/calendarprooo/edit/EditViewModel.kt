@@ -18,6 +18,8 @@ import java.util.*
 
 class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
 
+    val loadingStatus = MutableLiveData<Boolean?>()
+
     val currentUser = UserManager.user.value
 
     var planGet = MutableLiveData<Plan?>()
@@ -128,6 +130,7 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
         newPlanRef
             .set(newPlan.value!!)
             .addOnSuccessListener { documentReference ->
+                loadingStatus.value = false
                 Log.d(ContentValues.TAG, "DocumentSnapshot added with ID: $newPlanRef.id")
             }
             .addOnFailureListener { e ->
@@ -153,7 +156,10 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
                 "checkList", checkList.value,
                 "toDoList", isTodoList.value
             )
-            .addOnSuccessListener { Log.d(ContentValues.TAG, "successfully updated!") }
+            .addOnSuccessListener {
+                loadingStatus.value = false
+                Log.d(ContentValues.TAG, "successfully updated!")
+            }
             .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error updating document", e) }
 
     }

@@ -8,6 +8,7 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.rita.calendarprooo.data.Category
 import com.rita.calendarprooo.data.Invitation
 import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.data.User
@@ -15,6 +16,8 @@ import com.rita.calendarprooo.data.source.CalendarRepository
 import com.rita.calendarprooo.login.UserManager
 
 class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
+
+    val loadingStatus = MutableLiveData<Boolean?>()
 
     var user = MutableLiveData<User>()
 
@@ -52,6 +55,14 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
 
     var updatePlan = MutableLiveData<Boolean>()
 
+    var startToUpdate = MutableLiveData<Boolean>()
+
+    val categoryListTobeUpdated = MutableLiveData<MutableList<Category>>()
+
+    val updateCategories = MutableLiveData<Boolean>()
+
+    val updateCategoriesForUser = MutableLiveData<Boolean>()
+
     var updateSuccess = MutableLiveData<Boolean>()
 
 
@@ -84,6 +95,8 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
     }
 
     fun acceptOrDeclineInvitation(plan: Plan, isAccepted: Boolean) {
+
+        loadingStatus.value = true
         //update plan collaborator & invitation
         val invitationGet = plan.invitation
         val collaboratorGet = plan.collaborator
@@ -103,7 +116,9 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
                 "invitation", invitationGet,
                 "collaborator", collaboratorGet,
             )
-            .addOnSuccessListener { Log.d(ContentValues.TAG, "successfully updated!") }
+            .addOnSuccessListener {
+                Log.d(ContentValues.TAG, "successfully updated!")
+                loadingStatus.value = false}
             .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error updating document", e) }
     }
 
@@ -111,6 +126,7 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
     // update category
 
     fun updateInvitation(item: Invitation, accepted: Boolean){
+        loadingStatus.value = true
         isAccepted.value = accepted
 
         invitationAccepted.value = item
@@ -138,7 +154,7 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
                 Log.d(ContentValues.TAG, "successfully updated!")
 
                 if(isAccepted.value == true){
-                    updateSuccess.value = true
+                    startToUpdate.value = true
                 }
             }
             .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error updating document", e) }
@@ -199,12 +215,57 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
             .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error updating document", e) }
     }
 
+    // update user's categoryList
+    fun updateCategories(){
+
+        val item = invitationAccepted.value
+        val title = item!!.title
+        val categoryList = user.value!!.categoryList
+        val index = categoryList.indexOfFirst { it.name == title  }
+        Log.i("Rita", "updateCategories index:　$index")
+        if(index == -1){
+            val categoryAdded = Category(
+                name = title!!,
+                isSelected = false,
+                mutableListOf<String>(user.value!!.email) )
+            categoryList.add(categoryAdded)
+            Log.i("Rita","updateCategories categoryAdded: $categoryAdded")
+            Log.i("Rita","updateCategories categoryListTobeUpdated: " +
+                    " ${categoryListTobeUpdated.value}")
+
+            categoryListTobeUpdated.value = categoryList
+            updateCategoriesForUser.value = true
+        }
+        else{
+            updateCategoriesForUser.value = false
+            loadingStatus.value = false
+        }
+
+
+    }
+
+    fun updateCategoriesForUser() {
+        val userRef = user.value?.let { db.collection("user").document(it.email) }
+        Log.i("Rita", "updateUserCategories - userRef: $userRef")
+        userRef!!
+            .update("categoryList", categoryListTobeUpdated.value)
+            .addOnSuccessListener {
+                Log.d(ContentValues.TAG, "successfully updated!")
+                loadingStatus.value = false
+            }
+            .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error updating document", e) }
+    }
+
 
     fun doneWritten() {
         invitationAccepted.value = null
         addCollaboratorForPlan.value = null
         updatePlan.value = null
+        startToUpdate.value = null
         updateSuccess.value = null
+        categoryListTobeUpdated.value = null
+        updateCategories.value = null
+        updateCategoriesForUser.value = null
     }
 
 
@@ -221,6 +282,9 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
         addCollaboratorForPlan.value = null
         updatePlan.value = null
         updateSuccess.value = null
+        categoryListTobeUpdated.value = null
+        updateCategories.value = null
+        updateCategoriesForUser.value = null
 
         UserManager.userToken?.let { getUserData(it) }
     }
