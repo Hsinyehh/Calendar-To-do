@@ -33,7 +33,9 @@
             style="@style/invitation_list"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             app:invitationTitle="@{invitation}"
+            app:layout_constraintEnd_toStartOf="@+id/invitation_btn_accept"
             app:layout_constraintStart_toEndOf="@id/invitation_image_title"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Jogging" />
@@ -56,9 +58,11 @@
             style="@style/invitation_list"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"
             app:inviter="@{invitation}"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/invitation_btn_decline"
             app:layout_constraintStart_toEndOf="@id/invitation_image_account"
             app:layout_constraintTop_toBottomOf="@id/invitation_text_title"
             tools:text="mia@fake.com" />

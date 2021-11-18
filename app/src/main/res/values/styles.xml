@@ -32,7 +32,7 @@
         <item name="android:fontFamily">@font/noto_sans</item>
         <item name="android:textColor">@color/black_3f3a3a</item>
         <item name="android:textSize">15sp</item>
-        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
 
