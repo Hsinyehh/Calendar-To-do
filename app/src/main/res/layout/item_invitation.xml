@@ -41,8 +41,8 @@
             android:id="@+id/invitation_text_title"
             style="@style/invitation_list"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginEnd="4dp"
             app:layout_constraintEnd_toStartOf="@+id/invitation_btn_accept"
             app:layout_constraintStart_toEndOf="@id/invitation_image_time"
             app:layout_constraintTop_toBottomOf="@id/invitation_text_time"
@@ -59,7 +59,7 @@
             android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/invitation_image_time"
+            app:layout_constraintTop_toBottomOf="@id/invitation_text_title"
             app:srcCompat="@drawable/account" />
 
         <TextView
@@ -67,7 +67,7 @@
             style="@style/invitation_list"
             android:layout_marginStart="16dp"
             android:layout_marginTop="4dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="4dp"
             android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/invitation_btn_decline"

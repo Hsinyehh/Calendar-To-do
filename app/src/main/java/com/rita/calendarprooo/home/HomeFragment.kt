@@ -99,12 +99,18 @@ class HomeFragment : Fragment() {
             }
         })
 
+        // test
+        viewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
+            Log.i("Rita", "loadingStatus observe - $it")
+        })
+
         fun createScheduleRecyclerview() {
             // bind adapter again before the adapter submit list so the position item is right
             val adapter = ScheduleAdapter(viewModel)
             binding.homeScheduleList.adapter = adapter
             adapter.submitList(viewModel.scheduleList.value)
             adapter.notifyDataSetChanged()
+            viewModel.loadingStatus.value = false
         }
 
 
@@ -113,6 +119,7 @@ class HomeFragment : Fragment() {
             binding.homeTodoList.adapter = todoAdapter
             todoAdapter.submitList(viewModel.todoList.value)
             todoAdapter.notifyDataSetChanged()
+            viewModel.loadingStatus.value = false
         }
 
 
@@ -121,6 +128,7 @@ class HomeFragment : Fragment() {
             binding.homeDoneList.adapter = doneAdapter
             doneAdapter.submitList(viewModel.doneList.value)
             doneAdapter.notifyDataSetChanged()
+            viewModel.loadingStatus.value = false
         }
 
 

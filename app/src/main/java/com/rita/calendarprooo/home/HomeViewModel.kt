@@ -17,6 +17,7 @@ import java.util.*
 
 class HomeViewModel(repository: CalendarRepository) : ViewModel() {
 
+    // loading animation
     val loadingStatus = MutableLiveData<Boolean?>()
 
     private val repository = repository
@@ -181,7 +182,6 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
             _doneList.value = list.filter { it -> it.isToDoListDone }
             startToGetViewList.value = true
         }
-        loadingStatus.value = false
     }
 
     fun doneGetViewList() {
@@ -291,6 +291,8 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
     }
 
     fun getCheckAndChangeStatus(item: Check, position: Int) {
+        loadingStatus.value = true
+
         if (item.isDone) {
             item.isDone = false
             item.done_time = null
@@ -325,6 +327,9 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
     }
 
     fun getCheckAndRemoveItem(item: Check, position: Int) {
+
+        loadingStatus.value = true
+
         val planRef = item.plan_id?.let { db.collection("plan").document(it) }
         planRef!!.get()
             .addOnSuccessListener { document ->
@@ -352,7 +357,9 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
         Log.i("Rita", "writeCheckItemDone-planRef: $planRef")
         planRef!!
             .update("checkList", checkList.value)
-            .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully updated!") }
+            .addOnSuccessListener {
+                Log.d(TAG, "DocumentSnapshot successfully updated!")
+            }
             .addOnFailureListener { e -> Log.w(TAG, "Error updating document", e) }
     }
 
@@ -364,7 +371,6 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
                 .whereGreaterThanOrEqualTo("start_time", selectedStartTime.value!!)
                 .whereLessThanOrEqualTo("start_time", selectedEndTime.value!!)
                 .addSnapshotListener { snapshot, e ->
-                    loadingStatus.value = true
 
                     if (e != null) {
                         Log.w(TAG, "Listen failed.", e)
@@ -425,8 +431,6 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
             list?.filter { it -> it.isToDoList == true && !it.isToDoListDone }
         _doneList.value =
             list?.filter { it -> it.isToDoListDone }
-
-        loadingStatus.value = false
     }
 
     fun getTotalListBefore() {
@@ -441,7 +445,6 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
         _doneList.value =
             list?.filter { it -> it.isToDoListDone }
 
-        loadingStatus.value = false
     }
 
     fun getPlanAndChangeStatus(item: Plan) {

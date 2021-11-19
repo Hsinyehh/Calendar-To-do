@@ -19,6 +19,7 @@ import java.util.*
 
 class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
 
+    // loading animation
     val loadingStatus = MutableLiveData<Boolean?>()
 
     var currentUser = MutableLiveData<User>()
