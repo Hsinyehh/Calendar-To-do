@@ -136,8 +136,6 @@
                 android:layout_height="25dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="18dp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toTopOf="@+id/schedule_text_location"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/separation_line"
                 app:srcCompat="@drawable/edit" />
@@ -147,12 +145,20 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="18dp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toTopOf="@+id/schedule_text_location"
+                android:layout_marginEnd="24dp"
                 app:layout_constraintEnd_toStartOf="@id/schedule_image_edit"
                 app:layout_constraintTop_toBottomOf="@id/separation_line"
-                app:srcCompat="@drawable/invite" />
+                app:srcCompat="@drawable/invite3" />
+
+            <ImageView
+                android:id="@+id/schedule_image_alarm"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="24dp"
+                app:layout_constraintEnd_toStartOf="@id/schedule_image_invite"
+                app:layout_constraintTop_toBottomOf="@id/separation_line"
+                app:srcCompat="@drawable/alarm" />
 
 
             <View
@@ -167,13 +173,37 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
+                android:id="@+id/schedule_image_toolbox"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/separation_line"
+                app:srcCompat="@drawable/tools3" />
+
+            <TextView
+                android:id="@+id/schedule_text_toolbox"
+                style="@style/plan_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/background_gray"
+                android:text="@string/tool_box"
+                android:textColor="@color/white"
+                app:layout_constraintStart_toEndOf="@id/schedule_image_description"
+                app:layout_constraintTop_toBottomOf="@id/separation_line"
+                tools:text="Toolbox" />
+
+            <ImageView
                 android:id="@+id/schedule_image_description"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginStart="18dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/separation_line"
+                app:layout_constraintTop_toBottomOf="@id/schedule_text_toolbox"
                 app:srcCompat="@drawable/description" />
 
             <TextView
@@ -183,11 +213,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="4dp"
+                android:layout_marginEnd="16dp"
                 app:description="@{plan}"
-                app:layout_constraintEnd_toStartOf="@+id/schedule_image_invite"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/schedule_image_description"
-                app:layout_constraintTop_toBottomOf="@id/separation_line"
+                app:layout_constraintTop_toBottomOf="@id/schedule_text_toolbox"
                 tools:text="Go Jogging with my friends" />
 
             <ImageView

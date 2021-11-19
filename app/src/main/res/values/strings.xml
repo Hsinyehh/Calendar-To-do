@@ -9,6 +9,7 @@
     <string name="description">Description</string>
     <string name="location">Location</string>
     <string name="check_list">Check List</string>
+    <string name="tool_box">Toolbox</string>
     <!--edit-->
     <string name="todo_list_mode">To-do-List Mode</string>
     <string name="save">Save</string>
