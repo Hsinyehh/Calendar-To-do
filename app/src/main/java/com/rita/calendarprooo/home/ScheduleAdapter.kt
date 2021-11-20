@@ -1,5 +1,6 @@
 package com.rita.calendarprooo.home
 
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -44,6 +45,10 @@ class ScheduleAdapter(val viewModel: HomeViewModel) : ListAdapter<Plan,
 
         holder.binding.scheduleImageInvite.setOnClickListener {
             viewModel.startNavigateToInvite(item)
+        }
+
+        holder.binding.scheduleImageAlarm.setOnClickListener {
+           viewModel.startNavigateToAlarm(item)
         }
 
         holder.bind(item, position, viewModel)

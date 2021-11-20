@@ -98,7 +98,6 @@ class AddCategoryDialog : DialogFragment() {
         })
 
 
-        binding.inviteEditEmail
 
 
 

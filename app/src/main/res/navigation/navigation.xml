@@ -75,6 +75,14 @@
             android:name="position"
             app:argType="integer" />
     </dialog>
+    <dialog
+        android:id="@+id/alarmDialog"
+        android:name="com.rita.calendarprooo.alarm.AlarmDialog"
+        android:label="AlarmDialog" >
+        <argument
+            android:name="plan"
+            app:argType="com.rita.calendarprooo.data.Plan" />
+    </dialog>
     <action
         android:id="@+id/navigate_to_edit_fragment"
         app:destination="@id/editFragment" />
@@ -93,4 +101,7 @@
     <action
         android:id="@+id/navigate_to_invite_category_dialog"
         app:destination="@id/inviteCategoryDialog" />
+    <action
+        android:id="@+id/navigate_to_alarm_dialog"
+        app:destination="@+id/alarmDialog" />
 </navigation>

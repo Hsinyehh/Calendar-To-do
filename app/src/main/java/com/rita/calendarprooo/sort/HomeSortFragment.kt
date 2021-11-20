@@ -246,6 +246,16 @@ class HomeSortFragment : Fragment() {
             }
         })
 
+        viewModel.navigateToAlarm.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            it?.let {
+                Log.i("Rita", "navigateToAlarm.observe: $it")
+                view?.findNavController()?.navigate(
+                    NavigationDirections.navigateToAlarmDialog(it)
+                )
+                viewModel.doneNavigated()
+            }
+        })
+
 
         //to-do adapter drag item
         var simpleCallback = object : ItemTouchHelper.SimpleCallback(

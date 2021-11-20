@@ -57,6 +57,10 @@ class DoneAdapter(val viewModel: HomeSortViewModel) : ListAdapter<Plan,
             viewModel.startNavigateToInvite(item)
         }
 
+        holder.binding.scheduleImageAlarm.setOnClickListener {
+            viewModel.startNavigateToAlarm(item)
+        }
+
         holder.bind(item, position, viewModel)
 
     }

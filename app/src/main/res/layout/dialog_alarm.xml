@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.rita.calendarprooo.alarm.AlarmViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/alarm_btn_cancel"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="300dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="25dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/delete" />
+
+        <TextView
+            android:id="@+id/alarm_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="46dp"
+            android:text="@string/alarm_title"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/separation_line"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="32dp"
+            android:background="#CCCCCC"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/alarm_title" />
+
+        <ImageView
+            android:id="@+id/alarm_image_title"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/separation_line"
+            app:srcCompat="@drawable/plan" />
+
+        <TextView
+            android:id="@+id/alarm_text_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:textSize="16sp"
+            app:layout_constraintStart_toEndOf="@id/alarm_image_title"
+            app:layout_constraintTop_toBottomOf="@id/separation_line"
+            app:title="@{viewModel.plan}"
+            tools:text="Meeting" />
+
+        <ImageView
+            android:id="@+id/alarm_image_time"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginStart="29dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/alarm_image_title"
+            app:srcCompat="@drawable/time__2_" />
+
+        <TextView
+            android:id="@+id/alarm_text_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:textSize="16sp"
+            app:layout_constraintStart_toEndOf="@id/alarm_image_time"
+            app:layout_constraintTop_toBottomOf="@id/alarm_text_title"
+            app:time="@{viewModel.plan}"
+            tools:text="11/1 11:30 - 11/3 12:30" />
+
+
+        <DatePicker
+            android:id="@+id/alarm_datepicker"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="-10dp"
+            android:calendarViewShown="false"
+            android:datePickerMode="spinner"
+            android:scaleX="0.8"
+            android:scaleY="0.65"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/alarm_text_time" />
+
+        <TimePicker
+            android:id="@+id/alarm_timepicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="-10dp"
+            android:scaleX="0.8"
+            android:scaleY="0.6"
+            android:timePickerMode="spinner"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/alarm_text_time" />
+
+
+        <TextView
+            android:id="@+id/btn_set"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:background="@drawable/btn_green_background"
+            android:fontFamily="@font/noto_sans"
+            android:paddingStart="50dp"
+            android:paddingEnd="50dp"
+            android:text="@string/set"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/alarm_timepicker" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

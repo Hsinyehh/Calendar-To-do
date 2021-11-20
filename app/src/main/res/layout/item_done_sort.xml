@@ -156,6 +156,16 @@
                 app:layout_constraintTop_toBottomOf="@id/separation_line"
                 app:srcCompat="@drawable/invite3" />
 
+            <ImageView
+                android:id="@+id/schedule_image_alarm"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="24dp"
+                app:layout_constraintEnd_toStartOf="@id/schedule_image_invite"
+                app:layout_constraintTop_toBottomOf="@id/separation_line"
+                app:srcCompat="@drawable/alarm" />
+
 
             <View
                 android:id="@+id/separation_line"
@@ -216,15 +226,6 @@
                 app:layout_constraintTop_toBottomOf="@id/schedule_text_toolbox"
                 tools:text="Go Jogging with my friends" />
 
-            <ImageView
-                android:id="@+id/schedule_image_alarm"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="24dp"
-                app:layout_constraintEnd_toStartOf="@id/schedule_image_invite"
-                app:layout_constraintTop_toBottomOf="@id/separation_line"
-                app:srcCompat="@drawable/alarm" />
 
             <ImageView
                 android:id="@+id/schedule_image_location"

@@ -64,7 +64,7 @@ class InviteDialog : DialogFragment() {
         viewModel.updateSuccess.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             Log.i("Rita", "isInvited observe- $it")
             if (it == true) {
-                Toast.makeText(context, "Update success", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Invite success", Toast.LENGTH_LONG).show()
                 dismiss()
                 viewModel.doneWritten()
             }

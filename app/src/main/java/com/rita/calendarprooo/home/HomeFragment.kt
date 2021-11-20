@@ -1,15 +1,24 @@
 package com.rita.calendarprooo.home
 
+import android.app.AlarmManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -17,9 +26,7 @@ import com.rita.calendarprooo.NavigationDirections
 import com.rita.calendarprooo.R
 import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.databinding.FragmentHomeBinding
-import com.rita.calendarprooo.ext.convertToTimeStamp
 import com.rita.calendarprooo.ext.getVmFactory
-import com.rita.calendarprooo.login.LoginViewModel
 import com.shrikanthravi.collapsiblecalendarview.widget.CollapsibleCalendar
 
 class HomeFragment : Fragment() {
@@ -207,9 +214,7 @@ class HomeFragment : Fragment() {
             it?.let {
                 Log.i("Rita", "navigateToEditByPlan.observe: $it")
                 view?.findNavController()?.navigate(
-                    NavigationDirections.navigateToEditFragment(
-                        address, viewModel.navigateToEditByPlan.value
-                    )
+                    NavigationDirections.navigateToEditFragment(address, it)
                 )
                 viewModel.doneNavigated()
             }
@@ -219,13 +224,22 @@ class HomeFragment : Fragment() {
             it?.let {
                 Log.i("Rita", "navigateToInvite.observe: $it")
                 view?.findNavController()?.navigate(
-                    NavigationDirections.navigateToInviteFragment(
-                        viewModel.navigateToInvite.value
-                    )
+                    NavigationDirections.navigateToInviteFragment(it)
                 )
                 viewModel.doneNavigated()
             }
         })
+
+        viewModel.navigateToAlarm.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            it?.let {
+                Log.i("Rita", "navigateToAlarm.observe: $it")
+                view?.findNavController()?.navigate(
+                    NavigationDirections.navigateToAlarmDialog(it)
+                )
+                viewModel.doneNavigated()
+            }
+        })
+
 
 
         //to-do adapter drag item
@@ -298,6 +312,5 @@ class HomeFragment : Fragment() {
 
         return binding.root
     }
-
 
 }

@@ -46,6 +46,10 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
     val navigateToInviteCategory: LiveData<Boolean>
         get() = _navigateToInviteCategory
 
+    private var _navigateToAlarm = MutableLiveData<Plan>()
+    val navigateToAlarm: LiveData<Plan>
+        get() = _navigateToAlarm
+
     private var _scheduleList = MutableLiveData<List<Plan>>()
     val scheduleList: LiveData<List<Plan>>
         get() = _scheduleList
@@ -110,6 +114,10 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
 
     fun startNavigateToInviteCategory() {
         _navigateToInviteCategory.value = true
+    }
+
+    fun startNavigateToAlarm(plan: Plan) {
+        _navigateToAlarm.value = plan
     }
 
     fun doneNavigated() {

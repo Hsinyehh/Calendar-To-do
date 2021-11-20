@@ -36,6 +36,10 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
     val navigateToInvite: LiveData<Plan>
         get() = _navigateToInvite
 
+    private var _navigateToAlarm = MutableLiveData<Plan>()
+    val navigateToAlarm: LiveData<Plan>
+        get() = _navigateToAlarm
+
     private var _scheduleList = MutableLiveData<List<Plan>>()
     val scheduleList: LiveData<List<Plan>>
         get() = _scheduleList
@@ -98,10 +102,15 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
         _navigateToInvite.value = plan
     }
 
+    fun startNavigateToAlarm(plan: Plan) {
+        _navigateToAlarm.value = plan
+    }
+
     fun doneNavigated() {
         _navigateToEdit.value = null
         _navigateToEditByPlan.value = null
         _navigateToInvite.value = null
+        _navigateToAlarm.value = null
     }
 
     fun readPlanFromToday() {

@@ -275,20 +275,6 @@
                     app:layout_constraintTop_toBottomOf="@id/editText_location"
                     style="@style/edit" />
 
-                <TextView
-                    android:id="@+id/btn_start_time_set"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginTop="16dp"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    android:text="@string/set"
-                    android:background="@drawable/border_round_corner_black"
-                    android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/editText_location"
-                    style="@style/edit" />
 
 
                 <DatePicker

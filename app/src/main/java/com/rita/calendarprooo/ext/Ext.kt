@@ -1,14 +1,9 @@
 package com.rita.calendarprooo.ext
 
-import android.app.Activity
-import android.graphics.Color
+
 import android.util.Log
-import android.view.View
-import android.view.inputmethod.InputMethodManager
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import com.rita.calendarprooo.CalendarProApplication
-import com.rita.calendarprooo.R
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -46,3 +41,21 @@ fun getColorCode(color: Int): Int {
     return ContextCompat.getColor(CalendarProApplication.appContext!!, color)
 }
 
+fun stringToTimestamp(dateSelected: String): Long? {
+    try {
+        val dateSelectedFormat = SimpleDateFormat("dd-MM-yyyy HH:mm").parse(dateSelected)
+        Log.i("Rita", "${dateSelectedFormat.time} ")
+        return dateSelectedFormat.time
+    } catch (e: java.text.ParseException) {
+        Log.i("Rita", "$e")
+        return null
+    }
+}
+
+fun timestampToString(timestamp: Long): String{
+    val simpleDateFormat = SimpleDateFormat("MM/dd hh:mm", Locale.TAIWAN)
+    var time: String? = null
+        time = simpleDateFormat.format(Date(timestamp))
+
+    return time
+}

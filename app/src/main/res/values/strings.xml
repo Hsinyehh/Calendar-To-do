@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CalendarPro</string>
+    <string name="app_name">Calendar-To-Do</string>
     <!--home-->
     <string name="calendar">Calendar</string>
     <string name="schedule">Schedule</string>
@@ -44,6 +44,10 @@
     <string name="to_do_task">To-do Task</string>
     <string name="done_task">Done Task</string>
     <string name="done_task_category">Done Task Category</string>
-
     <string name="error">Error</string>
+    <!--broadcast-->
+    <string name="channel_name">notify</string>
+    <string name="channel_description">notify</string>
+    <!--broadcast-->
+    <string name="alarm_title">Alarm Clock Setup</string>
 </resources>
