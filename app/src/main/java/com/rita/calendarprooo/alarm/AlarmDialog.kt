@@ -126,7 +126,7 @@ class AlarmDialog: DialogFragment()  {
 
         alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent)
 
-        Toast.makeText(context,"Alarm set successfully", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context,"Alarm Setup success!", Toast.LENGTH_SHORT).show()
     }
 
 

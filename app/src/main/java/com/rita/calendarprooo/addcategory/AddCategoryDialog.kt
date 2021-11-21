@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
@@ -77,6 +78,9 @@ class AddCategoryDialog : DialogFragment() {
             if (it == true) {
                 dismiss()
                 //viewModel.doneNavigated()
+            }
+            else if(it == false){
+                Toast.makeText(context, "The input can't be blank!",Toast.LENGTH_LONG).show()
             }
         })
 

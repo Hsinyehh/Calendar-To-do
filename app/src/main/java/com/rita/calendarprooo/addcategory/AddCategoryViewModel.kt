@@ -44,7 +44,7 @@ class AddCategoryViewModel : ViewModel() {
     private val db = Firebase.firestore
 
     fun prepareForCategory() {
-        if (categoryAdded.value == "") {
+        if (categoryAdded.value.isNullOrBlank()) {
             startToUpdate.value = false
             Log.i("Rita", "Can't update the category because it's null")
         } else {
