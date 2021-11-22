@@ -57,7 +57,7 @@ fun TextView.bindOwnerName(item: Plan?) {
 
 @BindingAdapter("time")
 fun TextView.bindTime(item: Plan?) {
-    val simpleDateFormat = SimpleDateFormat("MM/dd hh:mm", Locale.TAIWAN)
+    val simpleDateFormat = SimpleDateFormat("MM/dd HH:mm", Locale.TAIWAN)
     item?.let {
         val startTime = simpleDateFormat.format(it.start_time?.let { it1 -> Date(it1) })
         val endTime = simpleDateFormat.format(it.end_time?.let { it1 -> Date(it1) })
@@ -69,7 +69,7 @@ fun TextView.bindTime(item: Plan?) {
 
 @BindingAdapter("done_info")
 fun TextView.bindDoneInfo(item: Plan?) {
-    val simpleDateFormat = SimpleDateFormat("MM/dd hh:mm", Locale.TAIWAN)
+    val simpleDateFormat = SimpleDateFormat("MM/dd HH:mm", Locale.TAIWAN)
     item?.let { it ->
         var doneTime: String? = null
         it.done_time?.let {
@@ -102,7 +102,7 @@ fun TextView.bindCategoryTitle(item: Category?) {
 
 @BindingAdapter("checkDoneTime")
 fun TextView.bindDoneTime(item: Check?) {
-    val simpleDateFormat = SimpleDateFormat("MM/dd hh:mm", Locale.TAIWAN)
+    val simpleDateFormat = SimpleDateFormat("MM/dd HH:mm", Locale.TAIWAN)
     var doneTime: String? = null
     item?.done_time?.let {
         doneTime = simpleDateFormat.format(Date(it))

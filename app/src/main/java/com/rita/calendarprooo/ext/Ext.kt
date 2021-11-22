@@ -53,7 +53,7 @@ fun stringToTimestamp(dateSelected: String): Long? {
 }
 
 fun timestampToString(timestamp: Long): String{
-    val simpleDateFormat = SimpleDateFormat("MM/dd hh:mm", Locale.TAIWAN)
+    val simpleDateFormat = SimpleDateFormat("MM/dd HH:mm", Locale.TAIWAN)
     var time: String? = null
         time = simpleDateFormat.format(Date(timestamp))
 
