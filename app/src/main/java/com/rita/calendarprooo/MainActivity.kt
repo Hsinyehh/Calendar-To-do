@@ -1,30 +1,28 @@
 package com.rita.calendarprooo
 
 import android.content.ContentValues.TAG
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
-import com.rita.calendarprooo.databinding.ActivityMainBinding
-import com.rita.calendarprooo.ext.getVmFactory
-import com.rita.calendarprooo.login.UserManager
-import androidx.activity.viewModels
-import androidx.lifecycle.Observer
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.rita.calendarprooo.databinding.ActivityMainBinding
 import com.rita.calendarprooo.databinding.NavHeaderBinding
+import com.rita.calendarprooo.ext.getVmFactory
+import com.rita.calendarprooo.login.UserManager
 
 class MainActivity : AppCompatActivity() {
 
@@ -87,7 +85,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         viewModel.currentUser.observe(this, Observer {
-            Log.i("Rita","Create mainActivity.currentUser observe - $it")
+            Log.i("Rita", "Create mainActivity.currentUser observe - $it")
         })
 
         auth = Firebase.auth
@@ -125,7 +123,7 @@ class MainActivity : AppCompatActivity() {
 
 
         viewModel.currentUser.observe(this, Observer {
-            Log.i("Rita","onResume mainActivity.currentUser observe - $it")
+            Log.i("Rita", "onResume mainActivity.currentUser observe - $it")
         })
 
     }

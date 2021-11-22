@@ -3,7 +3,6 @@ package com.rita.calendarprooo.ext
 import androidx.fragment.app.Fragment
 import com.rita.calendarprooo.CalendarProApplication
 import com.rita.calendarprooo.data.Plan
-import com.rita.calendarprooo.data.source.CalendarRepository
 import com.rita.calendarprooo.factory.RepoViewModelFactory
 import com.rita.calendarprooo.factory.ViewModelFactory
 

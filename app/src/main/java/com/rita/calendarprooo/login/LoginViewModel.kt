@@ -8,8 +8,8 @@ import androidx.lifecycle.ViewModel
 import com.rita.calendarprooo.CalendarProApplication
 import com.rita.calendarprooo.R
 import com.rita.calendarprooo.data.Category
-import com.rita.calendarprooo.data.User
 import com.rita.calendarprooo.data.Result
+import com.rita.calendarprooo.data.User
 import com.rita.calendarprooo.data.source.CalendarRepository
 import com.rita.calendarprooo.network.LoadApiStatus
 import kotlinx.coroutines.CoroutineScope
@@ -110,7 +110,7 @@ class LoginViewModel(repository: CalendarRepository) : ViewModel() {
             when (val result = repository.updateUser(user)) {
                 is Result.Success -> {
                     getUserData(user.id)
-                    Log.i("Rita","${UserManager.user.value}")
+                    Log.i("Rita", "${UserManager.user.value}")
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
                 }
@@ -132,20 +132,20 @@ class LoginViewModel(repository: CalendarRepository) : ViewModel() {
     }
 
     fun checkUserCreated(user: User) {
-        Log.i("Rita","checkUserCreated")
+        Log.i("Rita", "checkUserCreated")
 
         coroutineScope.launch {
 
             _status.value = LoadApiStatus.LOADING
 
             val result = repository.checkUserCreated(user)
-            Log.i("Rita","checkUserCreated result: $result")
+            Log.i("Rita", "checkUserCreated result: $result")
 
             isUserCreated.value = when (result) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    Log.i("Rita","checkUserCreated result.data: ${result.data}")
+                    Log.i("Rita", "checkUserCreated result.data: ${result.data}")
                     result.data
                 }
                 is Result.Fail -> {
@@ -165,7 +165,7 @@ class LoginViewModel(repository: CalendarRepository) : ViewModel() {
                 }
             }
             isUserCreated.value = isUserCreated.value
-            Log.i("Rita","checkUserCreated - ${isUserCreated.value}")
+            Log.i("Rita", "checkUserCreated - ${isUserCreated.value}")
             _refreshStatus.value = false
         }
     }

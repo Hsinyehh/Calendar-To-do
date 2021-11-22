@@ -12,7 +12,6 @@ import com.rita.calendarprooo.data.source.CalendarRepository
 import com.rita.calendarprooo.ext.convertToTimeStamp
 import com.rita.calendarprooo.ext.getToday
 import com.rita.calendarprooo.login.UserManager
-import java.text.SimpleDateFormat
 import java.util.*
 
 class HomeViewModel(repository: CalendarRepository) : ViewModel() {

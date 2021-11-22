@@ -1,19 +1,14 @@
 package com.rita.calendarprooo.home
 
-import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.rita.calendarprooo.data.Check
 import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.databinding.ItemScheduleBinding
-import com.rita.calendarprooo.edit.EditViewModel
-import java.util.Observer
 
 class ScheduleAdapter(val viewModel: HomeViewModel) : ListAdapter<Plan,
         ScheduleAdapter.ViewHolder>(ScheduleDiffCallback()) {
@@ -48,7 +43,7 @@ class ScheduleAdapter(val viewModel: HomeViewModel) : ListAdapter<Plan,
         }
 
         holder.binding.scheduleImageAlarm.setOnClickListener {
-           viewModel.startNavigateToAlarm(item)
+            viewModel.startNavigateToAlarm(item)
         }
 
         holder.bind(item, position, viewModel)

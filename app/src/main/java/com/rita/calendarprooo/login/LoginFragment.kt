@@ -10,23 +10,20 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.rita.calendarprooo.R
-import com.rita.calendarprooo.databinding.FragmentLoginBinding
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.rita.calendarprooo.MainActivity
 import com.rita.calendarprooo.NavigationDirections
+import com.rita.calendarprooo.R
+import com.rita.calendarprooo.databinding.FragmentLoginBinding
 import com.rita.calendarprooo.ext.getVmFactory
 
 
@@ -72,10 +69,9 @@ class LoginFragment : Fragment() {
         viewModel.isUserCreated.observe(viewLifecycleOwner, Observer {
             Log.i("Rita", "isUserCreated observe: $it")
             it?.let {
-                if(it){
+                if (it) {
                     viewModel.newUser.value?.let { it1 -> viewModel.updateUser(it1) }
-                }
-                else{
+                } else {
                     viewModel.newUser.value?.let { it1 -> viewModel.addUser(it1) }
                 }
                 viewModel.startToNavigateToHome()
@@ -159,7 +155,6 @@ class LoginFragment : Fragment() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithCredential:success")
-                    val user = auth.currentUser
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithCredential:failure", task.exception)

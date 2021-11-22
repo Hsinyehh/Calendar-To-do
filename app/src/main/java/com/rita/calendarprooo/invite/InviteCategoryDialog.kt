@@ -9,12 +9,9 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import com.rita.calendarprooo.R
-import com.rita.calendarprooo.databinding.DialogInviteBinding
 import com.rita.calendarprooo.databinding.DialogInviteCategoryBinding
 import com.rita.calendarprooo.ext.getVmFactory
-import com.rita.calendarprooo.sort.HomeSortViewModel
 
 
 class InviteCategoryDialog : DialogFragment() {

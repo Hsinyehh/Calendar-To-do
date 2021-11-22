@@ -66,7 +66,6 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
     var updateSuccess = MutableLiveData<Boolean>()
 
 
-
     //Firebase
     private val db = Firebase.firestore
 
@@ -118,14 +117,15 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
             )
             .addOnSuccessListener {
                 Log.d(ContentValues.TAG, "successfully updated!")
-                loadingStatus.value = false}
+                loadingStatus.value = false
+            }
             .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error updating document", e) }
     }
 
 
     // update category
 
-    fun updateInvitation(item: Invitation, accepted: Boolean){
+    fun updateInvitation(item: Invitation, accepted: Boolean) {
         loadingStatus.value = true
         isAccepted.value = accepted
 
@@ -133,7 +133,8 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
         val title = item.title
         val inviter = item.inviter
         val invitationList = user.value!!.invitationList
-        val indexRemoved = invitationList.indexOfFirst { it.title == title && it.inviter == inviter }
+        val indexRemoved =
+            invitationList.indexOfFirst { it.title == title && it.inviter == inviter }
 
         if (indexRemoved != null && indexRemoved >= 0) {
             invitationList.removeAt(indexRemoved)
@@ -153,7 +154,7 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
             .addOnSuccessListener {
                 Log.d(ContentValues.TAG, "successfully updated!")
 
-                if(isAccepted.value == true){
+                if (isAccepted.value == true) {
                     startToUpdate.value = true
                 }
             }
@@ -216,27 +217,29 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
     }
 
     // update user's categoryList
-    fun updateCategories(){
+    fun updateCategories() {
 
         val item = invitationAccepted.value
         val title = item!!.title
         val categoryList = user.value!!.categoryList
-        val index = categoryList.indexOfFirst { it.name == title  }
+        val index = categoryList.indexOfFirst { it.name == title }
         Log.i("Rita", "updateCategories index:　$index")
-        if(index == -1){
+        if (index == -1) {
             val categoryAdded = Category(
                 name = title!!,
                 isSelected = false,
-                mutableListOf<String>(user.value!!.email) )
+                mutableListOf<String>(user.value!!.email)
+            )
             categoryList.add(categoryAdded)
-            Log.i("Rita","updateCategories categoryAdded: $categoryAdded")
-            Log.i("Rita","updateCategories categoryListTobeUpdated: " +
-                    " ${categoryListTobeUpdated.value}")
+            Log.i("Rita", "updateCategories categoryAdded: $categoryAdded")
+            Log.i(
+                "Rita", "updateCategories categoryListTobeUpdated: " +
+                        " ${categoryListTobeUpdated.value}"
+            )
 
             categoryListTobeUpdated.value = categoryList
             updateCategoriesForUser.value = true
-        }
-        else{
+        } else {
             updateCategoriesForUser.value = false
             loadingStatus.value = false
         }

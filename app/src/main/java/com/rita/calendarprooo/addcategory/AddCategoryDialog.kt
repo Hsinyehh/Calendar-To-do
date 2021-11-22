@@ -13,9 +13,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.rita.calendarprooo.R
 import com.rita.calendarprooo.databinding.DialogAddCategoryBinding
-import com.rita.calendarprooo.databinding.DialogInviteBinding
-import com.rita.calendarprooo.edit.EditFragmentArgs
-import com.rita.calendarprooo.invite.InviteViewModel
 
 class AddCategoryDialog : DialogFragment() {
     private val viewModel: AddCategoryViewModel by lazy {
@@ -78,9 +75,8 @@ class AddCategoryDialog : DialogFragment() {
             if (it == true) {
                 dismiss()
                 //viewModel.doneNavigated()
-            }
-            else if(it == false){
-                Toast.makeText(context, "The input can't be blank!",Toast.LENGTH_LONG).show()
+            } else if (it == false) {
+                Toast.makeText(context, "The input can't be blank!", Toast.LENGTH_LONG).show()
             }
         })
 

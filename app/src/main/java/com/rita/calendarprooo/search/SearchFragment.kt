@@ -3,34 +3,30 @@ package com.rita.calendarprooo.search
 import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Intent
-import android.location.Address
-import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
-import android.view.*
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.gms.maps.*
+import androidx.navigation.findNavController
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.rita.calendarprooo.R
-import com.rita.calendarprooo.databinding.FragmentSearchBinding
-import java.io.IOException
-import com.google.android.gms.maps.CameraUpdateFactory
-import androidx.navigation.findNavController
-import com.google.android.gms.common.api.Status
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.rita.calendarprooo.NavigationDirections
+import com.rita.calendarprooo.R
 import com.rita.calendarprooo.data.Plan
+import com.rita.calendarprooo.databinding.FragmentSearchBinding
 
 
 class SearchFragment : Fragment(), OnMapReadyCallback {

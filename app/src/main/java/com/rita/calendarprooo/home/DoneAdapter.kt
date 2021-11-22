@@ -2,18 +2,13 @@ package com.rita.calendarprooo.home
 
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.rita.calendarprooo.data.Check
 import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.databinding.ItemDoneBinding
-import com.rita.calendarprooo.databinding.ItemScheduleBinding
-import com.rita.calendarprooo.edit.EditViewModel
 import com.rita.calendarprooo.login.UserManager
 import java.util.*
 

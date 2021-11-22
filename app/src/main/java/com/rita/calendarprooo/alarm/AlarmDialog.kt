@@ -26,7 +26,7 @@ import com.rita.calendarprooo.ext.stringToTimestamp
 import com.rita.calendarprooo.ext.timestampToString
 import com.rita.calendarprooo.invite.InviteDialogArgs
 
-class AlarmDialog: DialogFragment()  {
+class AlarmDialog : DialogFragment() {
     private val viewModel: AlarmViewModel by lazy {
         ViewModelProvider(this).get(AlarmViewModel::class.java)
     }
@@ -71,7 +71,7 @@ class AlarmDialog: DialogFragment()  {
         // broadcast
         // send broadcast
         viewModel.alarm_time.observe(viewLifecycleOwner, Observer {
-            it?.let{
+            it?.let {
                 viewModel.plan.value?.let { it1 -> setAlarm(it, it1) }
                 dismiss()
             }
@@ -112,7 +112,7 @@ class AlarmDialog: DialogFragment()  {
         }
     }
 
-    private fun setAlarm(time: Long, plan: Plan){
+    private fun setAlarm(time: Long, plan: Plan) {
         val timeShowed = plan.start_time?.let { timestampToString(it) } + "  -  " +
                 plan.end_time?.let { timestampToString(it) }
 
@@ -122,13 +122,12 @@ class AlarmDialog: DialogFragment()  {
         intent.putExtra("time", "$timeShowed")
 
         val pendingIntent = PendingIntent.getBroadcast(requireContext(), 0, intent, 0)
-        val alarmManager = requireActivity().getSystemService(Context.ALARM_SERVICE)as AlarmManager
+        val alarmManager = requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent)
 
-        Toast.makeText(context,"Alarm Setup success!", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "Alarm Setup success!", Toast.LENGTH_SHORT).show()
     }
-
 
 
 }

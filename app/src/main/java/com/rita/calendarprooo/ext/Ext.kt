@@ -52,10 +52,10 @@ fun stringToTimestamp(dateSelected: String): Long? {
     }
 }
 
-fun timestampToString(timestamp: Long): String{
+fun timestampToString(timestamp: Long): String {
     val simpleDateFormat = SimpleDateFormat("MM/dd HH:mm", Locale.TAIWAN)
     var time: String? = null
-        time = simpleDateFormat.format(Date(timestamp))
+    time = simpleDateFormat.format(Date(timestamp))
 
     return time
 }

@@ -5,18 +5,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.rita.calendarprooo.R
-import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.databinding.FragmentInvitationBinding
 import com.rita.calendarprooo.ext.getVmFactory
-import com.rita.calendarprooo.home.TodoAdapter
-import com.rita.calendarprooo.sort.HomeSortViewModel
 
 
 class InvitationFragment : Fragment() {
@@ -71,14 +66,14 @@ class InvitationFragment : Fragment() {
 
         viewModel.invitationListUpdated.observe(viewLifecycleOwner, Observer {
             Log.i("Rita", "invitationListUpdated observe- $it")
-            it?.let{
+            it?.let {
                 viewModel.updateInvitationList(it)
             }
         })
 
         viewModel.startToUpdate.observe(viewLifecycleOwner, Observer {
             Log.i("Rita", "updateSuccess observe- $it")
-            it?.let{
+            it?.let {
                 viewModel.getPlans()
             }
         })

@@ -13,16 +13,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.rita.calendarprooo.NavigationDirections
 import com.rita.calendarprooo.R
-import com.rita.calendarprooo.data.Category
-import com.rita.calendarprooo.data.Check
 import com.rita.calendarprooo.databinding.FragmentEditBinding
 import com.rita.calendarprooo.ext.getVmFactory
-import com.rita.calendarprooo.home.CheckAdapter
-import java.text.SimpleDateFormat
 
 
 class EditFragment : Fragment() {
@@ -103,7 +98,6 @@ class EditFragment : Fragment() {
         viewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
             Log.i("Rita", "loadingStatus.observe: ${it}")
         })
-
 
 
         //save button

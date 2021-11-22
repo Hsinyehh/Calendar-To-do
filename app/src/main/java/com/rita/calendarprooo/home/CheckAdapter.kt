@@ -2,15 +2,12 @@ package com.rita.calendarprooo.home
 
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.rita.calendarprooo.data.Check
 import com.rita.calendarprooo.databinding.ItemCheckBinding
-import com.rita.calendarprooo.databinding.ItemScheduleBinding
-import com.rita.calendarprooo.edit.EditViewModel
 
 class CheckAdapter(val viewModel: HomeViewModel) : ListAdapter<Check,
         CheckAdapter.ViewHolder>(CheckDiffCallback()) {

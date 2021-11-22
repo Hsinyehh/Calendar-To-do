@@ -1,6 +1,5 @@
 package com.rita.calendarprooo.invitation
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -21,7 +20,7 @@ class InvitationCategoryAdapter(val viewModel: InvitationViewModel) : ListAdapte
         }
 
         holder.binding.invitationBtnDecline.setOnClickListener {
-            viewModel.updateInvitation(item,false)
+            viewModel.updateInvitation(item, false)
         }
 
         holder.bind(item)
