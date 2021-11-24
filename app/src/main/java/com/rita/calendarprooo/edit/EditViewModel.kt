@@ -11,6 +11,7 @@ import com.rita.calendarprooo.data.Check
 import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.data.User
 import com.rita.calendarprooo.data.source.CalendarRepository
+import com.rita.calendarprooo.ext.stringToTimestamp
 import com.rita.calendarprooo.login.UserManager
 import java.text.SimpleDateFormat
 import java.util.*
@@ -212,7 +213,7 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
         Log.i("Rita", "$lastPosition")
         var categoryListGet = categoryList.value
 
-        //deselected the origin position value
+        // deselected the origin position value
         if (categoryPosition.value != -1) {
             categoryListGet!![categoryPosition.value!!].isSelected = false
         }
@@ -228,25 +229,10 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
         categoryList.value = categoryListGet
     }
 
-    fun convertToStartTimeStamp(dateSelected: String) {
-        try {
-            val dateSelectedFormat = SimpleDateFormat("dd-MM-yyyy HH:mm").parse(dateSelected)
-            Log.i("Rita", "${dateSelectedFormat.time} ")
-            start_time.value = dateSelectedFormat.time
-        } catch (e: java.text.ParseException) {
-            Log.i("Rita", "$e")
-        }
-    }
-
-    fun convertToEndTimeStamp(dateSelected: String) {
-        try {
-            val dateSelectedFormat = SimpleDateFormat("dd-MM-yyyy HH:mm").parse(dateSelected)
-            Log.i("Rita", "${dateSelectedFormat.time} ")
-            end_time.value = dateSelectedFormat.time
-            createStatus.value = true
-        } catch (e: java.text.ParseException) {
-            Log.i("Rita", "$e")
-        }
+    fun convertToTimestamp(startDateSelected: String, endDateSelected: String){
+        start_time.value = stringToTimestamp(startDateSelected)
+        end_time.value = stringToTimestamp(endDateSelected)
+        createStatus.value = true
     }
 
     fun doneConverted() {
@@ -263,7 +249,7 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
     init {
         title.value = plan.title ?: ""
         description.value = plan.description ?: ""
-        //location.value = planGet.value.location ?: ""
+        // location.value = planGet.value.location ?: ""
         start_time.value = plan.start_time ?: null
         end_time.value = plan.end_time ?: null
         start_time_detail.value = plan.start_time_detail ?: null
@@ -279,7 +265,6 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
         }
         categoryPosition.value = plan.categoryPosition
         collaborator.value = mutableListOf(currentUser!!.email)
-
     }
 
 }

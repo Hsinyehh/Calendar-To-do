@@ -23,7 +23,7 @@ class AddCategoryDialog : DialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        //layout binding
+        // layout binding
         val binding: DialogAddCategoryBinding = DataBindingUtil.inflate(
             inflater, R.layout.dialog_add_category, container, false
         )

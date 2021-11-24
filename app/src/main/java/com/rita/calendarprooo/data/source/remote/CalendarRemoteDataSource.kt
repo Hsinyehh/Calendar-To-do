@@ -4,9 +4,7 @@ import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.github.mikephil.charting.data.PieEntry
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import com.rita.calendarprooo.CalendarProApplication
 import com.rita.calendarprooo.R
 import com.rita.calendarprooo.data.Check
@@ -23,9 +21,80 @@ object CalendarRemoteDataSource : CalendarDataSource {
     private const val PATH_PLAN = "plan"
     private const val PATH_USER = "user"
 
-    override fun getLivePlansFromToday(selectedStartTime: Long, selectedEndTime: Long, user: User):
+    override suspend fun getPlansToday(selectedStartTime: Long, selectedEndTime: Long, user: User):
+            Result<List<Plan>> = suspendCoroutine { continuation ->
+        FirebaseFirestore.getInstance()
+            .collection(PATH_PLAN)
+            .whereArrayContains("collaborator", user.email)
+            .whereGreaterThanOrEqualTo("start_time", selectedStartTime)
+            .whereLessThanOrEqualTo("start_time", selectedEndTime)
+            .get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.i("Rita","fb - getPlansToday result.size"+ task.result.size())
+                    val list = mutableListOf<Plan>()
+                    for (document in task.result!!) {
+                        Log.i("Rita","fb - getPlansToday doc"+ document.id + " =>"  + document.data)
+
+                        val plan = document.toObject(Plan::class.java)
+                        list.add(plan)
+                    }
+                    // val filteredList = list.filter { it.start_time!! <= selectedEndTime }
+                    continuation.resume(Result.Success(list))
+                } else {
+                    task.exception?.let {
+                        Log.w("Rita",
+                            "[${this::class.simpleName}] Error getting documents. ${it.message}")
+                        continuation.resume(Result.Error(it))
+                        return@addOnCompleteListener
+                    }
+                    continuation.resume(Result.Fail(CalendarProApplication.instance.getString(R.string.error)))
+                }
+            }
+    }
+
+    override suspend fun getPlansBeforeToday(selectedStartTime: Long, user: User):
+            Result<List<Plan>> = suspendCoroutine { continuation ->
+
+        FirebaseFirestore.getInstance()
+            .collection(PATH_PLAN)
+            .whereArrayContains("collaborator", user.email)
+            .whereLessThan("start_time", selectedStartTime)
+            .get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+
+                    val list = mutableListOf<Plan>()
+                    Log.i("Rita","fb - getPlansBeforeToday result.size"+ task.result.size())
+
+                    for (document in task.result!!) {
+                        val plan = document.toObject(Plan::class.java)
+                        list.add(plan)
+                    }
+                    Log.i("Rita", "fb - getPlansBeforeToday listBeforeToday:　$list")
+
+                    val filteredList = list
+                        .filter {  it.end_time!! >= selectedStartTime}
+
+                    Log.i("Rita", "fb - getPlansBeforeToday filtered listBeforeToday:　$filteredList")
+
+                    continuation.resume(Result.Success(filteredList))
+                } else {
+                    task.exception?.let {
+
+                        Log.w("Rita",
+                            "[${this::class.simpleName}] Error getting documents. ${it.message}")
+                        continuation.resume(Result.Error(it))
+                        return@addOnCompleteListener
+                    }
+                    continuation.resume(Result.Fail(CalendarProApplication.instance.getString(R.string.error)))
+                }
+            }
+    }
+
+    override fun getLivePlansToday(selectedStartTime: Long, selectedEndTime: Long, user: User):
             MutableLiveData<List<Plan>> {
-        var livedata = MutableLiveData<List<Plan>>()
+        val livedata = MutableLiveData<List<Plan>>()
         FirebaseFirestore.getInstance()
             .collection(PATH_PLAN)
             .whereArrayContains("collaborator", user.email)
@@ -43,7 +112,7 @@ object CalendarRemoteDataSource : CalendarDataSource {
                 for (item in snapshot!!) {
                     Log.i("Rita", "plan:　${item.data}")
                     val plan = item.toObject(Plan::class.java)
-                    list.add(plan!!)
+                    list.add(plan)
                 }
                 Log.i("Rita", "list onChanged:　$list")
                 livedata.value = list
@@ -54,7 +123,7 @@ object CalendarRemoteDataSource : CalendarDataSource {
 
     override fun getLivePlansBeforeToday(selectedStartTime: Long, user: User):
             MutableLiveData<List<Plan>> {
-        var livedata = MutableLiveData<List<Plan>>()
+        val livedata = MutableLiveData<List<Plan>>()
         FirebaseFirestore.getInstance()
             .collection(PATH_PLAN)
             .whereArrayContains("collaborator", user.email)
@@ -71,10 +140,10 @@ object CalendarRemoteDataSource : CalendarDataSource {
                 val list = mutableListOf<Plan>()
                 for (item in snapshot!!) {
                     val plan = item.toObject(Plan::class.java)
-                    list.add(plan!!)
+                    list.add(plan)
                 }
                 Log.i("Rita", "list onChanged:　$list")
-                val filteredList = list.filter { it -> it.end_time!! >= selectedStartTime }
+                val filteredList = list.filter { it.end_time!! >= selectedStartTime }
                 livedata.value = filteredList
             }
         return livedata
@@ -85,12 +154,12 @@ object CalendarRemoteDataSource : CalendarDataSource {
             val newPlanRef = FirebaseFirestore.getInstance().collection("plan").document()
             newPlanRef
                 .set(plan)
-                .addOnSuccessListener { documentReference ->
-                    Log.d(ContentValues.TAG, "DocumentSnapshot added with ID: $newPlanRef.id")
+                .addOnSuccessListener {
+                    Log.d(TAG, "DocumentSnapshot added with ID: $newPlanRef.id")
                     continuation.resume(Result.Success(true))
                 }
                 .addOnFailureListener {
-                    Log.w(ContentValues.TAG, "Error adding document", it)
+                    Log.w(TAG, "Error adding document", it)
                     continuation.resume(Result.Error(it))
                 }
         }
@@ -103,11 +172,11 @@ object CalendarRemoteDataSource : CalendarDataSource {
             planRef!!
                 .update("isToDoListDone", plan.isToDoListDone)
                 .addOnSuccessListener {
-                    Log.d(ContentValues.TAG, "DocumentSnapshot successfully updated!")
+                    Log.d(TAG, "DocumentSnapshot successfully updated!")
                     continuation.resume(Result.Success(true))
                 }
                 .addOnFailureListener {
-                    Log.w(ContentValues.TAG, "Error updating document", it)
+                    Log.w(TAG, "Error updating document", it)
                     continuation.resume(Result.Error(it))
                 }
         }
@@ -121,15 +190,15 @@ object CalendarRemoteDataSource : CalendarDataSource {
             FirebaseFirestore.getInstance()
                 .collection(PATH_PLAN).document(it)
         }
-        Log.i("Rita", "writeCheckItemDone-planRef: $planRef")
+        Log.i("Rita", "fb - updatePlanByCheck-planRef: $planRef")
         planRef!!
             .update("checkList", checkList.value)
             .addOnSuccessListener {
-                Log.d(ContentValues.TAG, "DocumentSnapshot successfully updated!")
+                Log.d(TAG, "DocumentSnapshot successfully updated!")
                 continuation.resume(Result.Success(true))
             }
             .addOnFailureListener {
-                Log.w(ContentValues.TAG, "Error updating document", it)
+                Log.w(TAG, "Error updating document", it)
                 continuation.resume(Result.Error(it))
             }
     }
@@ -142,26 +211,22 @@ object CalendarRemoteDataSource : CalendarDataSource {
         val planRef = check.plan_id?.let {
             FirebaseFirestore.getInstance().collection(PATH_PLAN).document(it)
         }
-        var plan: Plan? = null
         planRef!!.get()
             .addOnSuccessListener { document ->
                 if (document != null) {
-                    Log.d(ContentValues.TAG, "DocumentSnapshot data: ${document.data}")
-                    plan = document.toObject(Plan::class.java)
+                    val plan = document.toObject(Plan::class.java)
                     if (plan != null) {
-                        plan!!.checkList!![position] = check
-                        checkList.value = plan!!.checkList
-                        Log.i("Rita", " getCheckList-itemUpdate as $check")
-                        //Store isDone status
-                        //updatePlanByCheck(check, checkList)
+                        plan.checkList!![position] = check
+                        checkList.value = plan.checkList
+                        Log.i("Rita", "fb - getCheckList-itemUpdate as $check")
                     }
                 } else {
-                    Log.d(ContentValues.TAG, "No such document")
+                    Log.d(TAG, "No such document")
                 }
                 continuation.resume(Result.Success(true))
             }
             .addOnFailureListener { exception ->
-                Log.d(ContentValues.TAG, "get failed with ", exception)
+                Log.d(TAG, "get failed with ", exception)
                 continuation.resume(Result.Error(exception))
             }
     }
@@ -178,7 +243,7 @@ object CalendarRemoteDataSource : CalendarDataSource {
         planRef!!.get()
             .addOnSuccessListener { document ->
                 if (document != null) {
-                    Log.d(ContentValues.TAG, "DocumentSnapshot data: ${document.data}")
+                    Log.d(TAG, "DocumentSnapshot data: ${document.data}")
                     val plan = document.toObject(Plan::class.java)
                     plan!!.checkList!!.removeAt(position)
                     checkList.value = plan.checkList
@@ -186,12 +251,12 @@ object CalendarRemoteDataSource : CalendarDataSource {
                     //Store isDone status
                     //updatePlanByCheck(item)
                 } else {
-                    Log.d(ContentValues.TAG, "No such document")
+                    Log.d(TAG, "No such document")
                 }
                 continuation.resume(Result.Success(true))
             }
             .addOnFailureListener { exception ->
-                Log.d(ContentValues.TAG, "get failed with ", exception)
+                Log.d(TAG, "get failed with ", exception)
             }
     }
 
@@ -207,7 +272,7 @@ object CalendarRemoteDataSource : CalendarDataSource {
                     Log.d(TAG, "[${this::class.simpleName}] Error getting documents. ${it.message}")
                 }
 
-                for (document in snapshot!!) {
+                for (document in snapshot) {
                     val user = document.toObject(User::class.java)
                     liveData.value = user
                 }
@@ -244,21 +309,21 @@ object CalendarRemoteDataSource : CalendarDataSource {
 
     override suspend fun updateUser(user: User): Result<Boolean> =
     suspendCoroutine { continuation ->
-        val userRef = user.email?.let {
+        val userRef = user.email.let {
             FirebaseFirestore.getInstance().collection(PATH_USER).document(it)
         }
         Log.i("Rita", "updateUser - user: $user")
         Log.i("Rita", "updateUser - userRef: $userRef")
 
-        userRef!!
+        userRef
             .update("id", user.id,
                 "photo",user.photo, "name",user.name)
             .addOnSuccessListener {
-                Log.d(ContentValues.TAG, "DocumentSnapshot successfully updated!")
+                Log.d(TAG, "DocumentSnapshot successfully updated!")
                 continuation.resume(Result.Success(true))
             }
             .addOnFailureListener {
-                Log.w(ContentValues.TAG, "Error updating document", it)
+                Log.w(TAG, "Error updating document", it)
                 continuation.resume(Result.Error(it))
             }
     }
@@ -278,7 +343,7 @@ object CalendarRemoteDataSource : CalendarDataSource {
                         val user = document.toObject(User::class.java)
                         list.add(user)
                     }
-                    var isUserExisted: Boolean? = null
+                    val isUserExisted: Boolean?
                     if (list.size > 0) {
                         isUserExisted = true
                     } else {
@@ -301,7 +366,7 @@ object CalendarRemoteDataSource : CalendarDataSource {
 
     override fun getLiveDone(selectedStartTime: Long, selectedEndTime: Long, user: User):
             MutableLiveData<List<Plan>> {
-        var livedata = MutableLiveData<List<Plan>>()
+        val livedata = MutableLiveData<List<Plan>>()
         FirebaseFirestore.getInstance()
             .collection(PATH_PLAN)
             .whereArrayContains("collaborator", user.email)
@@ -320,7 +385,7 @@ object CalendarRemoteDataSource : CalendarDataSource {
                     for (item in snapshot) {
                         Log.i("Rita", "plan:　${item.data}")
                         val plan = item.toObject(Plan::class.java)
-                        list.add(plan!!)
+                        list.add(plan)
                     }
                 }
                 Log.i("Rita", "list onChanged:　$list")

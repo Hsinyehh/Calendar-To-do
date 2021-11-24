@@ -133,7 +133,7 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
         // reGet viewList
         getViewListAlready.value = null
 
-        //plan's start-time from today
+        // plan's start-time from today
         currentUser.value?.let {
             db.collection("plan")
                 .whereArrayContains("collaborator", it.email!!)
@@ -159,7 +159,7 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
 
     fun readPlanBeforeToday() {
         Log.i("Rita", "readPlanBeforeToday user: ${currentUser.value}")
-        //plan's start-time before today
+        // plan's start-time before today
         currentUser.value?.let {
             db.collection("plan")
                 .whereArrayContains("collaborator", it.email!!)
@@ -415,7 +415,7 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
                     }
                 }
         }
-        //plan's start-time before today
+        // plan's start-time before today
         currentUser.value?.let {
             db.collection("plan")
                 .whereArrayContains("collaborator", it.email!!)
@@ -510,7 +510,7 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
         Log.i("Rita", "$lastPosition")
         var categoryListGet = categoryList.value
 
-        //deselected the origin position value
+        // deselected the origin position value
         if (categoryPosition.value != -1) {
             categoryListGet!![categoryPosition.value!!].isSelected = false
         }
@@ -529,7 +529,7 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
     fun initCategory(user: User) {
         categoryList.value = user.categoryList
         categoryPosition.value = 0
-        //init position is 0
+        // init position is 0
         var categoryListGet = categoryList.value
         categoryListGet!![0].isSelected = true
         val item = categoryListGet!![0]

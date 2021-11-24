@@ -29,11 +29,9 @@ class InviteCategoryViewModel(val repository: CalendarRepository) : ViewModel() 
 
     var isInvited = MutableLiveData<Boolean>()
 
-    //var updatePlan = MutableLiveData<Boolean>()
-
     var updateSuccess = MutableLiveData<Boolean>()
 
-    //Firebase
+    // Firebase
     private val db = Firebase.firestore
 
 

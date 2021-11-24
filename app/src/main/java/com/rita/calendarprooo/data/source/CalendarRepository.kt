@@ -7,7 +7,13 @@ import com.rita.calendarprooo.data.User
 import com.rita.calendarprooo.data.Result
 
 interface CalendarRepository {
-    fun getLivePlansFromToday(selectedStartTime: Long, selectedEndTime: Long, user: User):
+    suspend fun getPlansToday(selectedStartTime: Long, selectedEndTime: Long, user: User):
+    Result<List<Plan>>
+
+    suspend fun getPlansBeforeToday(selectedStartTime: Long, user: User):
+            Result<List<Plan>>
+
+    fun getLivePlansToday(selectedStartTime: Long, selectedEndTime: Long, user: User):
             MutableLiveData<List<Plan>>
 
     fun getLivePlansBeforeToday(selectedStartTime: Long, user: User):

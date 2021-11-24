@@ -18,7 +18,7 @@ class DoneAdapter(val viewModel: HomeSortViewModel) : ListAdapter<Plan,
         val item = getItem(position)
 
 
-        //checkAdapter
+        // checkAdapter
         val adapter = CheckAdapter(viewModel)
         holder.binding.scheduleCheckList.adapter = adapter
         adapter.submitList(item.checkList)
@@ -44,7 +44,7 @@ class DoneAdapter(val viewModel: HomeSortViewModel) : ListAdapter<Plan,
             }
             viewModel.getPlanAndChangeStatus(item)
 
-            //get viewList again
+            // get viewList again
             viewModel.startToGetViewListForTodo()
             notifyDataSetChanged()
         }

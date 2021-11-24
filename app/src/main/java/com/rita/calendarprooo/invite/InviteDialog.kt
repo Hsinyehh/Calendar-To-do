@@ -22,7 +22,7 @@ class InviteDialog : DialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        //layout binding
+        // layout binding
         val binding: DialogInviteBinding = DataBindingUtil.inflate(
             inflater, R.layout.dialog_invite, container, false
         )
@@ -30,7 +30,7 @@ class InviteDialog : DialogFragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        //safe args
+        // safe args
         viewModel.plan.value = InviteDialogArgs.fromBundle(requireArguments()).plan
 
         binding.inviteBtnCancel.setOnClickListener {
@@ -65,8 +65,8 @@ class InviteDialog : DialogFragment() {
             Log.i("Rita", "isInvited observe- $it")
             if (it == true) {
                 Toast.makeText(context, "Invite success", Toast.LENGTH_LONG).show()
-                dismiss()
                 viewModel.doneWritten()
+                dismiss()
             }
         })
 

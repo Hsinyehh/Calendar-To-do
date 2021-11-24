@@ -27,7 +27,7 @@ class HomeSortFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        //layout binding
+        // layout binding
         val binding: FragmentHomeSortBinding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_home_sort, container, false
         )
@@ -35,7 +35,7 @@ class HomeSortFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        //init plans
+        // init plans
         viewModel.currentUser.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             Log.i("Rita", "currentUser.observe: $it")
             viewModel.initCategory(it)
@@ -47,7 +47,7 @@ class HomeSortFragment : Fragment() {
             viewModel.readPlanOnChanged()
         })
 
-        //read Plans when date selected changed
+        // read Plans when date selected changed
         viewModel.selectedEndTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             Log.i("Rita", "selectedEndTime observe- $it")
             it?.let {
@@ -76,13 +76,13 @@ class HomeSortFragment : Fragment() {
             }
         })
 
-        //test
+        // test
         viewModel.scheduleViewList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             Log.i("Rita", "scheduleViewList.observe: $it")
         })
 
 
-        //update plans on home pages when data changed
+        // update plans on home pages when data changed
         viewModel.listFromToday.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             it?.let {
                 Log.i("Rita", "listFromToday.observe: $it")
@@ -122,7 +122,7 @@ class HomeSortFragment : Fragment() {
         }
 
 
-        //schedule adapter
+        // schedule adapter
         val adapter = ScheduleAdapter(viewModel)
         binding.homeScheduleList.adapter = adapter
         viewModel.scheduleList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
@@ -133,13 +133,13 @@ class HomeSortFragment : Fragment() {
         })
 
 
-        //to-do adapter
+        // to-do adapter
         val todoAdapter = TodoAdapter(viewModel)
         binding.homeTodoList.adapter = todoAdapter
         viewModel.todoList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             Log.i("Rita", "todoList.observe: $it")
 
-            //get size again for to-do/done mode changed
+            // get size again for to-do/done mode changed
             Log.i("Rita", "todoList.observe: ${viewModel.startToGetViewListForTodoMode.value}")
             if (viewModel.startToGetViewListForTodoMode.value == true) {
                 viewModel.getViewListForTodoMode()
@@ -151,13 +151,13 @@ class HomeSortFragment : Fragment() {
             }
         })
 
-        //done adapter
+        // done adapter
         val doneAdapter = DoneAdapter(viewModel)
         binding.homeDoneList.adapter = doneAdapter
         viewModel.doneList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             Log.i("Rita", "doneList.observe: $it")
 
-            //get size again for to-do/done mode changed
+            // get size again for to-do/done mode changed
             Log.i("Rita", "doneList.observe: ${viewModel.startToGetViewListForDoneMode.value}")
             if (viewModel.startToGetViewListForDoneMode.value == true) {
                 viewModel.getViewListForTodoMode()
@@ -197,7 +197,7 @@ class HomeSortFragment : Fragment() {
 
         val address = ""
         val plan: Plan? = Plan()
-        //Edit page navigation
+        // Edit page navigation
         viewModel.navigateToEdit.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             it?.let {
                 view?.findNavController()?.navigate(
@@ -257,7 +257,7 @@ class HomeSortFragment : Fragment() {
         })
 
 
-        //to-do adapter drag item
+        // to-do adapter drag item
         var simpleCallback = object : ItemTouchHelper.SimpleCallback(
             ItemTouchHelper.UP or (ItemTouchHelper.DOWN),
             0

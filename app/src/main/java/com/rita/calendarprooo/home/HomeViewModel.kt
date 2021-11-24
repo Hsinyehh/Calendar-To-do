@@ -5,21 +5,27 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.rita.calendarprooo.CalendarProApplication
+import com.rita.calendarprooo.R
 import com.rita.calendarprooo.data.Check
 import com.rita.calendarprooo.data.Plan
+import com.rita.calendarprooo.data.Result
 import com.rita.calendarprooo.data.User
 import com.rita.calendarprooo.data.source.CalendarRepository
 import com.rita.calendarprooo.ext.convertToTimeStamp
 import com.rita.calendarprooo.ext.getToday
 import com.rita.calendarprooo.login.UserManager
+import com.rita.calendarprooo.network.LoadApiStatus
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.util.*
 
-class HomeViewModel(repository: CalendarRepository) : ViewModel() {
+class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
 
     // loading animation
     val loadingStatus = MutableLiveData<Boolean?>()
-
-    private val repository = repository
 
     var currentUser = MutableLiveData<User>()
 
@@ -56,17 +62,17 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
     //Firebase
     private val db = Firebase.firestore
 
-    var listFromToday = MutableLiveData<List<Plan>>()
-
-    var listBeforeToday = MutableLiveData<List<Plan>>()
-
-    var readListFromToday = MutableLiveData<List<Plan>>()
-
-    var readListBeforeToday = MutableLiveData<List<Plan>>()
-
     var selectedStartTime = MutableLiveData<Long>()
 
     var selectedEndTime = MutableLiveData<Long>()
+
+    var plansToday = MutableLiveData<List<Plan>>()
+
+    var plansBeforeToday = MutableLiveData<List<Plan>>()
+
+    var livePlansToday = MutableLiveData<List<Plan>>()
+
+    var listBeforeToday = MutableLiveData<List<Plan>>()
 
     var scheduleViewList = MutableLiveData<MutableList<Boolean>>()
 
@@ -82,6 +88,31 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
 
     // the variable is used after viewList is created so that the recyclerView can show
     var getViewListAlready = MutableLiveData<Boolean>()
+
+    // status: The internal MutableLiveData that stores the status of the most recent request
+    private val _status = MutableLiveData<LoadApiStatus>()
+
+    val status: LiveData<LoadApiStatus>
+        get() = _status
+
+    // error: The internal MutableLiveData that stores the error of the most recent request
+    private val _error = MutableLiveData<String>()
+
+    val error: LiveData<String>
+        get() = _error
+
+    // status for the loading icon of swl
+    private val _refreshStatus = MutableLiveData<Boolean>()
+
+    val refreshStatus: LiveData<Boolean>
+        get() = _refreshStatus
+
+    // Create a Coroutine scope using a job to be able to cancel when needed
+    private var viewModelJob = Job()
+
+    // the Coroutine runs using the Main (UI) dispatcher
+    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
+
 
     fun swapCheckListItem(start: Int, end: Int) {
         val todoListGet = _todoList.value
@@ -113,68 +144,83 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
     }
 
     fun readPlanFromToday() {
-        loadingStatus.value = true
 
-        Log.i("Rita", "readPlanFromToday user: ${currentUser.value}")
-        // reGet viewList
-        getViewListAlready.value = null
+        coroutineScope.launch {
 
-        //plan's start-time from today
-        currentUser.value?.let {
-            db.collection("plan")
-                .whereArrayContains("collaborator", it.email!!)
-                .whereGreaterThanOrEqualTo("start_time", selectedStartTime.value!!)
-                .whereLessThanOrEqualTo("start_time", selectedEndTime.value!!)
-                .get()
-                .addOnSuccessListener { result ->
-                    val list = mutableListOf<Plan>()
-                    for (document in result) {
-                        Log.d(TAG, "${document.id} => ${document.data}")
-                        val plan = document.toObject(Plan::class.java)
-                        list.add(plan)
-                    }
-                    Log.i("Rita", "list: $list")
-                    readListFromToday.value = list
+            _status.value = LoadApiStatus.LOADING
+
+            val result = currentUser.value?.let {
+                repository.getPlansToday(selectedStartTime.value!!, selectedEndTime.value!!, it)
+            }
+                 plansToday.value = when (result) {
+                is Result.Success -> {
+                    // reGet viewList
+                    getViewListAlready.value = null
+                    loadingStatus.value = true
+
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
+                    result.data
                 }
-                .addOnFailureListener { exception ->
-                    Log.w(TAG, "Error getting documents.", exception)
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                    null
                 }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                    null
+                }
+                else -> {
+                    _error.value = CalendarProApplication.instance.getString(R.string.error)
+                    _status.value = LoadApiStatus.ERROR
+                    null
+                }
+            }
+            _refreshStatus.value = false
         }
     }
 
     fun readPlanBeforeToday() {
-        Log.i("Rita", "readPlanBeforeToday user: ${currentUser.value}")
-        //plan's start-time before today
-        currentUser.value?.let {
-            db.collection("plan")
-                .whereArrayContains("collaborator", it.email!!)
-                .whereLessThan("start_time", selectedStartTime.value!!)
-                .get()
-                .addOnSuccessListener { result ->
-                    val listBefore = mutableListOf<Plan>()
-                    for (document in result) {
-                        Log.d(TAG, "${document.id} => ${document.data}")
-                        val plan = document.toObject(Plan::class.java)
-                        listBefore.add(plan)
-                    }
-                    Log.i("Rita", "listBeforeToday:　$listBefore")
 
-                    val filteredList = listBefore
-                        .filter { it -> it.end_time!! >= selectedStartTime.value!! }
+        coroutineScope.launch {
 
-                    Log.i("Rita", "filtered listBeforeToday:　$filteredList")
+            _status.value = LoadApiStatus.LOADING
 
-                    readListBeforeToday.value = filteredList
+            val result = currentUser.value?.let {
+                repository.getPlansBeforeToday(selectedStartTime.value!!, it)
+            }
+
+            plansBeforeToday.value = when (result) {
+                is Result.Success -> {
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
+                    result.data
                 }
-                .addOnFailureListener { exception ->
-                    Log.w(TAG, "Error getting documents.", exception)
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                    null
                 }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                    null
+                }
+                else -> {
+                    _error.value = CalendarProApplication.instance.getString(R.string.error)
+                    _status.value = LoadApiStatus.ERROR
+                    null
+                }
+            }
+            _refreshStatus.value = false
         }
     }
 
     fun readPlanInTotal() {
-        var list = readListFromToday.value?.toMutableList()
-        var listBefore = readListBeforeToday.value?.toMutableList()
+        var list = plansToday.value?.toMutableList()
+        val listBefore = plansBeforeToday.value?.toMutableList()
         if (list != null) {
             if (listBefore != null) {
                 list.addAll(listBefore)
@@ -185,16 +231,13 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
             }
         }
         if (list != null) {
-            _scheduleList.value = list.filter { it -> it.isToDoList == false }
-            _todoList.value = list.filter { it -> it.isToDoList == true && !it.isToDoListDone }
-            _doneList.value = list.filter { it -> it.isToDoListDone }
+            _scheduleList.value = list.filter {  it.isToDoList == false }
+            _todoList.value = list.filter { it.isToDoList == true && !it.isToDoListDone }
+            _doneList.value = list.filter { it.isToDoListDone }
             startToGetViewList.value = true
         }
     }
 
-    fun doneGetViewList() {
-        startToGetViewList.value = null
-    }
 
     fun startToGetViewListForTodo() {
         startToGetViewListForTodoMode.value = true
@@ -202,7 +245,7 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
     }
 
     fun getViewList() {
-        Log.i("Rita", "getViewList")
+
         val list = mutableListOf<Boolean>()
         val todoList = mutableListOf<Boolean>()
         val doneList = mutableListOf<Boolean>()
@@ -215,18 +258,21 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
                 list.add(false)
             }
             scheduleViewList.value = list
+            Log.i("Rita","getViewList scheduleViewList: ${scheduleViewList.value}")
         }
         if (todoSize != null && todoSize > 0) {
             for (i in 1..todoSize) {
                 todoList.add(false)
             }
             todoViewList.value = todoList
+            Log.i("Rita","getViewList todoViewList: ${todoViewList.value}")
         }
         if (doneSize != null && doneSize > 0) {
             for (i in 1..doneSize) {
                 doneList.add(false)
             }
             doneViewList.value = doneList
+            Log.i("Rita","getViewList doneViewList: ${doneViewList.value}")
         }
         getViewListAlready.value = true
     }
@@ -256,44 +302,35 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
     }
 
     fun changeScheduleView(position: Int) {
-        var list = scheduleViewList.value
+        val list = scheduleViewList.value
         var status = list?.get(position)
 
-        Log.i("Rita", "ScheduleView- $position -$status")
         status = status != true
         list?.set(position, status)
-        Log.i("Rita", "ScheduleView changed- $position -$status")
 
         scheduleViewList.value = list
 
     }
 
     fun changeTodoView(position: Int) {
-        var list = todoViewList.value
+        val list = todoViewList.value
         var status = list?.get(position)
-        Log.i("Rita", "todoViewList- ${todoViewList.value}")
 
-        Log.i("Rita", "todoView- $position - $status")
         status = status != true
         list?.set(position, status)
-        Log.i("Rita", "todoView changed- $position - $status")
 
         todoViewList.value = list
         Log.i("Rita", "todoViewList changed- ${todoViewList.value}")
     }
 
     fun changeDoneView(position: Int) {
-        var list = doneViewList.value
+        val list = doneViewList.value
         var status = list?.get(position)
-        Log.i("Rita", "doneViewList- ${doneViewList.value}")
 
-        Log.i("Rita", "doneView- $position - $status")
         status = status != true
         list?.set(position, status)
-        Log.i("Rita", "doneView changed- $position - $status")
 
         doneViewList.value = list
-
         Log.i("Rita", "doneViewList changed- ${doneViewList.value}")
 
     }
@@ -312,17 +349,17 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
         }
 
         val planRef = item.plan_id?.let { db.collection("plan").document(it) }
-        var plan: Plan? = null
+
         planRef!!.get()
             .addOnSuccessListener { document ->
                 if (document != null) {
-                    Log.d(TAG, "DocumentSnapshot data: ${document.data}")
-                    plan = document.toObject(Plan::class.java)
+                    val plan = document.toObject(Plan::class.java)
                     if (plan != null) {
-                        plan!!.checkList!![position] = item
-                        checkList.value = plan!!.checkList
+                        plan.checkList!![position] = item
+                        checkList.value = plan.checkList
                         Log.i("Rita", " getCheckList-itemUpdate as $item")
-                        //Store isDone status
+
+                        // Store isDone status
                         writeCheckItemStatus(item)
                     }
                 } else {
@@ -339,6 +376,7 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
         loadingStatus.value = true
 
         val planRef = item.plan_id?.let { db.collection("plan").document(it) }
+
         planRef!!.get()
             .addOnSuccessListener { document ->
                 if (document != null) {
@@ -348,7 +386,8 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
                         plan.checkList!!.removeAt(position)
                         checkList.value = plan.checkList
                         Log.i("Rita", " getCheckList-itemRemoved as $item")
-                        //Store isDone status
+
+                        // Store isDone status
                         writeCheckItemStatus(item)
                     }
                 } else {
@@ -371,80 +410,24 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
             .addOnFailureListener { e -> Log.w(TAG, "Error updating document", e) }
     }
 
-    fun readPlanOnChanged() {
-        Log.i("Rita", "readPlanOnChanged user: ${currentUser.value}")
-        currentUser.value?.let {
-            db.collection("plan")
-                .whereArrayContains("collaborator", it.email!!)
-                .whereGreaterThanOrEqualTo("start_time", selectedStartTime.value!!)
-                .whereLessThanOrEqualTo("start_time", selectedEndTime.value!!)
-                .addSnapshotListener { snapshot, e ->
 
-                    if (e != null) {
-                        Log.w(TAG, "Listen failed.", e)
-                        return@addSnapshotListener
-                    }
-                    if (snapshot != null && !snapshot.isEmpty) {
-                        val list = mutableListOf<Plan>()
-                        for (item in snapshot) {
-                            Log.d("Rita", "Current data: $item")
-                            val plan = item.toObject(Plan::class.java)
-                            list.add(plan!!)
-                        }
-                        Log.i("Rita", "list onChanged:　$list")
-                        listFromToday.value = list
-                    } else {
-                        Log.d(TAG, "Current data: null")
-                    }
-                }
-        }
-        //plan's start-time before today
-        currentUser.value?.let {
-            db.collection("plan")
-                .whereArrayContains("collaborator", it.email!!)
-                .whereLessThan("start_time", selectedStartTime.value!!)
-                .addSnapshotListener { snapshot, e ->
-                    if (e != null) {
-                        Log.w(TAG, "Listen failed.", e)
-                        return@addSnapshotListener
-                    }
-                    if (snapshot != null && !snapshot.isEmpty) {
-                        val listBefore = mutableListOf<Plan>()
-                        for (item in snapshot) {
-                            Log.d("Rita", "Current data Before: $item")
-                            val plan = item.toObject(Plan::class.java)
-                            if (plan.start_time!! < selectedStartTime.value!!) {
-                                listBefore.add(plan!!)
-                            }
-                        }
-                        val filteredList = listBefore
-                            .filter { it -> it.end_time!! >= selectedStartTime.value!! }
-                        Log.i("Rita", "listBeforeToday onChanged:　$filteredList")
-                        listBeforeToday.value = filteredList
-                    } else {
-                        Log.d(TAG, "Current data: null")
-                    }
-                }
+    fun getLivePlans() {
+        if(selectedStartTime.value!=null && selectedEndTime.value != null && currentUser.value!=null)
+        {
+            livePlansToday = repository.getLivePlansToday(
+                selectedStartTime.value!!, selectedEndTime.value!!, currentUser.value!!)
+
+            listBeforeToday = repository.getLivePlansBeforeToday(
+                selectedStartTime.value!!, currentUser.value!!)
         }
     }
+
+
 
     fun getTotalList() {
-        Log.i("Rita", "getTotalList listFromToday - ${listFromToday.value}")
-        Log.i("Rita", "getTotalList readListBeforeToday - ${readListBeforeToday.value}")
-        var list = listFromToday.value!!.toMutableList()
-        readListBeforeToday.value?.let { list?.addAll(it) }
 
-        _scheduleList.value = list?.filter { it -> it.isToDoList == false }
-        _todoList.value =
-            list?.filter { it -> it.isToDoList == true && !it.isToDoListDone }
-        _doneList.value =
-            list?.filter { it -> it.isToDoListDone }
-    }
+        val list = livePlansToday.value?.toMutableList()
 
-    fun getTotalListBefore() {
-        Log.i("Rita", "getTotalListBefore readList - ${readListFromToday.value}")
-        Log.i("Rita", "getTotalListBefore listBefore - ${listBeforeToday.value}")
-        var list = readListFromToday.value?.toMutableList()
         listBeforeToday.value?.let { list?.addAll(it) }
 
         _scheduleList.value = list?.filter { it -> it.isToDoList == false }
@@ -455,14 +438,14 @@ class HomeViewModel(repository: CalendarRepository) : ViewModel() {
 
     }
 
+
     fun getPlanAndChangeStatus(item: Plan) {
         val planRef = item.id?.let { db.collection("plan").document(it) }
+
         planRef!!
-            .update(
-                "toDoListDone", item.isToDoListDone,
+            .update("toDoListDone", item.isToDoListDone,
                 "done_time", item.done_time,
-                "doner", item.doner
-            )
+                "doner", item.doner)
             .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully updated!") }
             .addOnFailureListener { e -> Log.w(TAG, "Error updating document", e) }
     }

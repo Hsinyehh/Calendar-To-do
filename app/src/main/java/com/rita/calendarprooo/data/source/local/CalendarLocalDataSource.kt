@@ -9,22 +9,32 @@ import com.rita.calendarprooo.data.source.CalendarDataSource
 import com.rita.calendarprooo.data.Result
 
 class CalendarLocalDataSource(val context: Context) : CalendarDataSource {
-    override fun getLivePlansFromToday(selectedStartTime: Long, selectedEndTime: Long, user: User):
+    override suspend fun getPlansToday(selectedStartTime: Long, selectedEndTime: Long, user: User):
+            Result<List<Plan>>{
+        TODO("not implemented")
+    }
+
+    override suspend fun getPlansBeforeToday(selectedStartTime: Long, user: User):
+            Result<List<Plan>>{
+        TODO("not implemented")
+    }
+
+    override fun getLivePlansToday(selectedStartTime: Long, selectedEndTime: Long, user: User):
             MutableLiveData<List<Plan>> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented")
     }
 
     override fun getLivePlansBeforeToday(selectedStartTime: Long, user: User):
             MutableLiveData<List<Plan>> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented")
     }
 
     override suspend fun createPlan(plan: Plan): Result<Boolean> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented")
     }
 
     override suspend fun updatePlan(plan: Plan): Result<Boolean> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented")
     }
 
     override suspend fun updatePlanByCheck(

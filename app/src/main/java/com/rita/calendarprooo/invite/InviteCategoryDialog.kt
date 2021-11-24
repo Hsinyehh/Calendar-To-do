@@ -21,7 +21,7 @@ class InviteCategoryDialog : DialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        //layout binding
+        // layout binding
         val binding: DialogInviteCategoryBinding = DataBindingUtil.inflate(
             inflater, R.layout.dialog_invite_category, container, false
         )
@@ -29,7 +29,7 @@ class InviteCategoryDialog : DialogFragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        //safe args
+        // safe args
         viewModel.category.value = InviteCategoryDialogArgs.fromBundle(requireArguments()).category
         viewModel.user.value = InviteCategoryDialogArgs.fromBundle(requireArguments()).user
         viewModel.categoryPosition.value =

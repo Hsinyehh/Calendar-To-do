@@ -36,7 +36,7 @@ class AlarmDialog : DialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        //layout binding
+        // layout binding
         val binding: DialogAlarmBinding = DataBindingUtil.inflate(
             inflater, R.layout.dialog_alarm, container, false
         )
@@ -44,10 +44,10 @@ class AlarmDialog : DialogFragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        //safe args
+        // safe args
         viewModel.plan.value = InviteDialogArgs.fromBundle(requireArguments()).plan
 
-        //TimePicker
+        // TimePicker
         binding.alarmTimepicker.setIs24HourView(true)
 
         val alarmTimePicker = binding.alarmTimepicker
@@ -57,7 +57,7 @@ class AlarmDialog : DialogFragment() {
         // notification
         createNotificationChannel()
 
-        //set button
+        // set button
         binding.btnSet.setOnClickListener { view: View ->
 
             val dateSelected = "" + alarmDatePicker.dayOfMonth +

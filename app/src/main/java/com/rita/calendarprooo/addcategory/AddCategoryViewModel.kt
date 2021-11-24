@@ -38,7 +38,7 @@ class AddCategoryViewModel : ViewModel() {
         startToCreate.value = true
     }
 
-    //Firebase
+    // Firebase
     private val db = Firebase.firestore
 
     fun prepareForCategory() {
@@ -53,12 +53,12 @@ class AddCategoryViewModel : ViewModel() {
             categoryList.value = list
 
             Log.i("Rita", "prepareForCategory categoryList changed ${categoryList.value}")
-            //start to update
+            // start to update
             startToUpdate.value = true
         }
     }
 
-    //if the plan is at edited Status
+    // if the plan is at edited Status
     fun getCategoryFromThePlan() {
         db.collection("plan")
             .whereEqualTo("id", "${planGet.value?.id}")
@@ -78,7 +78,7 @@ class AddCategoryViewModel : ViewModel() {
     }
 
 
-    //if the plan is at created Status
+    // if the plan is at created Status
     fun getCategoryFromUser(isCreated: Boolean) {
         db.collection("user")
             .whereEqualTo("email", currentUser!!.email)
@@ -99,7 +99,7 @@ class AddCategoryViewModel : ViewModel() {
             }
     }
 
-    //Both Conditions Needs the function below
+    // Both Conditions Needs the function below
     fun updateUser() {
         val userRef = db.collection("user").document(currentUser!!.email)
         Log.i("Rita", "updateUser-Ref: $userRef")
@@ -116,7 +116,7 @@ class AddCategoryViewModel : ViewModel() {
             }
     }
 
-    //only for edit status
+    // only for edit status
     fun updateThePlan() {
         val planRef = db.collection("plan").document("${planGet.value?.id}")
         Log.i("Rita", "updatePlan-Ref: $planRef")

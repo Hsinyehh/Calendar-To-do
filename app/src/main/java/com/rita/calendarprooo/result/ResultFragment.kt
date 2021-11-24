@@ -45,7 +45,7 @@ class ResultFragment : Fragment() {
                             viewModel.countForCategory(it)
                         }
                     })
-                    //assign the reference by binding the viewModel again
+                    // assign the reference by binding the viewModel again
                     binding.viewModel = viewModel
                     viewModel.doneListReset.value = null
                 }
@@ -53,7 +53,7 @@ class ResultFragment : Fragment() {
 
         })
 
-        //read Plans when date selected changed
+        // read Plans when date selected changed
         viewModel.selectedEndTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             Log.i("Rita", "result selectedEndTime observe- $it")
             it?.let {
@@ -61,9 +61,9 @@ class ResultFragment : Fragment() {
                 viewModel.readDone()
                 viewModel.readPlanFromToday()
 
-                //When the livedata is assigned, it will be assigned for different memory reference.
-                //So we need to set Observer here, readListFromToday as lifedata can be observed
-                //for the same reference
+                // When the livedata is assigned, it will be assigned for different memory reference.
+                // So we need to set Observer here, readListFromToday as livedata can be observed
+                // for the same reference
                 viewModel.readListFromToday.observe(
                     viewLifecycleOwner,
                     androidx.lifecycle.Observer {

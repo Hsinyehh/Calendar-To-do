@@ -66,7 +66,7 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
     var updateSuccess = MutableLiveData<Boolean>()
 
 
-    //Firebase
+    // Firebase
     private val db = Firebase.firestore
 
     fun readInvitation() {
@@ -96,7 +96,7 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
     fun acceptOrDeclineInvitation(plan: Plan, isAccepted: Boolean) {
 
         loadingStatus.value = true
-        //update plan collaborator & invitation
+        // update plan collaborator & invitation
         val invitationGet = plan.invitation
         val collaboratorGet = plan.collaborator
 

@@ -16,17 +16,18 @@ class TodoAdapter(val viewModel: HomeViewModel) : ListAdapter<Plan,
         TodoAdapter.ViewHolder>(TodoDiffCallback()) {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        Log.i("Rita", "todo onBindViewHolder position=$position")
         val item = getItem(position)
 
 
-        //checkAdapter
+        // checkAdapter
         val adapter = CheckAdapter(viewModel)
         holder.binding.scheduleCheckList.adapter = adapter
         adapter.submitList(item.checkList)
         adapter.notifyDataSetChanged()
 
         holder.binding.scheduleOverview.setOnClickListener {
-            Log.i("Rita", "todoOverview onclick")
+            Log.i("Rita", "todoOverview click position=$position")
             viewModel.changeTodoView(position)
         }
 
@@ -46,7 +47,7 @@ class TodoAdapter(val viewModel: HomeViewModel) : ListAdapter<Plan,
             }
             viewModel.getPlanAndChangeStatus(item)
 
-            //get viewList again
+            // get viewList again
             viewModel.startToGetViewListForTodo()
             notifyDataSetChanged()
         }

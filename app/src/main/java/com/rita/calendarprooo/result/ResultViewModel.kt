@@ -49,7 +49,7 @@ class ResultViewModel(val repository: CalendarRepository) : ViewModel() {
 
 
     fun readPlanFromToday() {
-        readListFromToday = repository.getLivePlansFromToday(
+        readListFromToday = repository.getLivePlansToday(
             selectedStartTime.value!!,
             selectedEndTime.value!!, UserManager.user.value!!
         )
@@ -113,16 +113,11 @@ class ResultViewModel(val repository: CalendarRepository) : ViewModel() {
         selectedEndTime.value = timeList?.get(1)
     }
 
-    /*fun initPieEntryList(){
-        pieEntryList.value = mutableListOf<PieEntry>(PieEntry(0F,"None"))
-    }*/
 
 
     init {
         Log.i("Rita", "${UserManager.user.value}")
-        //initPieEntryList()
         selectedTimeSet(getToday())
-
         readDone()
 
     }

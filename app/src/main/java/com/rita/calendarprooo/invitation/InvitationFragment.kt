@@ -21,7 +21,7 @@ class InvitationFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        //layout binding
+        // layout binding
         val binding: FragmentInvitationBinding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_invitation, container, false
         )
@@ -30,7 +30,7 @@ class InvitationFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
 
-        //invitation adapter
+        // invitation adapter
         val adapter = InvitationAdapter(viewModel)
         binding.invitationList.adapter = adapter
 
@@ -40,7 +40,7 @@ class InvitationFragment : Fragment() {
             adapter.notifyDataSetChanged()
         })
 
-        //invitation for Category adapter
+        // invitation for Category adapter
         val categoryAdapter = InvitationCategoryAdapter(viewModel)
         binding.invitationCategoryList.adapter = categoryAdapter
 
@@ -63,7 +63,6 @@ class InvitationFragment : Fragment() {
             })
 
         // Accept Category invitation
-
         viewModel.invitationListUpdated.observe(viewLifecycleOwner, Observer {
             Log.i("Rita", "invitationListUpdated observe- $it")
             it?.let {

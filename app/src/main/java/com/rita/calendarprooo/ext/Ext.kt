@@ -44,10 +44,10 @@ fun getColorCode(color: Int): Int {
 fun stringToTimestamp(dateSelected: String): Long? {
     try {
         val dateSelectedFormat = SimpleDateFormat("dd-MM-yyyy HH:mm").parse(dateSelected)
-        Log.i("Rita", "${dateSelectedFormat.time} ")
+        Log.i("Rita", "stringToTimestamp: ${dateSelectedFormat.time} ")
         return dateSelectedFormat.time
     } catch (e: java.text.ParseException) {
-        Log.i("Rita", "$e")
+        Log.i("Rita", "stringToTimestamp: $e")
         return null
     }
 }

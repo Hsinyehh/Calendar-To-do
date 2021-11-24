@@ -30,7 +30,7 @@ class EditFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        //layout binding
+        // layout binding
         val binding: FragmentEditBinding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_edit, container, false
         )
@@ -39,11 +39,11 @@ class EditFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
 
-        //get safe argument from previous fragment
+        // get safe argument from previous fragment
         viewModel.planGet.value = EditFragmentArgs.fromBundle(requireArguments()).plan
         viewModel.location.value = EditFragmentArgs.fromBundle(requireArguments()).address
 
-        //Time&Date Picker binding
+        // Time&Date Picker binding
         val startTimePicker = binding.startTimepicker
         val startDatePicker = binding.startDatepicker
         val endTimePicker = binding.endTimepicker
@@ -57,7 +57,7 @@ class EditFragment : Fragment() {
             adapter.notifyDataSetChanged()
         })
 
-        //checkAdapter
+        // checkAdapter
         val checkAdapter = CheckAdapter(viewModel)
         binding.checkList.adapter = checkAdapter
         viewModel.checkList.observe(viewLifecycleOwner, Observer {
@@ -67,7 +67,7 @@ class EditFragment : Fragment() {
             viewModel.clearText()
         })
 
-        //Default value setup for timepicker
+        // Default value setup for timepicker
         viewModel.planGet.observe(viewLifecycleOwner, Observer {
             Log.i("Rita", "plan.observe: ${viewModel.planGet.value}")
             it?.start_time_detail?.let {
@@ -94,16 +94,11 @@ class EditFragment : Fragment() {
 
         })
 
-        // test
-        viewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
-            Log.i("Rita", "loadingStatus.observe: ${it}")
-        })
 
-
-        //save button
+        // save button
         binding.buttonSave.setOnClickListener { view: View ->
             viewModel.loadingStatus.value = true
-            //StartTime
+            // StartTime
             viewModel.start_time_detail.value = listOf<Int>(
                 startDatePicker.year,
                 startDatePicker.month + 1, startDatePicker.dayOfMonth, startTimePicker.hour,
@@ -113,9 +108,8 @@ class EditFragment : Fragment() {
             val startDateSelected = "" + startDatePicker.dayOfMonth +
                     "-" + (startDatePicker.month + 1) + "-" + startDatePicker.year + " " +
                     startTimePicker.hour + ":" + startTimePicker.minute
-            viewModel.convertToStartTimeStamp(startDateSelected)
 
-            //EndTime
+            // EndTime
             viewModel.end_time_detail.value = listOf<Int>(
                 endDatePicker.year,
                 endDatePicker.month + 1, endDatePicker.dayOfMonth, endTimePicker.hour,
@@ -125,7 +119,9 @@ class EditFragment : Fragment() {
             val endDateSelected = "" + endDatePicker.dayOfMonth +
                     "-" + (endDatePicker.month + 1) + "-" + endDatePicker.year + " " +
                     endTimePicker.hour + ":" + endTimePicker.minute
-            viewModel.convertToEndTimeStamp(endDateSelected)
+
+            viewModel.convertToTimestamp(startDateSelected, endDateSelected)
+
         }
 
         viewModel.createStatus.observe(viewLifecycleOwner, Observer {
@@ -133,8 +129,6 @@ class EditFragment : Fragment() {
                 Log.i("Rita", "viewModel.createStatus.observe ${viewModel.editStatus.value}")
                 if (viewModel.editStatus.value == true) {
                     viewModel.updatePlan()
-                    view?.findNavController()?.navigate(R.id.navigate_to_home_fragment)
-                    viewModel.doneNavigated()
                 } else {
                     Log.i("Rita", "viewModel.create_status.observe")
                     viewModel.createNewPlan()
@@ -147,28 +141,38 @@ class EditFragment : Fragment() {
         viewModel.newPlan.observe(viewLifecycleOwner, Observer {
             it?.let {
                 viewModel.writeNewPlan()
-                view?.findNavController()?.navigate(R.id.navigate_to_home_fragment)
-                viewModel.doneNavigated()
             }
         })
 
-        //cancel button
+
+        // update is done, then navigate to home page
+        viewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
+            Log.i("Rita", "loadingStatus.observe: $it")
+            it?.let{
+                if(!it){
+                    view?.findNavController()?.navigate(R.id.navigate_to_home_fragment)
+                    viewModel.doneNavigated()
+                }
+            }
+        })
+
+        // cancel button
         binding.buttonCancel.setOnClickListener { view: View ->
             view.findNavController().popBackStack()
         }
 
-        //TimePicker
+        // TimePicker
         binding.startTimepicker.setIs24HourView(true)
         binding.endTimepicker.setIs24HourView(true)
 
-        //add category Button
+        // add category Button
         binding.btnCategoryPlus.setOnClickListener {
             view?.findNavController()?.navigate(
                 NavigationDirections.navigateToAddCategoryDialog(viewModel.planGet.value)
             )
         }
 
-        //create checkList Item
+        // create checkList Item
         binding.checklistEditText.setOnEditorActionListener { textView, i, keyEvent ->
             if (i == EditorInfo.IME_ACTION_DONE
                 || keyEvent.action == KeyEvent.ACTION_DOWN || keyEvent.action == KeyEvent.KEYCODE_ENTER

@@ -18,7 +18,7 @@ class ScheduleAdapter(val viewModel: HomeViewModel) : ListAdapter<Plan,
         val item = getItem(position)
 
 
-        //checkAdapter
+        // checkAdapter
         val adapter = CheckAdapter(viewModel)
         holder.binding.scheduleCheckList.adapter = adapter
         adapter.submitList(item.checkList)
