@@ -13,7 +13,6 @@ import com.rita.calendarprooo.data.User
 import com.rita.calendarprooo.data.source.CalendarRepository
 import com.rita.calendarprooo.ext.stringToTimestamp
 import com.rita.calendarprooo.login.UserManager
-import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -117,7 +116,7 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
             isToDoList = isTodoList.value,
             isToDoListDone = false,
             owner = currentUser!!.email,
-            owner_name = currentUser!!.name,
+            owner_name = currentUser.name,
             invitation = mutableListOf<String>(),
             collaborator = collaborator.value,
             order_id = 1
@@ -140,9 +139,10 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
     }
 
     fun updatePlan() {
+
         val planRef = planGet.let { db.collection("plan").document(planGet.value!!.id!!) }
-        Log.i("Rita", "updatePlan-planRef: $planRef")
-        planRef!!
+
+        planRef
             .update(
                 "title", title.value,
                 "description", description.value,
@@ -211,7 +211,7 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
 
     fun changeCategory(position: Int, lastPosition: Int) {
         Log.i("Rita", "$lastPosition")
-        var categoryListGet = categoryList.value
+        val categoryListGet = categoryList.value
 
         // deselected the origin position value
         if (categoryPosition.value != -1) {
@@ -222,7 +222,7 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
             categoryListGet!![lastPosition].isSelected = false
         }
         categoryListGet!![position].isSelected = true
-        val item = categoryListGet!![position]
+        val item = categoryListGet[position]
         categoryStatus.value = item
 
         categoryPosition.value = position
@@ -250,15 +250,15 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
         title.value = plan.title ?: ""
         description.value = plan.description ?: ""
         // location.value = planGet.value.location ?: ""
-        start_time.value = plan.start_time ?: null
-        end_time.value = plan.end_time ?: null
-        start_time_detail.value = plan.start_time_detail ?: null
-        end_time_detail.value = plan.end_time_detail ?: null
+        start_time.value = plan.start_time
+        end_time.value = plan.end_time
+        start_time_detail.value = plan.start_time_detail
+        end_time_detail.value = plan.end_time_detail
         newPlan.value = null
         isTodoList.value = plan.isToDoList ?: false
         checkText.value = null
         checkList.value = plan.checkList ?: emptyCheckList
-        if (plan?.category == "") {
+        if (plan.category == "") {
             categoryStatus.value = Category("", false)
         } else {
             categoryStatus.value = Category(plan.category!!, true)

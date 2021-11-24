@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
@@ -26,8 +25,8 @@ class ResultFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        //layout binding
+    ): View {
+
         val binding: FragmentResultBinding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_result, container, false
         )
@@ -35,11 +34,12 @@ class ResultFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        viewModel.doneListReset.observe(viewLifecycleOwner, Observer {
+
+        viewModel.doneListReset.observe(viewLifecycleOwner, {
             Log.d("Rita", "result doneListReset, it=$it")
             it?.let {
                 if (it) {
-                    viewModel.doneList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+                    viewModel.doneList.observe(viewLifecycleOwner, {
                         Log.i("Rita", "result doneList observe - $it")
                         it?.let {
                             viewModel.countForCategory(it)
@@ -53,33 +53,30 @@ class ResultFragment : Fragment() {
 
         })
 
+
         // read Plans when date selected changed
-        viewModel.selectedEndTime.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.selectedEndTime.observe(viewLifecycleOwner, {
             Log.i("Rita", "result selectedEndTime observe- $it")
             it?.let {
-
                 viewModel.readDone()
                 viewModel.readPlanFromToday()
 
                 // When the livedata is assigned, it will be assigned for different memory reference.
                 // So we need to set Observer here, readListFromToday as livedata can be observed
                 // for the same reference
-                viewModel.readListFromToday.observe(
-                    viewLifecycleOwner,
-                    androidx.lifecycle.Observer {
+                viewModel.readListFromToday.observe(viewLifecycleOwner, {
                         Log.i("Rita", "result readListFromToday observe - $it")
                         it?.let {
                             viewModel.readPlanBeforeToday()
-                            viewModel.readListBeforeToday.observe(
-                                viewLifecycleOwner,
-                                androidx.lifecycle.Observer {
+
+                            viewModel.readListBeforeToday.observe(viewLifecycleOwner, {
                                     Log.i("Rita", "result readListBeforeToday observe - $it")
                                     it?.let {
                                         viewModel.readPlanInTotal()
                                     }
-                                })
+                            })
                         }
-                    })
+                })
             }
         })
 
@@ -87,7 +84,7 @@ class ResultFragment : Fragment() {
         // pie chart setup
         val pieChart = binding.barPie
 
-        viewModel.categoryForDoneList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.categoryForDoneList.observe(viewLifecycleOwner,{
             Log.i("Rita", "result categoryForDoneList observe - $it")
             it?.let {
                 val entries = mutableListOf<PieEntry>()
@@ -99,6 +96,7 @@ class ResultFragment : Fragment() {
             }
         })
 
+
         val colors = mutableListOf<Int>(
             getColorCode(R.color.pink_F2E5D9),
             getColorCode(R.color.red_CF6E62),
@@ -109,7 +107,7 @@ class ResultFragment : Fragment() {
         )
 
         fun setPieChart(list: MutableList<PieEntry>) {
-            var dataSet = PieDataSet(list, "label")
+            val dataSet = PieDataSet(list, "label")
 
             dataSet.setColors(colors)
 
@@ -125,9 +123,8 @@ class ResultFragment : Fragment() {
         }
 
 
-        viewModel.pieEntryList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.pieEntryList.observe(viewLifecycleOwner, {
             Log.i("Rita", "result pieEntryList observe - $it")
-
             setPieChart(it)
         })
 
@@ -146,10 +143,10 @@ class ResultFragment : Fragment() {
                 Log.i("Rita", "result Selected Day: $dateSelected")
             }
 
-            override fun onItemClick(view: View) {}
+            override fun onItemClick(v: View) {}
             override fun onDataUpdate() {}
             override fun onMonthChange() {}
-            override fun onWeekChange(i: Int) {}
+            override fun onWeekChange(position: Int) {}
         })
 
         return binding.root

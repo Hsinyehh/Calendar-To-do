@@ -14,6 +14,7 @@ import com.rita.calendarprooo.databinding.DialogInviteBinding
 
 
 class InviteDialog : DialogFragment() {
+
     private val viewModel: InviteViewModel by lazy {
         ViewModelProvider(this).get(InviteViewModel::class.java)
     }
@@ -21,8 +22,8 @@ class InviteDialog : DialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // layout binding
+    ): View {
+
         val binding: DialogInviteBinding = DataBindingUtil.inflate(
             inflater, R.layout.dialog_invite, container, false
         )
@@ -33,12 +34,13 @@ class InviteDialog : DialogFragment() {
         // safe args
         viewModel.plan.value = InviteDialogArgs.fromBundle(requireArguments()).plan
 
+
         binding.inviteBtnCancel.setOnClickListener {
             dismiss()
         }
 
 
-        viewModel.invitation.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.invitation.observe(viewLifecycleOwner, {
             Log.i("Rita", "invitation observe- $it")
             it?.let {
                 viewModel.writeInvitation()
@@ -46,14 +48,15 @@ class InviteDialog : DialogFragment() {
         })
 
 
-        viewModel.isInvited.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.isInvited.observe(viewLifecycleOwner, {
             Log.i("Rita", "isInvited observe- $it")
             if (it == true) {
                 Toast.makeText(context, "The person is invited already.", Toast.LENGTH_LONG).show()
             }
         })
 
-        viewModel.isCollaborator.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+
+        viewModel.isCollaborator.observe(viewLifecycleOwner, {
             Log.i("Rita", "isInvited observe- $it")
             if (it == true) {
                 Toast.makeText(context, "The person is collaborator already.", Toast.LENGTH_LONG)
@@ -61,7 +64,8 @@ class InviteDialog : DialogFragment() {
             }
         })
 
-        viewModel.updateSuccess.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+
+        viewModel.updateSuccess.observe(viewLifecycleOwner, {
             Log.i("Rita", "isInvited observe- $it")
             if (it == true) {
                 Toast.makeText(context, "Invite success", Toast.LENGTH_LONG).show()
@@ -71,5 +75,6 @@ class InviteDialog : DialogFragment() {
         })
 
         return binding.root
+
     }
 }

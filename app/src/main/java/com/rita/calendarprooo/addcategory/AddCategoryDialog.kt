@@ -9,12 +9,12 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.rita.calendarprooo.R
 import com.rita.calendarprooo.databinding.DialogAddCategoryBinding
 
 class AddCategoryDialog : DialogFragment() {
+
     private val viewModel: AddCategoryViewModel by lazy {
         ViewModelProvider(this).get(AddCategoryViewModel::class.java)
     }
@@ -22,8 +22,8 @@ class AddCategoryDialog : DialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // layout binding
+    ): View {
+
         val binding: DialogAddCategoryBinding = DataBindingUtil.inflate(
             inflater, R.layout.dialog_add_category, container, false
         )
@@ -34,7 +34,7 @@ class AddCategoryDialog : DialogFragment() {
         viewModel.planGet.value = AddCategoryDialogArgs.fromBundle(requireArguments()).plan
 
 
-        viewModel.planGet.observe(viewLifecycleOwner, Observer {
+        viewModel.planGet.observe(viewLifecycleOwner, {
             Log.i("Rita", "planGet.observe $it")
             it?.let {
                 viewModel.getPlanFromUserFirst()
@@ -42,25 +42,28 @@ class AddCategoryDialog : DialogFragment() {
         })
 
 
-        viewModel.startToCreate.observe(viewLifecycleOwner, Observer {
+        viewModel.startToCreate.observe(viewLifecycleOwner, {
             Log.i("Rita", "startToCreate.observe $it")
             if (it == true) {
                 if (viewModel.planGet.value?.id == "") {
                     viewModel.startToPrepare.value = true
-                } else {
+                }
+                else {
                     viewModel.getCategoryFromThePlan()
                 }
             }
         })
 
-        viewModel.startToPrepare.observe(viewLifecycleOwner, Observer {
+
+        viewModel.startToPrepare.observe(viewLifecycleOwner, {
             Log.i("Rita", "startToPrepare.observe $it")
             if (it == true) {
                 viewModel.prepareForCategory()
             }
         })
 
-        viewModel.startToUpdate.observe(viewLifecycleOwner, Observer {
+
+        viewModel.startToUpdate.observe(viewLifecycleOwner, {
             Log.i("Rita", "startToUpdate.observe $it")
             if (it == true) {
                 if (viewModel.planGet.value?.id !== "") {
@@ -70,20 +73,22 @@ class AddCategoryDialog : DialogFragment() {
             }
         })
 
-        viewModel.startToNavigate.observe(viewLifecycleOwner, Observer {
+
+        viewModel.startToNavigate.observe(viewLifecycleOwner, {
             Log.i("Rita", "startToNavigate.observe $it")
             if (it == true) {
                 dismiss()
-                //viewModel.doneNavigated()
-            } else if (it == false) {
+            }
+            else if (it == false) {
                 Toast.makeText(context, "The input can't be blank!", Toast.LENGTH_LONG).show()
             }
         })
 
-        viewModel.categoryListFromUser.observe(viewLifecycleOwner, Observer {
+
+        viewModel.categoryListFromUser.observe(viewLifecycleOwner, {
             Log.i("Rita", "categoryListFromUser.observe $it")
             it?.let {
-                val adapter = ArrayAdapter<String>(
+                val adapter = ArrayAdapter(
                     requireContext(),
                     android.R.layout.simple_dropdown_item_1line, it
                 )
@@ -92,20 +97,18 @@ class AddCategoryDialog : DialogFragment() {
 
         })
 
-        viewModel.categoryList.observe(viewLifecycleOwner, Observer {
+
+        viewModel.categoryList.observe(viewLifecycleOwner, {
             Log.i("Rita", "categoryList.observe $it")
             viewModel.convertToUnselectedList(it)
         })
-
-
-
 
 
         binding.inviteBtnCancel.setOnClickListener {
             dismiss()
         }
 
-
         return binding.root
+
     }
 }

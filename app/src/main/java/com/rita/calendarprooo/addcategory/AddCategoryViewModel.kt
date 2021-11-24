@@ -42,13 +42,16 @@ class AddCategoryViewModel : ViewModel() {
     private val db = Firebase.firestore
 
     fun prepareForCategory() {
+
         if (categoryAdded.value.isNullOrBlank()) {
             startToUpdate.value = false
             Log.i("Rita", "Can't update the category because it's null")
-        } else {
+        }
+        else {
             Log.i("Rita", "prepareForCategory categoryList ${categoryList.value}")
             val list = categoryList.value
             val newCategory = Category("${categoryAdded.value}", false)
+
             list?.add(newCategory)
             categoryList.value = list
 
@@ -60,6 +63,7 @@ class AddCategoryViewModel : ViewModel() {
 
     // if the plan is at edited Status
     fun getCategoryFromThePlan() {
+
         db.collection("plan")
             .whereEqualTo("id", "${planGet.value?.id}")
             .get()
@@ -80,6 +84,7 @@ class AddCategoryViewModel : ViewModel() {
 
     // if the plan is at created Status
     fun getCategoryFromUser(isCreated: Boolean) {
+
         db.collection("user")
             .whereEqualTo("email", currentUser!!.email)
             .get()
@@ -87,7 +92,7 @@ class AddCategoryViewModel : ViewModel() {
                 for (item in result) {
                     Log.d("Rita", "Current user: $item")
                     val user = item.toObject(User::class.java)
-                    categoryListFromUser.value = user.categoryList?.let { convertToStringList(it) }
+                    categoryListFromUser.value = convertToStringList(user.categoryList)
                     if (isCreated) {
                         categoryList.value = user.categoryList
                         Log.i("Rita", "getCategoryFromUser - category:　${categoryList.value}")
@@ -101,9 +106,10 @@ class AddCategoryViewModel : ViewModel() {
 
     // Both Conditions Needs the function below
     fun updateUser() {
+
         val userRef = db.collection("user").document(currentUser!!.email)
-        Log.i("Rita", "updateUser-Ref: $userRef")
-        userRef!!
+
+        userRef
             .update(
                 "categoryList", unselectedCategoryList.value
             )
@@ -118,9 +124,10 @@ class AddCategoryViewModel : ViewModel() {
 
     // only for edit status
     fun updateThePlan() {
+
         val planRef = db.collection("plan").document("${planGet.value?.id}")
-        Log.i("Rita", "updatePlan-Ref: $planRef")
-        planRef!!
+
+        planRef
             .update(
                 "categoryList", categoryList.value
             )
@@ -131,26 +138,34 @@ class AddCategoryViewModel : ViewModel() {
     }
 
     fun convertToStringList(list: List<Category>): MutableList<String> {
-        var stringList = mutableListOf<String>()
+
+        val stringList = mutableListOf<String>()
+
         for (item in list) {
             stringList.add(item.name)
         }
+
         return stringList
     }
 
     fun convertToUnselectedList(list: List<Category>) {
-        var newList = mutableListOf<Category>()
+
+        val newList = mutableListOf<Category>()
+
         for (item in list) {
             item.isSelected = false
             newList.add(item)
         }
+
         unselectedCategoryList.value = newList
     }
 
     fun getPlanFromUserFirst() {
+
         if (planGet.value?.id == "") {
             getCategoryFromUser(true)
-        } else {
+        }
+        else {
             getCategoryFromUser(false)
         }
     }

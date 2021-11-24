@@ -78,15 +78,15 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
                     return@addSnapshotListener
                 }
                 if (snapshot != null && !snapshot.isEmpty) {
-                    var list = mutableListOf<Plan>()
+                    val list = mutableListOf<Plan>()
                     for (item in snapshot) {
                         val plan = item.toObject(Plan::class.java)
-                        list.add(plan!!)
+                        list.add(plan)
                     }
                     Log.i("Rita", "Invitation list onChanged:　$list")
                     invitationList.value = list
                 } else {
-                    var nullList = mutableListOf<Plan>()
+                    val nullList = mutableListOf<Plan>()
                     Log.d(ContentValues.TAG, "Current data: null: $nullList")
                     invitationList.value = nullList
                 }
@@ -102,7 +102,7 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
 
         val indexRemoved = invitationGet?.indexOf(user.value!!.email)
         if (indexRemoved != null && indexRemoved >= 0) {
-            invitationGet?.removeAt(indexRemoved)
+            invitationGet.removeAt(indexRemoved)
         }
         if (isAccepted) {
             collaboratorGet?.add(user.value!!.email)
@@ -110,7 +110,8 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
 
         val planRef = db.collection("plan").document(plan.id!!)
         Log.i("Rita", "updatePlan-planRef: $planRef")
-        planRef!!
+
+        planRef
             .update(
                 "invitation", invitationGet,
                 "collaborator", collaboratorGet,
@@ -136,7 +137,7 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
         val indexRemoved =
             invitationList.indexOfFirst { it.title == title && it.inviter == inviter }
 
-        if (indexRemoved != null && indexRemoved >= 0) {
+        if (indexRemoved >= 0) {
             invitationList.removeAt(indexRemoved)
         }
 
@@ -146,10 +147,9 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
 
     fun updateInvitationList(list: MutableList<Invitation>) {
         val userRef =
-            db.collection("user").document(user.value!!.email!!)
+            db.collection("user").document(user.value!!.email)
 
-        Log.i("Rita", "updateInvitation-userRef: $userRef")
-        userRef!!
+        userRef
             .update("invitationList", list)
             .addOnSuccessListener {
                 Log.d(ContentValues.TAG, "successfully updated!")
@@ -207,8 +207,8 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
     // update collaborator for All plans with loop in fragment
     fun updatePlan(plan: Plan) {
         val planRef = plan.let { db.collection("plan").document(plan.id!!) }
-        Log.i("Rita", "updatePlan-planRef: $planRef")
-        planRef!!
+
+        planRef
             .update(
                 "collaborator", plan.collaborator,
             )

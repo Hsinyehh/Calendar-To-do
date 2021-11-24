@@ -10,10 +10,9 @@ import com.rita.calendarprooo.data.Category
 import com.rita.calendarprooo.databinding.ItemCategoryBinding
 
 
-class CategoryAdapter(viewModel: EditViewModel) : ListAdapter<Category,
+class CategoryAdapter(val viewModel: EditViewModel) : ListAdapter<Category,
         CategoryAdapter.ViewHolder>(CategoryDiffCallback()) {
 
-    val viewModel = viewModel
     var selectedItemPosition: Int = -1
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

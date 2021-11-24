@@ -8,7 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +15,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.rita.calendarprooo.AlarmReceiver
 import com.rita.calendarprooo.R
@@ -27,16 +25,18 @@ import com.rita.calendarprooo.ext.timestampToString
 import com.rita.calendarprooo.invite.InviteDialogArgs
 
 class AlarmDialog : DialogFragment() {
+
     private val viewModel: AlarmViewModel by lazy {
         ViewModelProvider(this).get(AlarmViewModel::class.java)
     }
-    val CHANNEL_ID = "notify"
+
+    private val CHANNEL_ID = "notify"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // layout binding
+    ): View {
+
         val binding: DialogAlarmBinding = DataBindingUtil.inflate(
             inflater, R.layout.dialog_alarm, container, false
         )
@@ -58,19 +58,18 @@ class AlarmDialog : DialogFragment() {
         createNotificationChannel()
 
         // set button
-        binding.btnSet.setOnClickListener { view: View ->
+        binding.btnSet.setOnClickListener {
 
             val dateSelected = "" + alarmDatePicker.dayOfMonth +
                     "-" + (alarmDatePicker.month + 1) + "-" + alarmDatePicker.year + " " +
                     alarmTimePicker.hour + ":" + alarmTimePicker.minute
-            viewModel.alarm_time.value = stringToTimestamp(dateSelected)
 
-
+            viewModel.alarmTime.value = stringToTimestamp(dateSelected)
         }
 
         // broadcast
         // send broadcast
-        viewModel.alarm_time.observe(viewLifecycleOwner, Observer {
+        viewModel.alarmTime.observe(viewLifecycleOwner, {
             it?.let {
                 viewModel.plan.value?.let { it1 -> setAlarm(it, it1) }
                 dismiss()
@@ -91,25 +90,23 @@ class AlarmDialog : DialogFragment() {
             dismiss()
         }
 
-
         return binding.root
+
     }
 
     private fun createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = getString(R.string.channel_name)
-            val descriptionText = getString(R.string.channel_description)
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
-                description = descriptionText
-            }
-            // Register the channel with the system
-            val notificationManager: NotificationManager =
-                requireActivity().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
+        val name = getString(R.string.channel_name)
+        val descriptionText = getString(R.string.channel_description)
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+            description = descriptionText
         }
+        // Register the channel with the system
+        val notificationManager: NotificationManager =
+            requireActivity().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
     }
 
     private fun setAlarm(time: Long, plan: Plan) {
@@ -119,7 +116,7 @@ class AlarmDialog : DialogFragment() {
         val intent = Intent(requireContext(), AlarmReceiver::class.java)
         intent.setAction("com.rita.calendarprooo.broadcast")
         intent.putExtra("title", "${plan.title}")
-        intent.putExtra("time", "$timeShowed")
+        intent.putExtra("time", timeShowed)
 
         val pendingIntent = PendingIntent.getBroadcast(requireContext(), 0, intent, 0)
         val alarmManager = requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager

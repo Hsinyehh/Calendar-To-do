@@ -17,9 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class LoginViewModel(repository: CalendarRepository) : ViewModel() {
-
-    val repository = repository
+class LoginViewModel(val repository: CalendarRepository) : ViewModel() {
 
     val newUser = MutableLiveData<User>()
 
@@ -171,7 +169,7 @@ class LoginViewModel(repository: CalendarRepository) : ViewModel() {
     }
 
 
-    fun getUserData(id: String) {
+    private fun getUserData(id: String) {
         UserManager.user = repository.getUser(id)
     }
 

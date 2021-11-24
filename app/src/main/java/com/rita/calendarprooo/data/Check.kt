@@ -21,8 +21,7 @@ data class Check(
         parcel.readString(),
         parcel.readLong(),
         parcel.readString()
-    ) {
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(title)

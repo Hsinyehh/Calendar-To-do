@@ -95,17 +95,17 @@ fun TextView.bindCheckTitle(item: Check?) {
 @BindingAdapter("categoryName")
 fun TextView.bindCategoryTitle(item: Category?) {
     item?.name?.let {
-        text = "$it"
+        text = it
     }
 }
 
 @BindingAdapter("checkDoneTime")
 fun TextView.bindDoneTime(item: Check?) {
     val simpleDateFormat = SimpleDateFormat("MM/dd HH:mm", Locale.TAIWAN)
-    var doneTime: String? = null
+    var doneTime: String?
     item?.done_time?.let {
         doneTime = simpleDateFormat.format(Date(it))
-        text = "$doneTime" ?: ""
+        text = "$doneTime"
     }
 
 }
@@ -119,24 +119,24 @@ fun TextView.bindDone(item: Check?) {
 
 @BindingAdapter("userName")
 fun TextView.bindUserName(item: User?) {
-    Log.i("Rita", "name: ${item}")
+    Log.i("Rita", "name: $item")
     item?.name?.let {
-        text = "$it"
+        text = it
     }
 }
 
 @BindingAdapter("userEmail")
 fun TextView.bindUserEmail(item: User?) {
-    Log.i("Rita", "email: ${item}")
+    Log.i("Rita", "email: $item")
     item?.email?.let {
-        text = "$it"
+        text = it
     }
 }
 
 @BindingAdapter("imageUrl")
 fun bindImage(imgView: ImageView, item: User?) {
 
-    Log.i("Rita", "imageUri: ${item}")
+    Log.i("Rita", "imageUri: $item")
     item?.photo?.let {
         val imgUri = it.toUri().buildUpon().scheme("https").build()
         Glide.with(imgView.context)

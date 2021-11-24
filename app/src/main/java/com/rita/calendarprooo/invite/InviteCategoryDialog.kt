@@ -15,13 +15,14 @@ import com.rita.calendarprooo.ext.getVmFactory
 
 
 class InviteCategoryDialog : DialogFragment() {
+
     private val viewModel by viewModels<InviteCategoryViewModel> { getVmFactory() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // layout binding
+    ): View {
+
         val binding: DialogInviteCategoryBinding = DataBindingUtil.inflate(
             inflater, R.layout.dialog_invite_category, container, false
         )
@@ -40,21 +41,24 @@ class InviteCategoryDialog : DialogFragment() {
             dismiss()
         }
 
-        viewModel.userTobeInvited.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+
+        viewModel.userTobeInvited.observe(viewLifecycleOwner, {
             Log.i("Rita", "userTobeInvited observe- $it")
             it?.let {
                 viewModel.createInvitation()
             }
         })
 
-        viewModel.invitationList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+
+        viewModel.invitationList.observe(viewLifecycleOwner, {
             Log.i("Rita", "invitationList observe- $it")
             it?.let {
                 viewModel.updateInvitation(it)
             }
         })
 
-        viewModel.isInvited.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+
+        viewModel.isInvited.observe(viewLifecycleOwner, {
             Log.i("Rita", "isInvited observe- $it")
             if (it == true) {
                 Toast.makeText(context, "The person is invited already.", Toast.LENGTH_LONG).show()
@@ -62,7 +66,7 @@ class InviteCategoryDialog : DialogFragment() {
         })
 
 
-        viewModel.updateSuccess.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.updateSuccess.observe(viewLifecycleOwner, {
             Log.i("Rita", "updateSuccess observe- $it")
             if (it == true) {
                 Toast.makeText(context, "Invite success", Toast.LENGTH_LONG).show()
@@ -72,5 +76,6 @@ class InviteCategoryDialog : DialogFragment() {
         })
 
         return binding.root
+
     }
 }

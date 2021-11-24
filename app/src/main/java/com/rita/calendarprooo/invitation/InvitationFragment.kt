@@ -15,13 +15,14 @@ import com.rita.calendarprooo.ext.getVmFactory
 
 
 class InvitationFragment : Fragment() {
+
     private val viewModel by viewModels<InvitationViewModel> { getVmFactory() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // layout binding
+    ): View {
+
         val binding: FragmentInvitationBinding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_invitation, container, false
         )
@@ -34,17 +35,20 @@ class InvitationFragment : Fragment() {
         val adapter = InvitationAdapter(viewModel)
         binding.invitationList.adapter = adapter
 
+
         viewModel.invitationList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             Log.i("Rita", "invitationList.observe: $it")
             adapter.submitList(it)
             adapter.notifyDataSetChanged()
         })
 
+
         // invitation for Category adapter
         val categoryAdapter = InvitationCategoryAdapter(viewModel)
         binding.invitationCategoryList.adapter = categoryAdapter
 
-        viewModel.user.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+
+        viewModel.user.observe(viewLifecycleOwner,  {
             Log.i("Rita", "user.observe: $it")
             it?.let {
                 viewModel.readInvitation()
@@ -52,15 +56,15 @@ class InvitationFragment : Fragment() {
             }
         })
 
-        viewModel.invitationForCategoryList.observe(
-            viewLifecycleOwner,
-            androidx.lifecycle.Observer {
+
+        viewModel.invitationForCategoryList.observe(viewLifecycleOwner, {
                 Log.i("Rita", "invitationForCategoryList.observe: $it")
                 it?.let {
                     categoryAdapter.submitList(it)
                     categoryAdapter.notifyDataSetChanged()
                 }
             })
+
 
         // Accept Category invitation
         viewModel.invitationListUpdated.observe(viewLifecycleOwner, Observer {
@@ -85,6 +89,7 @@ class InvitationFragment : Fragment() {
             }
         })
 
+
         viewModel.updatePlan.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             Log.i("Rita", "updatePlan observe- $it")
             if (it == true) {
@@ -104,12 +109,14 @@ class InvitationFragment : Fragment() {
             }
         })
 
+
         viewModel.updateCategories.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             Log.i("Rita", "updateCategories observe- $it")
             if (it == true) {
                 viewModel.updateCategories()
             }
         })
+
 
         viewModel.updateCategoriesForUser.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             Log.i("Rita", "updateCategoriesForUser.observe- $it")
@@ -119,8 +126,7 @@ class InvitationFragment : Fragment() {
             }
         })
 
-
-
         return binding.root
+
     }
 }

@@ -1,6 +1,6 @@
 package com.rita.calendarprooo.data
 
-import android.net.Uri
+
 import android.os.Parcel
 import android.os.Parcelable
 
@@ -20,8 +20,7 @@ data class User (
         parcel.readString(),
         TODO("categoryList"),
         TODO("invitationList")
-    ) {
-    }
+    )
 
     override fun describeContents(): Int {
         TODO("Not yet implemented")

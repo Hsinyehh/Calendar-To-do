@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 fun getToday(): String {
-    val df = SimpleDateFormat("dd-MM-yyyy");
+    val df = SimpleDateFormat("dd-MM-yyyy")
     val today = df.format(Calendar.getInstance().getTime())
     Log.i("Rita", "getToday() - $today")
     return today
@@ -16,8 +16,8 @@ fun getToday(): String {
 
 fun convertToTimeStamp(dateSelected: String): List<Long>? {
     try {
-        var selectedStartTime: Long = 0L
-        var selectedEndTime: Long = 0L
+        var selectedStartTime = 0L
+        var selectedEndTime = 0L
 
         val startTime = "$dateSelected 00:00"
         val endTime = "$dateSelected 23:59"

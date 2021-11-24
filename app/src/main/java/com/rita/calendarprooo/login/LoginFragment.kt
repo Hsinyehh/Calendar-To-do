@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -37,12 +36,11 @@ class LoginFragment : Fragment() {
     private val TAG = "SignIn"
     private lateinit var auth: FirebaseAuth
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        //layout binding
+    ): View {
+
         val binding: FragmentLoginBinding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_login, container, false
         )
@@ -50,23 +48,27 @@ class LoginFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+
         val signInBtn = binding.signInButton
+
         signInBtn.setOnClickListener {
             signIn()
         }
+
 
         // Initialize Firebase Auth
         auth = Firebase.auth
 
 
-        viewModel.newUser.observe(viewLifecycleOwner, Observer {
+        viewModel.newUser.observe(viewLifecycleOwner, {
             Log.i("Rita", "newUser observe: $it")
             it?.let {
                 viewModel.checkUserCreated(it)
             }
         })
 
-        viewModel.isUserCreated.observe(viewLifecycleOwner, Observer {
+
+        viewModel.isUserCreated.observe(viewLifecycleOwner, {
             Log.i("Rita", "isUserCreated observe: $it")
             it?.let {
                 if (it) {
@@ -78,16 +80,17 @@ class LoginFragment : Fragment() {
             }
         })
 
-        viewModel.navigateToHome.observe(viewLifecycleOwner, Observer {
-            Log.i("Rita", "navigateToHome observe: ${it}")
+
+        viewModel.navigateToHome.observe(viewLifecycleOwner, {
+            Log.i("Rita", "navigateToHome observe: $it")
             if (it == true) {
                 findNavController().navigate(NavigationDirections.navigateToHomeFragment())
                 viewModel.doneNavigated()
             }
         })
 
-
         return binding.root
+
     }
 
 
@@ -99,7 +102,7 @@ class LoginFragment : Fragment() {
             .requestEmail()
             .build()
 
-        googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso);
+        googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
         val signInIntent = googleSignInClient.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)
     }
@@ -131,17 +134,19 @@ class LoginFragment : Fragment() {
 
             UserManager.userToken = account.idToken
 
-
             val idToken = account.idToken
+
             val displayName = account.displayName
+
             val email = account.email
+
             val photoUrl = account.photoUrl
+
             viewModel.createUser(idToken, email, displayName, photoUrl)
 
-            Log.i(
-                "Rita", "Sign-in success id:$idToken, displayName:$displayName" +
-                        "email:$email, photo:$photoUrl "
-            )
+            Log.i("Rita", "Sign-in success id:$idToken, displayName:$displayName" +
+                        "email:$email, photo:$photoUrl ")
+
         } catch (e: ApiException) {
             Log.w(TAG, "signInResult:failed code=" + e.statusCode)
         }

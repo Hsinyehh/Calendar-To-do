@@ -72,7 +72,7 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
 
     var livePlansToday = MutableLiveData<List<Plan>>()
 
-    var listBeforeToday = MutableLiveData<List<Plan>>()
+    var livePlansBeforeToday = MutableLiveData<List<Plan>>()
 
     var scheduleViewList = MutableLiveData<MutableList<Boolean>>()
 
@@ -143,7 +143,7 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
         _navigateToAlarm.value = null
     }
 
-    fun readPlanFromToday() {
+    fun getPlansToday() {
 
         coroutineScope.launch {
 
@@ -182,7 +182,7 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
         }
     }
 
-    fun readPlanBeforeToday() {
+    fun getPlansBeforeToday() {
 
         coroutineScope.launch {
 
@@ -218,9 +218,11 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
         }
     }
 
-    fun readPlanInTotal() {
+    fun getTotalPlans() {
+
         var list = plansToday.value?.toMutableList()
         val listBefore = plansBeforeToday.value?.toMutableList()
+
         if (list != null) {
             if (listBefore != null) {
                 list.addAll(listBefore)
@@ -244,6 +246,7 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
         startToGetViewListForDoneMode.value = true
     }
 
+    // create list to store detail showing/hiding status
     fun getViewList() {
 
         val list = mutableListOf<Boolean>()
@@ -301,6 +304,7 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
         Log.i("Rita", "getViewListForTodoMode  done- ${doneViewList.value}")
     }
 
+    // change detail showing/hiding status
     fun changeScheduleView(position: Int) {
         val list = scheduleViewList.value
         var status = list?.get(position)
@@ -360,7 +364,7 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
                         Log.i("Rita", " getCheckList-itemUpdate as $item")
 
                         // Store isDone status
-                        writeCheckItemStatus(item)
+                        updateCheckList(item)
                     }
                 } else {
                     Log.d(TAG, "No such document")
@@ -388,7 +392,7 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
                         Log.i("Rita", " getCheckList-itemRemoved as $item")
 
                         // Store isDone status
-                        writeCheckItemStatus(item)
+                        updateCheckList(item)
                     }
                 } else {
                     Log.d(TAG, "No such document")
@@ -399,7 +403,7 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
             }
     }
 
-    private fun writeCheckItemStatus(item: Check) {
+    private fun updateCheckList(item: Check) {
         val planRef = item.plan_id?.let { db.collection("plan").document(it) }
         Log.i("Rita", "writeCheckItemDone-planRef: $planRef")
         planRef!!
@@ -412,23 +416,24 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
 
 
     fun getLivePlans() {
-        if(selectedStartTime.value!=null && selectedEndTime.value != null && currentUser.value!=null)
+        if(selectedStartTime.value!=null && selectedEndTime.value != null
+            && currentUser.value!=null)
         {
             livePlansToday = repository.getLivePlansToday(
                 selectedStartTime.value!!, selectedEndTime.value!!, currentUser.value!!)
 
-            listBeforeToday = repository.getLivePlansBeforeToday(
+            livePlansBeforeToday = repository.getLivePlansBeforeToday(
                 selectedStartTime.value!!, currentUser.value!!)
         }
     }
 
 
 
-    fun getTotalList() {
+    fun getTotalLivePlans() {
 
         val list = livePlansToday.value?.toMutableList()
 
-        listBeforeToday.value?.let { list?.addAll(it) }
+        livePlansBeforeToday.value?.let { list?.addAll(it) }
 
         _scheduleList.value = list?.filter { it -> it.isToDoList == false }
         _todoList.value =
@@ -457,7 +462,7 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
         selectedEndTime.value = timeList?.get(1)
     }
 
-    fun getUserData(userId: String) {
+    private fun getUserData(userId: String) {
         Log.d("Rita", "userId: $userId")
         currentUser = repository.getUser(userId)
         UserManager.user = repository.getUser(userId)

@@ -74,6 +74,7 @@ class InviteCategoryViewModel(val repository: CalendarRepository) : ViewModel() 
         }
     }
 
+
     fun updateInvitation(list: MutableList<Invitation>) {
         val userRef = userTobeInvited.value?.let {
             db.collection("user").document(it.email!!)
@@ -97,6 +98,7 @@ class InviteCategoryViewModel(val repository: CalendarRepository) : ViewModel() 
         isInvited.value = null
         updateSuccess.value = null
     }
+
 
     init {
         invitation.value = null

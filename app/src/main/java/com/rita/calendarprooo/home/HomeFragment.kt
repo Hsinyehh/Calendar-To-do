@@ -20,7 +20,6 @@ import com.shrikanthravi.collapsiblecalendarview.widget.CollapsibleCalendar
 
 class HomeFragment : Fragment() {
 
-
     private val viewModel by viewModels<HomeViewModel> { getVmFactory() }
 
     override fun onCreateView(
@@ -39,22 +38,22 @@ class HomeFragment : Fragment() {
         viewModel.currentUser.observe(viewLifecycleOwner,  {
             Log.i("Rita", "currentUser.observe: $it")
             it?.let{
-                viewModel.readPlanFromToday()
+                viewModel.getPlansToday()
                 viewModel.getLivePlans()
 
-                // we need to set Observer here, list can be observed for the same reference
+                // we need to set Observer here, so list can be observed for the same reference
                 viewModel.livePlansToday.observe(viewLifecycleOwner, {
                    it?.let{
                        Log.i("Rita", "livePlansToday.observe: $it")
-                       viewModel.getTotalList()
+                       viewModel.getTotalLivePlans()
                        binding.viewModel = viewModel
                    }
                 })
 
-                viewModel.listBeforeToday.observe(viewLifecycleOwner, {
-                    Log.e("Rita", "listBeforeToday observe - $it")
+                viewModel.livePlansBeforeToday.observe(viewLifecycleOwner, {
+                    Log.e("Rita", "livePlansBeforeToday observe - $it")
                     it?.let {
-                        viewModel.getTotalList()
+                        viewModel.getTotalLivePlans()
                         binding.viewModel = viewModel
                     }
                 })
@@ -67,21 +66,22 @@ class HomeFragment : Fragment() {
             Log.i("Rita", "selectedEndTime observe- $it")
             it?.let {
                 if (viewModel.currentUser.value != null) {
-                    viewModel.readPlanFromToday()
+
+                    viewModel.getPlansToday()
                     viewModel.getLivePlans()
 
                     viewModel.livePlansToday.observe(viewLifecycleOwner, {
                             Log.i("Rita", "livePlansToday.observe: $it")
                             it?.let {
-                                viewModel.getTotalList()
+                                viewModel.getTotalLivePlans()
                                 binding.viewModel = viewModel
                             }
                     })
 
-                    viewModel.listBeforeToday.observe(viewLifecycleOwner, {
-                            Log.e("Rita", "listBeforeToday observe - $it")
+                    viewModel.livePlansBeforeToday.observe(viewLifecycleOwner, {
+                            Log.e("Rita", "livePlansBeforeToday observe - $it")
                             it?.let {
-                                viewModel.getTotalList()
+                                viewModel.getTotalLivePlans()
                                 binding.viewModel = viewModel
                             }
                     })
@@ -91,12 +91,12 @@ class HomeFragment : Fragment() {
 
         viewModel.plansToday.observe(viewLifecycleOwner, {
             Log.i("Rita", "plansToday observe - $it")
-            viewModel.readPlanBeforeToday()
+            viewModel.getPlansBeforeToday()
         })
 
         viewModel.plansBeforeToday.observe(viewLifecycleOwner, {
             Log.i("Rita", "plansBeforeToday observe - $it")
-            viewModel.readPlanInTotal()
+            viewModel.getTotalPlans()
         })
 
 
@@ -210,7 +210,6 @@ class HomeFragment : Fragment() {
 
         viewModel.navigateToEditByPlan.observe(viewLifecycleOwner, {
             Log.i("Rita", "navigateToEditByPlan.observe: $it")
-
             it?.let {
                 view?.findNavController()?.navigate(
                     NavigationDirections.navigateToEditFragment(address, it)
@@ -221,19 +220,16 @@ class HomeFragment : Fragment() {
 
         viewModel.navigateToInvite.observe(viewLifecycleOwner, {
             Log.i("Rita", "navigateToInvite.observe: $it")
-
             it?.let {
                 view?.findNavController()?.navigate(
                     NavigationDirections.navigateToInviteFragment(it)
                 )
-
                 viewModel.doneNavigated()
             }
         })
 
         viewModel.navigateToAlarm.observe(viewLifecycleOwner, {
             Log.i("Rita", "navigateToAlarm.observe: $it")
-
             it?.let {
                 view?.findNavController()?.navigate(
                     NavigationDirections.navigateToAlarmDialog(it)
@@ -273,8 +269,8 @@ class HomeFragment : Fragment() {
             override fun onWeekChange(position: Int) {}
         })
 
-
         return binding.root
+
     }
 
     private fun setupTouchHelper() : ItemTouchHelper.SimpleCallback{

@@ -67,17 +67,17 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
     //Firebase
     private val db = Firebase.firestore
 
-    var listFromToday = MutableLiveData<List<Plan>>()
-
-    var listBeforeToday = MutableLiveData<List<Plan>>()
-
-    var readListFromToday = MutableLiveData<List<Plan>>()
-
-    var readListBeforeToday = MutableLiveData<List<Plan>>()
-
     var selectedStartTime = MutableLiveData<Long>()
 
     var selectedEndTime = MutableLiveData<Long>()
+
+    var plansToday = MutableLiveData<List<Plan>>()
+
+    var plansBeforeToday = MutableLiveData<List<Plan>>()
+
+    var livePlansToday = MutableLiveData<List<Plan>>()
+
+    var livePlansBeforeToday = MutableLiveData<List<Plan>>()
 
     var scheduleViewList = MutableLiveData<MutableList<Boolean>>()
 
@@ -127,7 +127,7 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
         _navigateToInviteCategory.value = null
     }
 
-    fun readPlanFromToday() {
+    fun getPlansToday() {
         loadingStatus.value = true
         Log.i("Rita", "readPlanFromToday user: ${currentUser.value}")
         // reGet viewList
@@ -136,7 +136,7 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
         // plan's start-time from today
         currentUser.value?.let {
             db.collection("plan")
-                .whereArrayContains("collaborator", it.email!!)
+                .whereArrayContains("collaborator", it.email)
                 .whereEqualTo("category", categoryStatus.value)
                 .whereGreaterThanOrEqualTo("start_time", selectedStartTime.value!!)
                 .whereLessThanOrEqualTo("start_time", selectedEndTime.value!!)
@@ -149,7 +149,7 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
                         list.add(plan)
                     }
                     Log.i("Rita", "list: $list")
-                    readListFromToday.value = list
+                    plansToday.value = list
                 }
                 .addOnFailureListener { exception ->
                     Log.w(ContentValues.TAG, "Error getting documents.", exception)
@@ -157,12 +157,13 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
         }
     }
 
-    fun readPlanBeforeToday() {
+    fun getPlansBeforeToday() {
         Log.i("Rita", "readPlanBeforeToday user: ${currentUser.value}")
+
         // plan's start-time before today
         currentUser.value?.let {
             db.collection("plan")
-                .whereArrayContains("collaborator", it.email!!)
+                .whereArrayContains("collaborator", it.email)
                 .whereEqualTo("category", categoryStatus.value)
                 .whereLessThan("start_time", selectedStartTime.value!!)
                 .get()
@@ -176,11 +177,11 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
                     Log.i("Rita", "listBeforeToday:　$listBefore")
 
                     val filteredList = listBefore
-                        .filter { it -> it.end_time!! >= selectedStartTime.value!! }
+                        .filter {  it.end_time!! >= selectedStartTime.value!! }
 
                     Log.i("Rita", "filtered listBeforeToday:　$filteredList")
 
-                    readListBeforeToday.value = filteredList
+                    plansBeforeToday.value = filteredList
                 }
                 .addOnFailureListener { exception ->
                     Log.w(ContentValues.TAG, "Error getting documents.", exception)
@@ -188,9 +189,9 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
         }
     }
 
-    fun readPlanInTotal() {
-        var list = readListFromToday.value?.toMutableList()
-        var listBefore = readListBeforeToday.value?.toMutableList()
+    fun getTotalPlans() {
+        var list = plansToday.value?.toMutableList()
+        val listBefore = plansBeforeToday.value?.toMutableList()
         if (list != null) {
             if (listBefore != null) {
                 list.addAll(listBefore)
@@ -201,9 +202,9 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
             }
         }
         if (list != null) {
-            _scheduleList.value = list.filter { it -> it.isToDoList == false }
-            _todoList.value = list.filter { it -> it.isToDoList == true && !it.isToDoListDone }
-            _doneList.value = list.filter { it -> it.isToDoListDone }
+            _scheduleList.value = list.filter {  it.isToDoList == false }
+            _todoList.value = list.filter { it.isToDoList == true && !it.isToDoListDone }
+            _doneList.value = list.filter { it.isToDoListDone }
             startToGetViewList.value = true
         }
         loadingStatus.value = false
@@ -273,7 +274,7 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
     }
 
     fun changeScheduleView(position: Int) {
-        var list = scheduleViewList.value
+        val list = scheduleViewList.value
         var status = list?.get(position)
 
         Log.i("Rita", "ScheduleView- $position -$status")
@@ -286,28 +287,22 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
     }
 
     fun changeTodoView(position: Int) {
-        var list = todoViewList.value
+        val list = todoViewList.value
         var status = list?.get(position)
-        Log.i("Rita", "todoViewList- ${todoViewList.value}")
 
-        Log.i("Rita", "todoView- $position - $status")
         status = status != true
         list?.set(position, status)
-        Log.i("Rita", "todoView changed- $position - $status")
 
         todoViewList.value = list
         Log.i("Rita", "todoViewList changed- ${todoViewList.value}")
     }
 
     fun changeDoneView(position: Int) {
-        var list = doneViewList.value
+        val list = doneViewList.value
         var status = list?.get(position)
-        Log.i("Rita", "doneViewList- ${doneViewList.value}")
 
-        Log.i("Rita", "doneView- $position - $status")
         status = status != true
         list?.set(position, status)
-        Log.i("Rita", "doneView changed- $position - $status")
 
         doneViewList.value = list
 
@@ -327,20 +322,23 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
         }
 
         val planRef = item.plan_id?.let { db.collection("plan").document(it) }
-        var plan: Plan? = null
+
         planRef!!.get()
             .addOnSuccessListener { document ->
                 if (document != null) {
-                    Log.d(ContentValues.TAG, "DocumentSnapshot data: ${document.data}")
-                    plan = document.toObject(Plan::class.java)
+
+                    val plan = document.toObject(Plan::class.java)
+
                     if (plan != null) {
-                        plan!!.checkList!![position] = item
-                        checkList.value = plan!!.checkList
+                        plan.checkList!![position] = item
+                        checkList.value = plan.checkList
                         Log.i("Rita", " getCheckList-itemUpdate as $item")
+
                         //Store isDone status
                         writeCheckItemStatus(item)
                     }
-                } else {
+                }
+                else {
                     Log.d(ContentValues.TAG, "No such document")
                 }
             }
@@ -386,11 +384,11 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
             .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error updating document", e) }
     }
 
-    fun readPlanOnChanged() {
+    fun getLivePlans() {
         Log.i("Rita", "readPlanOnChanged user: ${currentUser.value}")
         currentUser.value?.let {
             db.collection("plan")
-                .whereArrayContains("collaborator", it.email!!)
+                .whereArrayContains("collaborator", it.email)
                 .whereEqualTo("category", categoryStatus.value)
                 .whereGreaterThanOrEqualTo("start_time", selectedStartTime.value!!)
                 .whereLessThanOrEqualTo("start_time", selectedEndTime.value!!)
@@ -406,10 +404,10 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
                         for (item in snapshot) {
                             Log.d("Rita", "Current data: $item")
                             val plan = item.toObject(Plan::class.java)
-                            list.add(plan!!)
+                            list.add(plan)
                         }
                         Log.i("Rita", "list onChanged:　$list")
-                        listFromToday.value = list
+                        livePlansToday.value = list
                     } else {
                         Log.d(ContentValues.TAG, "Current data: null")
                     }
@@ -418,7 +416,7 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
         // plan's start-time before today
         currentUser.value?.let {
             db.collection("plan")
-                .whereArrayContains("collaborator", it.email!!)
+                .whereArrayContains("collaborator", it.email)
                 .whereEqualTo("category", categoryStatus.value)
                 .whereLessThan("start_time", selectedStartTime.value!!)
                 .addSnapshotListener { snapshot, e ->
@@ -432,52 +430,52 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
                             Log.d("Rita", "Current data Before: $item")
                             val plan = item.toObject(Plan::class.java)
                             if (plan.start_time!! < selectedStartTime.value!!) {
-                                listBefore.add(plan!!)
+                                listBefore.add(plan)
                             }
                         }
+
                         val filteredList = listBefore
-                            .filter { it -> it.end_time!! >= selectedStartTime.value!! }
+                            .filter { it.end_time!! >= selectedStartTime.value!! }
                         Log.i("Rita", "listBeforeToday onChanged:　$filteredList")
-                        listBeforeToday.value = filteredList
-                    } else {
+                        livePlansBeforeToday.value = filteredList
+                    }
+                    else {
                         Log.d(ContentValues.TAG, "Current data: null")
                     }
                 }
         }
     }
 
-    fun getTotalList() {
-        Log.i("Rita", "getTotalList listFromToday - ${listFromToday.value}")
-        Log.i("Rita", "getTotalList readListBeforeToday - ${readListBeforeToday.value}")
-        var list = listFromToday.value!!.toMutableList()
-        readListBeforeToday.value?.let { list?.addAll(it) }
+    fun getTotalLivePlans() {
 
-        _scheduleList.value = list?.filter { it -> it.isToDoList == false }
-        _todoList.value =
-            list?.filter { it -> it.isToDoList == true && !it.isToDoListDone }
-        _doneList.value =
-            list?.filter { it -> it.isToDoListDone }
+        val list = livePlansToday.value!!.toMutableList()
+
+        plansBeforeToday.value?.let { list.addAll(it) }
+
+        _scheduleList.value = list.filter { it.isToDoList == false }
+        _todoList.value = list.filter { it.isToDoList == true && !it.isToDoListDone }
+        _doneList.value = list.filter { it.isToDoListDone }
 
         loadingStatus.value = false
     }
 
-    fun getTotalListBefore() {
-        Log.i("Rita", "getTotalListBefore readList - ${readListFromToday.value}")
-        Log.i("Rita", "getTotalListBefore listBefore - ${listBeforeToday.value}")
-        var list = readListFromToday.value?.toMutableList()
-        listBeforeToday.value?.let { list?.addAll(it) }
+    fun getTotalLivePlansBefore() {
+
+        val list = plansToday.value?.toMutableList()
+
+        livePlansBeforeToday.value?.let { list?.addAll(it) }
 
         _scheduleList.value = list?.filter { it -> it.isToDoList == false }
-        _todoList.value =
-            list?.filter { it -> it.isToDoList == true && !it.isToDoListDone }
-        _doneList.value =
-            list?.filter { it -> it.isToDoListDone }
+        _todoList.value = list?.filter { it -> it.isToDoList == true && !it.isToDoListDone }
+        _doneList.value = list?.filter { it -> it.isToDoListDone }
 
         loadingStatus.value = false
     }
 
     fun getPlanAndChangeStatus(item: Plan) {
+
         val planRef = item.id?.let { db.collection("plan").document(it) }
+
         planRef!!
             .update(
                 "toDoListDone", item.isToDoListDone,
@@ -485,10 +483,7 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
                 "doner", item.doner
             )
             .addOnSuccessListener {
-                Log.d(
-                    ContentValues.TAG,
-                    "DocumentSnapshot successfully updated!"
-                )
+                Log.d(ContentValues.TAG, "DocumentSnapshot successfully updated!")
             }
             .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error updating document", e) }
     }
@@ -500,7 +495,7 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
         selectedEndTime.value = timeList?.get(1)
     }
 
-    fun getUserData(userId: String) {
+    private fun getUserData(userId: String) {
         Log.d("Rita", "userId: $userId")
         currentUser = repository.getUser(userId)
         UserManager.user = repository.getUser(userId)
@@ -508,7 +503,7 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
 
     fun changeCategory(position: Int, lastPosition: Int) {
         Log.i("Rita", "$lastPosition")
-        var categoryListGet = categoryList.value
+        val categoryListGet = categoryList.value
 
         // deselected the origin position value
         if (categoryPosition.value != -1) {
@@ -519,7 +514,7 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
             categoryListGet!![lastPosition].isSelected = false
         }
         categoryListGet!![position].isSelected = true
-        val item = categoryListGet!![position]
+        val item = categoryListGet[position]
         categoryStatus.value = item.name
 
         categoryPosition.value = position
@@ -529,13 +524,14 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
     fun initCategory(user: User) {
         categoryList.value = user.categoryList
         categoryPosition.value = 0
+
         // init position is 0
-        var categoryListGet = categoryList.value
+        val categoryListGet = categoryList.value
         categoryListGet!![0].isSelected = true
-        val item = categoryListGet!![0]
+        val item = categoryListGet[0]
+
         categoryStatus.value = item.name
         categoryList.value = categoryListGet
-
     }
 
     init {
@@ -543,6 +539,5 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
         _navigateToEdit.value = null
         selectedTimeSet(getToday())
         UserManager.userToken?.let { getUserData(it) }
-
     }
 }

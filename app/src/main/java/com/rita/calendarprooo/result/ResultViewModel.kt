@@ -74,12 +74,13 @@ class ResultViewModel(val repository: CalendarRepository) : ViewModel() {
 
     fun readPlanInTotal() {
         var list = readListFromToday.value?.toMutableList()
-        var listBefore = readListBeforeToday.value?.toMutableList()
+        val listBefore = readListBeforeToday.value?.toMutableList()
         if (list != null) {
             if (listBefore != null) {
                 list.addAll(listBefore)
             }
-        } else {
+        }
+        else {
             if (listBefore != null) {
                 list = listBefore
             }
@@ -90,17 +91,19 @@ class ResultViewModel(val repository: CalendarRepository) : ViewModel() {
     }
 
     fun countForCategory(list: List<Plan>) {
-        var categoryMap = mutableMapOf<String, Float>()
+        val categoryMap = mutableMapOf<String, Float>()
         if (!list.isNullOrEmpty()) {
             for (item in list) {
                 if (!categoryMap.containsKey(item.category)) {
                     categoryMap["${item.category}"] = 1F
-                } else {
+                }
+                else {
                     val count = categoryMap["${item.category}"]
                     count!!.plus(1F)
                 }
             }
-        } else {
+        }
+        else {
             categoryMap["No Done Task"] = 1F
         }
         categoryForDoneList.value = categoryMap
@@ -112,7 +115,6 @@ class ResultViewModel(val repository: CalendarRepository) : ViewModel() {
         selectedStartTime.value = timeList?.get(0)
         selectedEndTime.value = timeList?.get(1)
     }
-
 
 
     init {

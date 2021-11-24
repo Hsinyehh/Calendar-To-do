@@ -12,7 +12,6 @@ import android.view.inputmethod.InputMethodManager
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.rita.calendarprooo.NavigationDirections
 import com.rita.calendarprooo.R
@@ -29,7 +28,7 @@ class EditFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // layout binding
         val binding: FragmentEditBinding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_edit, container, false
@@ -52,28 +51,30 @@ class EditFragment : Fragment() {
 
         val adapter = CategoryAdapter(viewModel)
         binding.categoryList.adapter = adapter
-        viewModel.categoryList.observe(viewLifecycleOwner, Observer {
+        viewModel.categoryList.observe(viewLifecycleOwner, {
             adapter.submitList(it)
             adapter.notifyDataSetChanged()
         })
 
+
         // checkAdapter
         val checkAdapter = CheckAdapter(viewModel)
         binding.checkList.adapter = checkAdapter
-        viewModel.checkList.observe(viewLifecycleOwner, Observer {
+        viewModel.checkList.observe(viewLifecycleOwner, {
             Log.i("Rita", "viewModel.checkList.observe")
             checkAdapter.submitList(it)
             checkAdapter.notifyDataSetChanged()
             viewModel.clearText()
         })
 
+
         // Default value setup for timepicker
-        viewModel.planGet.observe(viewLifecycleOwner, Observer {
+        viewModel.planGet.observe(viewLifecycleOwner, {
             Log.i("Rita", "plan.observe: ${viewModel.planGet.value}")
             it?.start_time_detail?.let {
                 //recognize as edit rather than created a plan
                 viewModel.editStatus.value = true
-                viewModel.location.value = viewModel.planGet?.value?.location
+                viewModel.location.value = viewModel.planGet.value?.location
                 startTimePicker.currentHour = it[4]
                 startTimePicker.currentMinute = it[4]
                 startDatePicker.init(it[0], it[1] - 1, it[2], null)
@@ -124,7 +125,8 @@ class EditFragment : Fragment() {
 
         }
 
-        viewModel.createStatus.observe(viewLifecycleOwner, Observer {
+
+        viewModel.createStatus.observe(viewLifecycleOwner, {
             if (it == true) {
                 Log.i("Rita", "viewModel.createStatus.observe ${viewModel.editStatus.value}")
                 if (viewModel.editStatus.value == true) {
@@ -138,7 +140,7 @@ class EditFragment : Fragment() {
         })
 
 
-        viewModel.newPlan.observe(viewLifecycleOwner, Observer {
+        viewModel.newPlan.observe(viewLifecycleOwner, {
             it?.let {
                 viewModel.writeNewPlan()
             }
@@ -146,7 +148,7 @@ class EditFragment : Fragment() {
 
 
         // update is done, then navigate to home page
-        viewModel.loadingStatus.observe(viewLifecycleOwner, Observer {
+        viewModel.loadingStatus.observe(viewLifecycleOwner, {
             Log.i("Rita", "loadingStatus.observe: $it")
             it?.let{
                 if(!it){
@@ -156,14 +158,17 @@ class EditFragment : Fragment() {
             }
         })
 
+
         // cancel button
         binding.buttonCancel.setOnClickListener { view: View ->
             view.findNavController().popBackStack()
         }
 
+
         // TimePicker
         binding.startTimepicker.setIs24HourView(true)
         binding.endTimepicker.setIs24HourView(true)
+
 
         // add category Button
         binding.btnCategoryPlus.setOnClickListener {
@@ -171,6 +176,7 @@ class EditFragment : Fragment() {
                 NavigationDirections.navigateToAddCategoryDialog(viewModel.planGet.value)
             )
         }
+
 
         // create checkList Item
         binding.checklistEditText.setOnEditorActionListener { textView, i, keyEvent ->

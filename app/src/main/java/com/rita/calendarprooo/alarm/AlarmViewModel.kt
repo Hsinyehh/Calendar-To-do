@@ -7,9 +7,9 @@ import com.rita.calendarprooo.data.Plan
 class AlarmViewModel : ViewModel() {
     var plan = MutableLiveData<Plan>()
 
-    var alarm_time = MutableLiveData<Long>()
+    var alarmTime = MutableLiveData<Long>()
 
     init {
-        alarm_time.value = null
+        alarmTime.value = null
     }
 }

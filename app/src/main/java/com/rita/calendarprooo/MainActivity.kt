@@ -8,7 +8,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
@@ -26,12 +25,12 @@ import com.rita.calendarprooo.login.UserManager
 
 class MainActivity : AppCompatActivity() {
 
+    val viewModel by viewModels<MainViewModel> { getVmFactory() }
+
     private lateinit var auth: FirebaseAuth
     private var userToken = UserManager.userToken
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var appBarConfiguration: AppBarConfiguration
-
-    val viewModel by viewModels<MainViewModel> { getVmFactory() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         NavigationUI.setupWithNavController(binding.navView, navController)
 
 
-        viewModel.navigateToHome.observe(this, Observer {
+        viewModel.navigateToHome.observe(this, {
             if (it == true) {
                 findNavController(R.id.myNavHostFragment)
                     .navigate(NavigationDirections.navigateToHomeFragment())
@@ -75,7 +74,8 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        viewModel.navigateToLogin.observe(this, Observer {
+
+        viewModel.navigateToLogin.observe(this, {
             if (it == true) {
                 findNavController(R.id.myNavHostFragment)
                     .navigate(NavigationDirections.navigateToLoginFragment())
@@ -84,12 +84,13 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        viewModel.currentUser.observe(this, Observer {
+
+        viewModel.currentUser.observe(this, {
             Log.i("Rita", "Create mainActivity.currentUser observe - $it")
         })
 
         auth = Firebase.auth
-        var currentUser = auth.currentUser
+        val currentUser = auth.currentUser
         Log.i(
             "Rita",
             "MainActivity currentUser: $currentUser , userToken: ${UserManager.userToken}"
@@ -122,7 +123,7 @@ class MainActivity : AppCompatActivity() {
         headerViewBinding.lifecycleOwner = this
 
 
-        viewModel.currentUser.observe(this, Observer {
+        viewModel.currentUser.observe(this, {
             Log.i("Rita", "onResume mainActivity.currentUser observe - $it")
         })
 

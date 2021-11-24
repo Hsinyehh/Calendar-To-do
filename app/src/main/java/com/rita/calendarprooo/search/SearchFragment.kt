@@ -41,27 +41,31 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
 
     private val AUTOCOMPLETE_REQUEST_CODE = 1
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // layout binding
+    ): View {
+
         val binding: FragmentSearchBinding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_search, container, false
         )
 
         binding.viewModel = viewModel
+
         binding.lifecycleOwner = viewLifecycleOwner
+
 
         // Google map setup
         val mapFragment = childFragmentManager
             .findFragmentById(binding.map.id) as SupportMapFragment
+
         mapFragment.getMapAsync(this)
+
 
         // Google places API
         // Initialize the SDK
         Places.initialize(requireContext(), getString(R.string.google_key))
+
 
         binding.textSearch.setOnClickListener {
 
@@ -72,14 +76,15 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
             // Start the autocomplete intent.
             val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
                 .build(requireContext())
+
             startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
 
         }
 
 
         // Edit page navigation
-        val plan: Plan? = Plan()
-        viewModel.navigateToEdit.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        val plan = Plan()
+        viewModel.navigateToEdit.observe(viewLifecycleOwner, {
             it?.let {
                 view?.findNavController()?.navigate(
                     NavigationDirections.navigateToEditFragment(
@@ -91,6 +96,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         })
 
         return binding.root
+
     }
 
     override fun onMapReady(map: GoogleMap) {
@@ -104,10 +110,9 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
     }
 
     fun moveCamera(latLng: LatLng, zoom: Float, title: String) {
+
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom))
-
         val options = MarkerOptions().position(latLng).title(title)
-
         mMap.addMarker(options)
     }
 
@@ -123,15 +128,12 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
                         viewModel.searchResultAddress.value = place.address
                         viewModel.searchResultName.value = place.name
                         viewModel.searchText.value = place.name
-                        Log.i(
-                            TAG, "Place: ${viewModel.searchResultAddress.value}," +
+
+                        Log.i(TAG, "Place: ${viewModel.searchResultAddress.value}," +
                                     "${viewModel.searchResultName.value}, " +
-                                    "${viewModel.searchText.value}"
-                        )
-                        moveCamera(
-                            place.latLng, DEFAULT_ZOOM,
-                            place.address
-                        )
+                                    "${viewModel.searchText.value}")
+
+                        moveCamera(place.latLng, DEFAULT_ZOOM, place.address)
                     }
                 }
                 AutocompleteActivity.RESULT_ERROR -> {
