@@ -113,7 +113,7 @@ class HomeFragment : Fragment() {
 
 
         fun createScheduleRecyclerview() {
-            // bind adapter again before the adapter submit list so the position item is right
+            // bind adapter again before adapter submit list so that the items' position is correct
             val adapter = ScheduleAdapter(viewModel)
             binding.homeScheduleList.adapter = adapter
             adapter.submitList(viewModel.scheduleList.value)
@@ -215,10 +215,6 @@ class HomeFragment : Fragment() {
                     viewModel.updatePlanByCheck(plan)
                 }
             }
-            if(viewModel.isPlanDoneChanged.value == true){
-
-            }
-
             viewModel.doneUpdated()
         })
 

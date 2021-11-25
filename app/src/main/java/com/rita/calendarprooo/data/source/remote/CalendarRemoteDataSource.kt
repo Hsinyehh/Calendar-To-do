@@ -1,6 +1,5 @@
 package com.rita.calendarprooo.data.source.remote
 
-import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
@@ -147,21 +146,6 @@ object CalendarRemoteDataSource : CalendarDataSource {
         return livedata
     }
 
-    override suspend fun createPlan(plan: Plan): Result<Boolean> =
-        suspendCoroutine { continuation ->
-            val newPlanRef = FirebaseFirestore.getInstance().collection("plan").document()
-            newPlanRef
-                .set(plan)
-                .addOnSuccessListener {
-                    Log.d(TAG, "DocumentSnapshot added with ID: $newPlanRef.id")
-                    continuation.resume(Result.Success(true))
-                }
-                .addOnFailureListener {
-                    Log.w(TAG, "Error adding document", it)
-                    continuation.resume(Result.Error(it))
-                }
-        }
-
     override suspend fun updatePlanForDoneStatus(plan: Plan): Result<Boolean> =
         suspendCoroutine { continuation ->
             val planRef = plan.id?.let {
@@ -182,9 +166,7 @@ object CalendarRemoteDataSource : CalendarDataSource {
                 }
         }
 
-    override suspend fun updatePlanByCheck(
-        plan: Plan,
-        checkList: MutableLiveData<MutableList<Check>>
+    override suspend fun updatePlanByCheck(plan: Plan, checkList: MutableLiveData<MutableList<Check>>
     ): Result<Boolean> = suspendCoroutine { continuation ->
 
         val planRef = plan.id?.let {
@@ -213,7 +195,7 @@ object CalendarRemoteDataSource : CalendarDataSource {
 
         planRef!!.get()
             .addOnSuccessListener { document ->
-                var plan : Plan?
+                val plan : Plan?
                 if (document != null) {
                     plan = document.toObject(Plan::class.java)!!
                     continuation.resume(Result.Success(plan))
@@ -224,6 +206,54 @@ object CalendarRemoteDataSource : CalendarDataSource {
                 continuation.resume(Result.Error(exception))
             }
     }
+
+    override suspend fun createPlan(plan: Plan): Result<Boolean> =
+        suspendCoroutine { continuation ->
+            val newPlanRef = plan.id?.let {
+                FirebaseFirestore.getInstance().collection(PATH_PLAN).document(it)
+            }
+
+            newPlanRef!!
+                .set(plan)
+                .addOnSuccessListener {
+                    Log.d(TAG, "DocumentSnapshot added with ID: $newPlanRef.id")
+                    continuation.resume(Result.Success(true))
+                }
+                .addOnFailureListener {
+                    Log.w(TAG, "Error adding document", it)
+                    continuation.resume(Result.Error(it))
+                }
+        }
+
+    override suspend fun updatePlan(plan: Plan): Result<Boolean> =
+        suspendCoroutine { continuation ->
+            val planRef = plan.id?.let {
+                FirebaseFirestore.getInstance().collection(PATH_PLAN).document(it)
+            }
+
+            planRef!!
+                .update(
+                    "title", plan.title,
+                    "description", plan.description,
+                    "location", plan.location,
+                    "start_time", plan.start_time,
+                    "end_time", plan.end_time,
+                    "start_time_detail", plan.start_time_detail,
+                    "end_time_detail", plan.end_time_detail,
+                    "category", plan.category,
+                    "categoryPosition", plan.categoryPosition,
+                    "categoryList", plan.categoryList,
+                    "checkList", plan.checkList,
+                    "toDoList", plan.isToDoList)
+                .addOnSuccessListener {
+                    Log.d(TAG, "DocumentSnapshot successfully updated!")
+                    continuation.resume(Result.Success(true))
+                }
+                .addOnFailureListener {
+                    Log.w(TAG, "Error updating document", it)
+                    continuation.resume(Result.Error(it))
+                }
+        }
 
     override fun getUser(id: String): MutableLiveData<User> {
         val liveData = MutableLiveData<User>()
@@ -301,13 +331,15 @@ object CalendarRemoteDataSource : CalendarDataSource {
             .get()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    Log.i("Rita","checkUserCreated")
+                    Log.i("Rita","checkUserCreated size: ${task.result.size()}")
+
                     val list = mutableListOf<User>()
                     for (document in task.result!!) {
                         Log.d("Rita",document.id + " => " + document.data)
-                        val user = document.toObject(User::class.java)
-                        list.add(user)
+                        val userGet = document.toObject(User::class.java)
+                        list.add(userGet)
                     }
+
                     val isUserExisted: Boolean?
                     if (list.size > 0) {
                         isUserExisted = true
@@ -316,6 +348,7 @@ object CalendarRemoteDataSource : CalendarDataSource {
                         Log.d(TAG, "No such document")
                     }
                     Log.i("Rita","checkUserCreated - $isUserExisted")
+
                     continuation.resume(Result.Success(isUserExisted))
                 } else {
                     task.exception?.let {

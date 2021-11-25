@@ -31,10 +31,6 @@ class DefaultCalendarRepository(
         return remoteDataSource.getLivePlansBeforeToday(selectedStartTime, user)
     }
 
-    override suspend fun createPlan(plan: Plan): Result<Boolean> {
-        return remoteDataSource.createPlan(plan)
-    }
-
     override suspend fun updatePlanForDoneStatus(plan: Plan): Result<Boolean> {
         return remoteDataSource.updatePlanForDoneStatus(plan)
     }
@@ -48,6 +44,14 @@ class DefaultCalendarRepository(
 
     override suspend fun getPlanByCheck(check: Check): Result<Plan> {
         return remoteDataSource.getPlanByCheck(check)
+    }
+
+    override suspend fun createPlan(plan: Plan): Result<Boolean> {
+        return remoteDataSource.createPlan(plan)
+    }
+
+    override suspend fun updatePlan(plan: Plan): Result<Boolean> {
+        return remoteDataSource.updatePlan(plan)
     }
 
     override fun getUser(id: String): MutableLiveData<User> {

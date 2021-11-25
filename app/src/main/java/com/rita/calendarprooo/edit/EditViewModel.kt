@@ -2,25 +2,32 @@ package com.rita.calendarprooo.edit
 
 import android.content.ContentValues
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.rita.calendarprooo.CalendarProApplication
+import com.rita.calendarprooo.R
 import com.rita.calendarprooo.data.Category
 import com.rita.calendarprooo.data.Check
 import com.rita.calendarprooo.data.Plan
-import com.rita.calendarprooo.data.User
+import com.rita.calendarprooo.data.Result
 import com.rita.calendarprooo.data.source.CalendarRepository
 import com.rita.calendarprooo.ext.stringToTimestamp
 import com.rita.calendarprooo.login.UserManager
-import java.util.*
+import com.rita.calendarprooo.network.LoadApiStatus
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 
-class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
+class EditViewModel(plan: Plan, val repository: CalendarRepository) : ViewModel() {
 
     val loadingStatus = MutableLiveData<Boolean?>()
 
-    val currentUser = UserManager.user.value
+    var currentUser = UserManager.user.value
 
     var planGet = MutableLiveData<Plan?>()
 
@@ -31,6 +38,8 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
     var categoryList = MutableLiveData<MutableList<Category>?>()
 
     var checkText = MutableLiveData<String?>()
+
+    var id = MutableLiveData<String?>()
 
     var title = MutableLiveData<String?>()
 
@@ -52,7 +61,7 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
 
     var end_time_detail = MutableLiveData<List<Int>>()
 
-    var createStatus = MutableLiveData<Boolean?>()
+    var doneConverted= MutableLiveData<Boolean?>()
 
     var editStatus = MutableLiveData<Boolean?>()
 
@@ -60,9 +69,35 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
 
     private val db = Firebase.firestore
 
-    val newPlanRef = db.collection("plan").document()
+    private val newPlanRef = db.collection("plan").document()
 
-    val emptyCheckList = mutableListOf<Check>()
+    private val emptyCheckList = mutableListOf<Check>()
+
+    // status: The internal MutableLiveData that stores the status of the most recent request
+    private val _status = MutableLiveData<LoadApiStatus>()
+
+    val status: LiveData<LoadApiStatus>
+        get() = _status
+
+    // error: The internal MutableLiveData that stores the error of the most recent request
+    private val _error = MutableLiveData<String>()
+
+    val error: LiveData<String>
+        get() = _error
+
+    // status for the loading icon of swl
+    private val _refreshStatus = MutableLiveData<Boolean>()
+
+    val refreshStatus: LiveData<Boolean>
+        get() = _refreshStatus
+
+    // Create a Coroutine scope using a job to be able to cancel when needed
+    private var viewModelJob = Job()
+
+    // the Coroutine runs using the Main (UI) dispatcher
+    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
+
+
 
     fun toToListModeChanged() {
         Log.i("Rita", "editVM isTodoList ${isTodoList.value}")
@@ -102,7 +137,7 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
         checkText.value = ""
     }
 
-    fun createNewPlan() {
+    fun prepareNewPlan() {
         val plan = Plan(
             id = newPlanRef.id,
             title = title.value,
@@ -119,7 +154,7 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
             isToDoList = isTodoList.value,
             isToDoListDone = false,
             owner = currentUser!!.email,
-            owner_name = currentUser.name,
+            owner_name = currentUser!!.name,
             invitation = mutableListOf<String>(),
             collaborator = collaborator.value,
             order_id = 1
@@ -128,90 +163,90 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
         newPlan.value = plan
     }
 
-    fun writeNewPlan() {
-        // Add a new document with a generated ID
-        newPlanRef
-            .set(newPlan.value!!)
-            .addOnSuccessListener { documentReference ->
-                loadingStatus.value = false
-                Log.d(ContentValues.TAG, "DocumentSnapshot added with ID: $newPlanRef.id")
-            }
-            .addOnFailureListener { e ->
-                Log.w(ContentValues.TAG, "Error adding document", e)
-            }
+    fun preparePlan() {
+        val plan = Plan(
+            id = id.value,
+            title = title.value,
+            description = description.value,
+            location = location.value,
+            start_time = start_time.value,
+            end_time = end_time.value,
+            start_time_detail = start_time_detail.value,
+            end_time_detail = end_time_detail.value,
+            category = categoryStatus.value?.name,
+            categoryPosition = categoryPosition.value,
+            categoryList = categoryList.value,
+            checkList = checkList.value,
+            isToDoList = isTodoList.value
+        )
+        Log.i("Rita", "new plan: $plan")
+        newPlan.value = plan
     }
 
-    fun updatePlan() {
-        val planRef = planGet.let { db.collection("plan").document(planGet.value!!.id!!) }
+    fun updatePlan(plan: Plan) {
 
-        planRef
-            .update(
-                "title", title.value,
-                "description", description.value,
-                "location", location.value,
-                "start_time", start_time.value,
-                "end_time", end_time.value,
-                "start_time_detail", start_time_detail.value,
-                "end_time_detail", end_time_detail.value,
-                "category", categoryStatus.value?.name,
-                "categoryPosition", categoryPosition.value,
-                "categoryList", categoryList.value,
-                "checkList", checkList.value,
-                "toDoList", isTodoList.value
-            )
-            .addOnSuccessListener {
-                loadingStatus.value = false
-                Log.d(ContentValues.TAG, "successfully updated!")
-            }
-            .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error updating document", e) }
+        coroutineScope.launch {
 
-    }
+            _status.value = LoadApiStatus.LOADING
 
-    fun getCategoryFromUser() {
-        Log.i("Rita", "EditVM getCategoryFromUser")
-
-        db.collection("user")
-            .whereEqualTo("email", currentUser!!.email)
-            .addSnapshotListener { snapshot, e ->
-                if (e != null) {
-                    Log.w(ContentValues.TAG, "Listen failed.", e)
-                    return@addSnapshotListener
+            when (val result = repository.updatePlan(plan)) {
+                is Result.Success -> {
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
+                    loadingStatus.value = false
+                    Log.i("Rita","home VM updatePlan: $result")
                 }
-                if (snapshot != null && !snapshot.isEmpty) {
-                    for (item in snapshot) {
-                        Log.d("Rita", "Current user: $item")
-                        val user = item.toObject(User::class.java)
-                        categoryList.value = user.categoryList
-                        Log.i("Rita", "category:　${categoryList.value}")
-                    }
-                } else {
-                    Log.d(ContentValues.TAG, "Current user: null")
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                    Log.i("Rita","home VM updatePlan: $result")
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                    Log.i("Rita","home VM updatePlan: $result")
+                }
+                else -> {
+                    _error.value =
+                        CalendarProApplication.instance.getString(R.string.Error)
+                    _status.value = LoadApiStatus.ERROR
                 }
             }
+        }
     }
 
-    fun getCategoryFromPlan() {
-        Log.i("Rita", "EditVM getCategoryFromPlan")
+    fun createPlan(plan: Plan) {
 
-        db.collection("plan")
-            .whereEqualTo("id", "${planGet.value?.id}")
-            .addSnapshotListener { snapshot, e ->
-                if (e != null) {
-                    Log.w(ContentValues.TAG, "Listen failed.", e)
-                    return@addSnapshotListener
+        coroutineScope.launch {
+
+            _status.value = LoadApiStatus.LOADING
+
+            when (val result = repository.createPlan(plan)) {
+                is Result.Success -> {
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
+                    loadingStatus.value = false
+                    Log.i("Rita","home VM createPlan: $result")
                 }
-                if (snapshot != null && !snapshot.isEmpty) {
-                    for (item in snapshot) {
-                        Log.d("Rita", "Current plan: $item")
-                        val plan = item.toObject(Plan::class.java)
-                        categoryList.value = plan.categoryList
-                        Log.i("Rita", "category:　${categoryList.value}")
-                    }
-                } else {
-                    Log.d(ContentValues.TAG, "Current user: null")
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                    Log.i("Rita","home VM createPlan: $result")
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                    Log.i("Rita","home VM createPlan: $result")
+                }
+                else -> {
+                    _error.value =
+                        CalendarProApplication.instance.getString(R.string.Error)
+                    _status.value = LoadApiStatus.ERROR
                 }
             }
+        }
     }
+
 
     fun changeCategory(position: Int, lastPosition: Int) {
         Log.i("Rita", "$lastPosition")
@@ -237,19 +272,19 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
     fun convertToTimestamp(startDateSelected: String, endDateSelected: String){
         start_time.value = stringToTimestamp(startDateSelected)
         end_time.value = stringToTimestamp(endDateSelected)
-        createStatus.value = true
+        doneConverted.value = true
     }
 
     fun doneConverted() {
-        createStatus.value = null
+        doneConverted.value = null
     }
-
 
     fun doneNavigated() {
         newPlan.value = null
         planGet.value = null
         editStatus.value = null
     }
+
 
     init {
         title.value = plan.title ?: ""

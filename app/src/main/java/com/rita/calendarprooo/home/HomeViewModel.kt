@@ -99,9 +99,6 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
 
     var isCheckRemoved = MutableLiveData<Boolean>()
 
-    var isPlanDoneChanged = MutableLiveData<Boolean>()
-
-
     // status: The internal MutableLiveData that stores the status of the most recent request
     private val _status = MutableLiveData<LoadApiStatus>()
 
@@ -403,6 +400,7 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
     fun updatePlanByCheck(plan: Plan) {
 
         coroutineScope.launch {
+
             _status.value = LoadApiStatus.LOADING
 
             when (val result = repository.updatePlanByCheck(plan, checkListUpdate)) {
@@ -497,7 +495,6 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
     fun doneUpdated(){
         isCheckDoneChanged.value = null
         isCheckRemoved.value = null
-        isPlanDoneChanged.value = null
     }
 
 

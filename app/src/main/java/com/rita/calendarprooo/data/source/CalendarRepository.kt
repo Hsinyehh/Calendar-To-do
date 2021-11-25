@@ -19,8 +19,6 @@ interface CalendarRepository {
     fun getLivePlansBeforeToday(selectedStartTime: Long, user: User):
             MutableLiveData<List<Plan>>
 
-    suspend fun createPlan(plan: Plan): Result<Boolean>
-
     suspend fun updatePlanForDoneStatus(plan: Plan): Result<Boolean>
 
     suspend fun updatePlanByCheck(
@@ -29,6 +27,10 @@ interface CalendarRepository {
     ): Result<Boolean>
 
     suspend fun getPlanByCheck(check: Check): Result<Plan>
+
+    suspend fun createPlan(plan: Plan): Result<Boolean>
+
+    suspend fun updatePlan(plan: Plan): Result<Boolean>
 
     fun getUser(id: String): MutableLiveData<User>
 

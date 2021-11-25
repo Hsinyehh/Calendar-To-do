@@ -72,35 +72,40 @@ class EditFragment : Fragment() {
         viewModel.planGet.observe(viewLifecycleOwner, {
             Log.i("Rita", "planGet observe: ${viewModel.planGet.value}")
 
-            it?.start_time_detail?.let {
+            it?.start_time_detail?.let { list ->
                 //recognize as edit rather than created a plan
                 viewModel.editStatus.value = true
-                viewModel.location.value = viewModel.planGet.value?.location
-                startTimePicker.currentHour = it[4]
-                startTimePicker.currentMinute = it[4]
-                startDatePicker.init(it[0], it[1] - 1, it[2], null)
+                viewModel.id.value = it.id
+                viewModel.location.value = it.location
+
+                startTimePicker.currentMinute = list[4]
+                startTimePicker.currentHour = list[3]
+                startDatePicker.init(list[0], list[1] - 1, list[2], null)
             }
 
-            it?.end_time_detail?.let {
-                endTimePicker.currentHour = it[3]
-                endTimePicker.currentMinute = it[4]
-                endDatePicker.init(it[0], it[1] - 1, it[2], null)
+            it?.end_time_detail?.let { list ->
+                endTimePicker.currentMinute = list[4]
+                endTimePicker.currentHour = list[3]
+                endDatePicker.init(list[0], list[1] - 1, list[2], null)
             }
 
-            if (it?.categoryList.isNullOrEmpty()) {
-                viewModel.getCategoryFromUser()
-            } else {
-                viewModel.getCategoryFromPlan()
+            it?.let{
+                if (it.categoryList.isNullOrEmpty()) {
+                    viewModel.categoryList.value = viewModel.currentUser!!.categoryList
+                } else {
+                    viewModel.categoryList.value = it.categoryList
+                }
             }
 
-            Log.i("Rita", "location observe: ${viewModel.location.value}")
+            Log.i("Rita", "planGet id: ${viewModel.id.value}")
 
         })
 
 
         // save button
-        binding.buttonSave.setOnClickListener { view: View ->
+        binding.buttonSave.setOnClickListener {
             viewModel.loadingStatus.value = true
+
             // StartTime
             viewModel.start_time_detail.value = listOf<Int>(
                 startDatePicker.year,
@@ -128,14 +133,13 @@ class EditFragment : Fragment() {
         }
 
 
-        viewModel.createStatus.observe(viewLifecycleOwner, {
+        viewModel.doneConverted.observe(viewLifecycleOwner, {
+            Log.i("Rita", "doneConverted observe: $it")
             if (it == true) {
-                Log.i("Rita", "viewModel.createStatus observe ${viewModel.editStatus.value}")
                 if (viewModel.editStatus.value == true) {
-                    viewModel.updatePlan()
+                    viewModel.preparePlan()
                 } else {
-                    Log.i("Rita", "viewModel.create_status")
-                    viewModel.createNewPlan()
+                    viewModel.prepareNewPlan()
                     viewModel.doneConverted()
                 }
             }
@@ -143,8 +147,13 @@ class EditFragment : Fragment() {
 
 
         viewModel.newPlan.observe(viewLifecycleOwner, {
+            Log.i("Rita", "newPlan observe: $it")
             it?.let {
-                viewModel.writeNewPlan()
+                if (viewModel.editStatus.value == true) {
+                    viewModel.updatePlan(it)
+                } else {
+                    viewModel.createPlan(it)
+                }
             }
         })
 
@@ -194,10 +203,11 @@ class EditFragment : Fragment() {
 
 
         return binding.root
+
     }
 
 
-    fun View.hideKeyboard() {
+    private fun View.hideKeyboard() {
         context?.let {
             val inputMethodManager =
                 it.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
