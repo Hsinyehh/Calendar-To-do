@@ -49,13 +49,13 @@ class AlarmDialog : DialogFragment() {
 
         // TimePicker
         binding.alarmTimepicker.setIs24HourView(true)
-
         val alarmTimePicker = binding.alarmTimepicker
         val alarmDatePicker = binding.alarmDatepicker
 
 
         // notification
         createNotificationChannel()
+
 
         // set button
         binding.btnSet.setOnClickListener {
@@ -66,6 +66,7 @@ class AlarmDialog : DialogFragment() {
 
             viewModel.alarmTime.value = stringToTimestamp(dateSelected)
         }
+
 
         // broadcast
         // send broadcast

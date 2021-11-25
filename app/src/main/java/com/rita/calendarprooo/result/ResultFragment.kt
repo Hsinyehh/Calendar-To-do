@@ -36,11 +36,12 @@ class ResultFragment : Fragment() {
 
 
         viewModel.doneListReset.observe(viewLifecycleOwner, {
-            Log.d("Rita", "result doneListReset, it=$it")
+            Log.d("Rita", "result doneListReset observe: $it")
+
             it?.let {
                 if (it) {
                     viewModel.doneList.observe(viewLifecycleOwner, {
-                        Log.i("Rita", "result doneList observe - $it")
+                        Log.i("Rita", "result doneList observe: $it")
                         it?.let {
                             viewModel.countForCategory(it)
                         }
@@ -56,7 +57,8 @@ class ResultFragment : Fragment() {
 
         // read Plans when date selected changed
         viewModel.selectedEndTime.observe(viewLifecycleOwner, {
-            Log.i("Rita", "result selectedEndTime observe- $it")
+            Log.i("Rita", "result selectedEndTime observe: $it")
+
             it?.let {
                 viewModel.readDone()
                 viewModel.readPlanFromToday()
@@ -65,12 +67,12 @@ class ResultFragment : Fragment() {
                 // So we need to set Observer here, readListFromToday as livedata can be observed
                 // for the same reference
                 viewModel.readListFromToday.observe(viewLifecycleOwner, {
-                        Log.i("Rita", "result readListFromToday observe - $it")
+                        Log.i("Rita", "result readListFromToday observe: $it")
                         it?.let {
                             viewModel.readPlanBeforeToday()
 
                             viewModel.readListBeforeToday.observe(viewLifecycleOwner, {
-                                    Log.i("Rita", "result readListBeforeToday observe - $it")
+                                    Log.i("Rita", "result readListBeforeToday observe: $it")
                                     it?.let {
                                         viewModel.readPlanInTotal()
                                     }
@@ -85,7 +87,8 @@ class ResultFragment : Fragment() {
         val pieChart = binding.barPie
 
         viewModel.categoryForDoneList.observe(viewLifecycleOwner,{
-            Log.i("Rita", "result categoryForDoneList observe - $it")
+            Log.i("Rita", "result categoryForDoneList observe: $it")
+
             it?.let {
                 val entries = mutableListOf<PieEntry>()
                 for (item in it) {
@@ -124,7 +127,7 @@ class ResultFragment : Fragment() {
 
 
         viewModel.pieEntryList.observe(viewLifecycleOwner, {
-            Log.i("Rita", "result pieEntryList observe - $it")
+            Log.i("Rita", "result pieEntryList observe: $it")
             setPieChart(it)
         })
 

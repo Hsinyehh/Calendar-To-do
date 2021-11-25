@@ -61,7 +61,7 @@ class EditFragment : Fragment() {
         val checkAdapter = CheckAdapter(viewModel)
         binding.checkList.adapter = checkAdapter
         viewModel.checkList.observe(viewLifecycleOwner, {
-            Log.i("Rita", "viewModel.checkList.observe")
+            Log.i("Rita", "checkList observe: $it")
             checkAdapter.submitList(it)
             checkAdapter.notifyDataSetChanged()
             viewModel.clearText()
@@ -70,7 +70,8 @@ class EditFragment : Fragment() {
 
         // Default value setup for timepicker
         viewModel.planGet.observe(viewLifecycleOwner, {
-            Log.i("Rita", "plan.observe: ${viewModel.planGet.value}")
+            Log.i("Rita", "planGet observe: ${viewModel.planGet.value}")
+
             it?.start_time_detail?.let {
                 //recognize as edit rather than created a plan
                 viewModel.editStatus.value = true
@@ -79,6 +80,7 @@ class EditFragment : Fragment() {
                 startTimePicker.currentMinute = it[4]
                 startDatePicker.init(it[0], it[1] - 1, it[2], null)
             }
+
             it?.end_time_detail?.let {
                 endTimePicker.currentHour = it[3]
                 endTimePicker.currentMinute = it[4]
@@ -91,7 +93,7 @@ class EditFragment : Fragment() {
                 viewModel.getCategoryFromPlan()
             }
 
-            Log.i("Rita", "plan.location.observe: ${viewModel.location.value}")
+            Log.i("Rita", "location observe: ${viewModel.location.value}")
 
         })
 
@@ -128,11 +130,11 @@ class EditFragment : Fragment() {
 
         viewModel.createStatus.observe(viewLifecycleOwner, {
             if (it == true) {
-                Log.i("Rita", "viewModel.createStatus.observe ${viewModel.editStatus.value}")
+                Log.i("Rita", "viewModel.createStatus observe ${viewModel.editStatus.value}")
                 if (viewModel.editStatus.value == true) {
                     viewModel.updatePlan()
                 } else {
-                    Log.i("Rita", "viewModel.create_status.observe")
+                    Log.i("Rita", "viewModel.create_status")
                     viewModel.createNewPlan()
                     viewModel.doneConverted()
                 }
@@ -149,7 +151,7 @@ class EditFragment : Fragment() {
 
         // update is done, then navigate to home page
         viewModel.loadingStatus.observe(viewLifecycleOwner, {
-            Log.i("Rita", "loadingStatus.observe: $it")
+            Log.i("Rita", "loadingStatus observe: $it")
             it?.let{
                 if(!it){
                     view?.findNavController()?.navigate(R.id.navigate_to_home_fragment)

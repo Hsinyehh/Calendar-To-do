@@ -37,6 +37,7 @@ class InviteCategoryViewModel(val repository: CalendarRepository) : ViewModel() 
 
     fun createInvitation() {
         var list = userTobeInvited.value?.invitationList
+
         invitation.value = Invitation(
             title = category.value,
             inviter = user.value?.email,
@@ -79,7 +80,7 @@ class InviteCategoryViewModel(val repository: CalendarRepository) : ViewModel() 
         val userRef = userTobeInvited.value?.let {
             db.collection("user").document(it.email!!)
         }
-        Log.i("Rita", "updateInvitation-userRef: $userRef")
+
         userRef!!
             .update(
                 "invitationList", list

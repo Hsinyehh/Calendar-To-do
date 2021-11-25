@@ -17,10 +17,12 @@ import com.rita.calendarprooo.login.UserManager
 
 class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
 
+    // loading animation
     val loadingStatus = MutableLiveData<Boolean?>()
 
     var user = MutableLiveData<User>()
 
+    // Plan
     var invitationList = MutableLiveData<MutableList<Plan>>()
 
     var invitationForCategoryList = MutableLiveData<MutableList<Invitation>>()
@@ -33,6 +35,7 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
         size
     }
 
+    // Category
     var invitationForCategoryListSize: LiveData<Int> =
         Transformations.map(invitationForCategoryList) {
             var size = 0
@@ -42,7 +45,6 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
             size
         }
 
-    // Category
     var isAccepted = MutableLiveData<Boolean>()
 
     var invitationAccepted = MutableLiveData<Invitation>()
@@ -94,7 +96,6 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
     }
 
     fun acceptOrDeclineInvitation(plan: Plan, isAccepted: Boolean) {
-
         loadingStatus.value = true
         // update plan collaborator & invitation
         val invitationGet = plan.invitation
@@ -192,6 +193,7 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
 
     fun addCollaboratorForPlan() {
         val list = plans.value
+
         if (list != null) {
             for (item in list) {
                 if (!item.collaborator!!.contains(user.value?.email)) {
@@ -199,6 +201,7 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
                 }
             }
         }
+
         plans.value = list
         updatePlan.value = true
     }
@@ -218,12 +221,12 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
 
     // update user's categoryList
     fun updateCategories() {
-
         val item = invitationAccepted.value
         val title = item!!.title
         val categoryList = user.value!!.categoryList
         val index = categoryList.indexOfFirst { it.name == title }
         Log.i("Rita", "updateCategories index:　$index")
+
         if (index == -1) {
             val categoryAdded = Category(
                 name = title!!,
@@ -231,6 +234,7 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
                 mutableListOf<String>(user.value!!.email)
             )
             categoryList.add(categoryAdded)
+
             Log.i("Rita", "updateCategories categoryAdded: $categoryAdded")
             Log.i(
                 "Rita", "updateCategories categoryListTobeUpdated: " +
@@ -239,6 +243,7 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
 
             categoryListTobeUpdated.value = categoryList
             updateCategoriesForUser.value = true
+
         } else {
             updateCategoriesForUser.value = false
             loadingStatus.value = false

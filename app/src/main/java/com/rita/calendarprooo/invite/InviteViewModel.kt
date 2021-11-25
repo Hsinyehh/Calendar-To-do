@@ -36,11 +36,9 @@ class InviteViewModel : ViewModel() {
         if (isInvitedCheck == false && isCollaboratorCheck == false) {
             email.value?.let { invitationGet.add(it) }
             invitation.value = invitationGet
-        }
-        else if (isInvitedCheck == true) {
+        } else if (isInvitedCheck == true) {
             isInvited.value = isInvitedCheck
-        }
-        else if (isCollaboratorCheck == true) {
+        } else if (isCollaboratorCheck == true) {
             isCollaborator.value = isCollaboratorCheck
         }
     }

@@ -129,7 +129,6 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
 
     fun getPlansToday() {
         loadingStatus.value = true
-        Log.i("Rita", "readPlanFromToday user: ${currentUser.value}")
         // reGet viewList
         getViewListAlready.value = null
 
@@ -158,8 +157,6 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
     }
 
     fun getPlansBeforeToday() {
-        Log.i("Rita", "readPlanBeforeToday user: ${currentUser.value}")
-
         // plan's start-time before today
         currentUser.value?.let {
             db.collection("plan")
@@ -192,6 +189,7 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
     fun getTotalPlans() {
         var list = plansToday.value?.toMutableList()
         val listBefore = plansBeforeToday.value?.toMutableList()
+
         if (list != null) {
             if (listBefore != null) {
                 list.addAll(listBefore)
@@ -201,12 +199,14 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
                 list = listBefore
             }
         }
+
         if (list != null) {
             _scheduleList.value = list.filter {  it.isToDoList == false }
             _todoList.value = list.filter { it.isToDoList == true && !it.isToDoListDone }
             _doneList.value = list.filter { it.isToDoListDone }
             startToGetViewList.value = true
         }
+
         loadingStatus.value = false
     }
 
@@ -234,23 +234,25 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
             }
             scheduleViewList.value = list
         }
+
         if (todoSize != null && todoSize > 0) {
             for (i in 1..todoSize) {
                 todoList.add(false)
             }
             todoViewList.value = todoList
         }
+
         if (doneSize != null && doneSize > 0) {
             for (i in 1..doneSize) {
                 doneList.add(false)
             }
             doneViewList.value = doneList
         }
+
         getViewListAlready.value = true
     }
 
     fun getViewListForTodoMode() {
-
         val todoList = mutableListOf<Boolean>()
         val doneList = mutableListOf<Boolean>()
         val todoSize = _todoList.value?.size
@@ -277,13 +279,11 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
         val list = scheduleViewList.value
         var status = list?.get(position)
 
-        Log.i("Rita", "ScheduleView- $position -$status")
         status = status != true
         list?.set(position, status)
-        Log.i("Rita", "ScheduleView changed- $position -$status")
 
         scheduleViewList.value = list
-
+        Log.i("Rita", "scheduleViewList changed: ${scheduleViewList.value}")
     }
 
     fun changeTodoView(position: Int) {
@@ -294,7 +294,7 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
         list?.set(position, status)
 
         todoViewList.value = list
-        Log.i("Rita", "todoViewList changed- ${todoViewList.value}")
+        Log.i("Rita", "todoViewList changed: ${todoViewList.value}")
     }
 
     fun changeDoneView(position: Int) {
@@ -306,7 +306,7 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
 
         doneViewList.value = list
 
-        Log.i("Rita", "doneViewList changed- ${doneViewList.value}")
+        Log.i("Rita", "doneViewList changed: ${doneViewList.value}")
 
     }
 
@@ -349,6 +349,7 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
 
     fun getCheckAndRemoveItem(item: Check, position: Int) {
         val planRef = item.plan_id?.let { db.collection("plan").document(it) }
+
         planRef!!.get()
             .addOnSuccessListener { document ->
                 if (document != null) {
@@ -372,7 +373,7 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
 
     private fun writeCheckItemStatus(item: Check) {
         val planRef = item.plan_id?.let { db.collection("plan").document(it) }
-        Log.i("Rita", "writeCheckItemDone-planRef: $planRef")
+
         planRef!!
             .update("checkList", checkList.value)
             .addOnSuccessListener {
@@ -385,7 +386,6 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
     }
 
     fun getLivePlans() {
-        Log.i("Rita", "readPlanOnChanged user: ${currentUser.value}")
         currentUser.value?.let {
             db.collection("plan")
                 .whereArrayContains("collaborator", it.email)
@@ -447,7 +447,6 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
     }
 
     fun getTotalLivePlans() {
-
         val list = livePlansToday.value!!.toMutableList()
 
         plansBeforeToday.value?.let { list.addAll(it) }
@@ -460,7 +459,6 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
     }
 
     fun getTotalLivePlansBefore() {
-
         val list = plansToday.value?.toMutableList()
 
         livePlansBeforeToday.value?.let { list?.addAll(it) }
@@ -473,7 +471,6 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
     }
 
     fun getPlanAndChangeStatus(item: Plan) {
-
         val planRef = item.id?.let { db.collection("plan").document(it) }
 
         planRef!!

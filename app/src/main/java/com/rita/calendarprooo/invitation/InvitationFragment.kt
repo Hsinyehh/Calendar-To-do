@@ -37,7 +37,7 @@ class InvitationFragment : Fragment() {
 
 
         viewModel.invitationList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.i("Rita", "invitationList.observe: $it")
+            Log.i("Rita", "invitationList observe: $it")
             adapter.submitList(it)
             adapter.notifyDataSetChanged()
         })
@@ -49,7 +49,7 @@ class InvitationFragment : Fragment() {
 
 
         viewModel.user.observe(viewLifecycleOwner,  {
-            Log.i("Rita", "user.observe: $it")
+            Log.i("Rita", "user observe: $it")
             it?.let {
                 viewModel.readInvitation()
                 viewModel.invitationForCategoryList.value = it.invitationList
@@ -58,7 +58,7 @@ class InvitationFragment : Fragment() {
 
 
         viewModel.invitationForCategoryList.observe(viewLifecycleOwner, {
-                Log.i("Rita", "invitationForCategoryList.observe: $it")
+                Log.i("Rita", "invitationForCategoryList observe: $it")
                 it?.let {
                     categoryAdapter.submitList(it)
                     categoryAdapter.notifyDataSetChanged()
@@ -68,14 +68,14 @@ class InvitationFragment : Fragment() {
 
         // Accept Category invitation
         viewModel.invitationListUpdated.observe(viewLifecycleOwner, Observer {
-            Log.i("Rita", "invitationListUpdated observe- $it")
+            Log.i("Rita", "invitationListUpdated observe: $it")
             it?.let {
                 viewModel.updateInvitationList(it)
             }
         })
 
         viewModel.startToUpdate.observe(viewLifecycleOwner, Observer {
-            Log.i("Rita", "updateSuccess observe- $it")
+            Log.i("Rita", "updateSuccess observe: $it")
             it?.let {
                 viewModel.getPlans()
             }
@@ -83,7 +83,7 @@ class InvitationFragment : Fragment() {
 
 
         viewModel.addCollaboratorForPlan.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.i("Rita", "addCollaboratorForPlan observe- $it")
+            Log.i("Rita", "addCollaboratorForPlan observe: $it")
             if (it == true) {
                 viewModel.addCollaboratorForPlan()
             }
@@ -91,7 +91,7 @@ class InvitationFragment : Fragment() {
 
 
         viewModel.updatePlan.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.i("Rita", "updatePlan observe- $it")
+            Log.i("Rita", "updatePlan observe: $it")
             if (it == true) {
                 viewModel.plans.value?.let {
                     for (plan in it) {
@@ -103,7 +103,7 @@ class InvitationFragment : Fragment() {
         })
 
         viewModel.updateCategories.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.i("Rita", "updateCategories observe- $it")
+            Log.i("Rita", "updateCategories observe: $it")
             if (it == true) {
                 viewModel.updateCategories()
             }
@@ -111,7 +111,7 @@ class InvitationFragment : Fragment() {
 
 
         viewModel.updateCategories.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.i("Rita", "updateCategories observe- $it")
+            Log.i("Rita", "updateCategories observe: $it")
             if (it == true) {
                 viewModel.updateCategories()
             }
@@ -119,7 +119,7 @@ class InvitationFragment : Fragment() {
 
 
         viewModel.updateCategoriesForUser.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            Log.i("Rita", "updateCategoriesForUser.observe- $it")
+            Log.i("Rita", "updateCategoriesForUser observe: $it")
             if (it == true) {
                 viewModel.updateCategoriesForUser()
                 viewModel.doneWritten()

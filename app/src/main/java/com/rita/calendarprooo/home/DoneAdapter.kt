@@ -45,7 +45,7 @@ class DoneAdapter(val viewModel: HomeViewModel) : ListAdapter<Plan,
                 item.done_time = null
                 item.doner = null
             }
-            viewModel.getPlanAndChangeStatus(item)
+            viewModel.updatePlanDoneStatus(item)
 
             // get viewList again
             viewModel.startToGetViewListForTodo()

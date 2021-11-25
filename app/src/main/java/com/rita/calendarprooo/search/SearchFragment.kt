@@ -51,7 +51,6 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         )
 
         binding.viewModel = viewModel
-
         binding.lifecycleOwner = viewLifecycleOwner
 
 
@@ -110,7 +109,6 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
     }
 
     fun moveCamera(latLng: LatLng, zoom: Float, title: String) {
-
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom))
         val options = MarkerOptions().position(latLng).title(title)
         mMap.addMarker(options)

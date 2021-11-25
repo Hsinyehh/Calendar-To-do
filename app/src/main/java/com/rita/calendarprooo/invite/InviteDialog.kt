@@ -41,7 +41,7 @@ class InviteDialog : DialogFragment() {
 
 
         viewModel.invitation.observe(viewLifecycleOwner, {
-            Log.i("Rita", "invitation observe- $it")
+            Log.i("Rita", "invitation observe: $it")
             it?.let {
                 viewModel.writeInvitation()
             }
@@ -49,7 +49,7 @@ class InviteDialog : DialogFragment() {
 
 
         viewModel.isInvited.observe(viewLifecycleOwner, {
-            Log.i("Rita", "isInvited observe- $it")
+            Log.i("Rita", "isInvited.observe: $it")
             if (it == true) {
                 Toast.makeText(context, "The person is invited already.", Toast.LENGTH_LONG).show()
             }
@@ -57,7 +57,7 @@ class InviteDialog : DialogFragment() {
 
 
         viewModel.isCollaborator.observe(viewLifecycleOwner, {
-            Log.i("Rita", "isInvited observe- $it")
+            Log.i("Rita", "isInvited observe: $it")
             if (it == true) {
                 Toast.makeText(context, "The person is collaborator already.", Toast.LENGTH_LONG)
                     .show()
@@ -66,9 +66,9 @@ class InviteDialog : DialogFragment() {
 
 
         viewModel.updateSuccess.observe(viewLifecycleOwner, {
-            Log.i("Rita", "isInvited observe- $it")
+            Log.i("Rita", "isInvited.observe: $it")
             if (it == true) {
-                Toast.makeText(context, "Invite success", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Invite Success", Toast.LENGTH_LONG).show()
                 viewModel.doneWritten()
                 dismiss()
             }

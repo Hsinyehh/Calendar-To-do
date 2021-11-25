@@ -35,7 +35,7 @@ class AddCategoryDialog : DialogFragment() {
 
 
         viewModel.planGet.observe(viewLifecycleOwner, {
-            Log.i("Rita", "planGet.observe $it")
+            Log.i("Rita", "planGet observe: $it")
             it?.let {
                 viewModel.getPlanFromUserFirst()
             }
@@ -43,7 +43,7 @@ class AddCategoryDialog : DialogFragment() {
 
 
         viewModel.startToCreate.observe(viewLifecycleOwner, {
-            Log.i("Rita", "startToCreate.observe $it")
+            Log.i("Rita", "startToCreate observe: $it")
             if (it == true) {
                 if (viewModel.planGet.value?.id == "") {
                     viewModel.startToPrepare.value = true
@@ -56,7 +56,7 @@ class AddCategoryDialog : DialogFragment() {
 
 
         viewModel.startToPrepare.observe(viewLifecycleOwner, {
-            Log.i("Rita", "startToPrepare.observe $it")
+            Log.i("Rita", "startToPrepare observe: $it")
             if (it == true) {
                 viewModel.prepareForCategory()
             }
@@ -64,7 +64,7 @@ class AddCategoryDialog : DialogFragment() {
 
 
         viewModel.startToUpdate.observe(viewLifecycleOwner, {
-            Log.i("Rita", "startToUpdate.observe $it")
+            Log.i("Rita", "startToUpdate observe: $it")
             if (it == true) {
                 if (viewModel.planGet.value?.id !== "") {
                     viewModel.updateThePlan()
@@ -75,7 +75,7 @@ class AddCategoryDialog : DialogFragment() {
 
 
         viewModel.startToNavigate.observe(viewLifecycleOwner, {
-            Log.i("Rita", "startToNavigate.observe $it")
+            Log.i("Rita", "startToNavigate observe: $it")
             if (it == true) {
                 dismiss()
             }
@@ -86,7 +86,7 @@ class AddCategoryDialog : DialogFragment() {
 
 
         viewModel.categoryListFromUser.observe(viewLifecycleOwner, {
-            Log.i("Rita", "categoryListFromUser.observe $it")
+            Log.i("Rita", "categoryListFromUser observe: $it")
             it?.let {
                 val adapter = ArrayAdapter(
                     requireContext(),
@@ -99,7 +99,7 @@ class AddCategoryDialog : DialogFragment() {
 
 
         viewModel.categoryList.observe(viewLifecycleOwner, {
-            Log.i("Rita", "categoryList.observe $it")
+            Log.i("Rita", "categoryList observe: $it")
             viewModel.convertToUnselectedList(it)
         })
 

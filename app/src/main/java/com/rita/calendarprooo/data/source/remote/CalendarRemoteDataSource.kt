@@ -39,7 +39,6 @@ object CalendarRemoteDataSource : CalendarDataSource {
                         val plan = document.toObject(Plan::class.java)
                         list.add(plan)
                     }
-                    // val filteredList = list.filter { it.start_time!! <= selectedEndTime }
                     continuation.resume(Result.Success(list))
                 } else {
                     task.exception?.let {
@@ -120,7 +119,6 @@ object CalendarRemoteDataSource : CalendarDataSource {
         return livedata
     }
 
-
     override fun getLivePlansBeforeToday(selectedStartTime: Long, user: User):
             MutableLiveData<List<Plan>> {
         val livedata = MutableLiveData<List<Plan>>()
@@ -164,13 +162,16 @@ object CalendarRemoteDataSource : CalendarDataSource {
                 }
         }
 
-    override suspend fun updatePlan(plan: Plan): Result<Boolean> =
+    override suspend fun updatePlanForDoneStatus(plan: Plan): Result<Boolean> =
         suspendCoroutine { continuation ->
             val planRef = plan.id?.let {
                 FirebaseFirestore.getInstance().collection(PATH_PLAN).document(it)
             }
+
             planRef!!
-                .update("isToDoListDone", plan.isToDoListDone)
+                .update("toDoListDone", plan.isToDoListDone,
+                    "done_time", plan.done_time,
+                    "doner", plan.doner)
                 .addOnSuccessListener {
                     Log.d(TAG, "DocumentSnapshot successfully updated!")
                     continuation.resume(Result.Success(true))
@@ -182,15 +183,15 @@ object CalendarRemoteDataSource : CalendarDataSource {
         }
 
     override suspend fun updatePlanByCheck(
-        check: Check,
+        plan: Plan,
         checkList: MutableLiveData<MutableList<Check>>
-    ):
-            Result<Boolean> = suspendCoroutine { continuation ->
-        val planRef = check.plan_id?.let {
+    ): Result<Boolean> = suspendCoroutine { continuation ->
+
+        val planRef = plan.id?.let {
             FirebaseFirestore.getInstance()
                 .collection(PATH_PLAN).document(it)
         }
-        Log.i("Rita", "fb - updatePlanByCheck-planRef: $planRef")
+
         planRef!!
             .update("checkList", checkList.value)
             .addOnSuccessListener {
@@ -203,60 +204,24 @@ object CalendarRemoteDataSource : CalendarDataSource {
             }
     }
 
-    override suspend fun getCheckAndChangeStatus(
-        check: Check, position: Int,
-        checkList: MutableLiveData<MutableList<Check>>
-    ):
-            Result<Boolean> = suspendCoroutine { continuation ->
+    override suspend fun getPlanByCheck(
+        check: Check): Result<Plan> = suspendCoroutine { continuation ->
+
         val planRef = check.plan_id?.let {
             FirebaseFirestore.getInstance().collection(PATH_PLAN).document(it)
         }
+
         planRef!!.get()
             .addOnSuccessListener { document ->
+                var plan : Plan?
                 if (document != null) {
-                    val plan = document.toObject(Plan::class.java)
-                    if (plan != null) {
-                        plan.checkList!![position] = check
-                        checkList.value = plan.checkList
-                        Log.i("Rita", "fb - getCheckList-itemUpdate as $check")
-                    }
-                } else {
-                    Log.d(TAG, "No such document")
+                    plan = document.toObject(Plan::class.java)!!
+                    continuation.resume(Result.Success(plan))
                 }
-                continuation.resume(Result.Success(true))
             }
             .addOnFailureListener { exception ->
                 Log.d(TAG, "get failed with ", exception)
                 continuation.resume(Result.Error(exception))
-            }
-    }
-
-    override suspend fun getCheckAndRemoveItem(
-        check: Check, position: Int,
-        checkList: MutableLiveData<MutableList<Check>>
-    ):
-            Result<Boolean> = suspendCoroutine { continuation ->
-        val planRef = check.plan_id?.let {
-            FirebaseFirestore.getInstance().collection(PATH_PLAN).document(it)
-        }
-
-        planRef!!.get()
-            .addOnSuccessListener { document ->
-                if (document != null) {
-                    Log.d(TAG, "DocumentSnapshot data: ${document.data}")
-                    val plan = document.toObject(Plan::class.java)
-                    plan!!.checkList!!.removeAt(position)
-                    checkList.value = plan.checkList
-                    Log.i("Rita", " getCheckList-itemRemoved as $check")
-                    //Store isDone status
-                    //updatePlanByCheck(item)
-                } else {
-                    Log.d(TAG, "No such document")
-                }
-                continuation.resume(Result.Success(true))
-            }
-            .addOnFailureListener { exception ->
-                Log.d(TAG, "get failed with ", exception)
             }
     }
 
@@ -362,7 +327,6 @@ object CalendarRemoteDataSource : CalendarDataSource {
                 }
             }
     }
-
 
     override fun getLiveDone(selectedStartTime: Long, selectedEndTime: Long, user: User):
             MutableLiveData<List<Plan>> {

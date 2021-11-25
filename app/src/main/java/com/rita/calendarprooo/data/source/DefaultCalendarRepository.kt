@@ -35,31 +35,19 @@ class DefaultCalendarRepository(
         return remoteDataSource.createPlan(plan)
     }
 
-    override suspend fun updatePlan(plan: Plan): Result<Boolean> {
-        return remoteDataSource.updatePlan(plan)
+    override suspend fun updatePlanForDoneStatus(plan: Plan): Result<Boolean> {
+        return remoteDataSource.updatePlanForDoneStatus(plan)
     }
 
     override suspend fun updatePlanByCheck(
-        check: Check, checkList:
+        plan: Plan, checkList:
         MutableLiveData<MutableList<Check>>
     ): Result<Boolean> {
-        return remoteDataSource.updatePlanByCheck(check, checkList)
+        return remoteDataSource.updatePlanByCheck(plan, checkList)
     }
 
-    override suspend fun getCheckAndChangeStatus(
-        check: Check, position: Int,
-        checkList: MutableLiveData<MutableList<Check>>
-    ):
-            Result<Boolean> {
-        return remoteDataSource.getCheckAndChangeStatus(check, position, checkList)
-    }
-
-    override suspend fun getCheckAndRemoveItem(
-        check: Check, position: Int,
-        checkList: MutableLiveData<MutableList<Check>>
-    ):
-            Result<Boolean> {
-        return remoteDataSource.getCheckAndRemoveItem(check, position, checkList)
+    override suspend fun getPlanByCheck(check: Check): Result<Plan> {
+        return remoteDataSource.getPlanByCheck(check)
     }
 
     override fun getUser(id: String): MutableLiveData<User> {

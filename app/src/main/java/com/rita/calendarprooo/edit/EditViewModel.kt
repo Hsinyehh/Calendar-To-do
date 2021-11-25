@@ -59,6 +59,7 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
     var collaborator = MutableLiveData<MutableList<String>>()
 
     private val db = Firebase.firestore
+
     val newPlanRef = db.collection("plan").document()
 
     val emptyCheckList = mutableListOf<Check>()
@@ -72,6 +73,7 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
     fun checkListTextCreated() {
         val editCheckList = checkList.value
         Log.i("Rita", "checkListTextCreated()")
+
         if (planGet.value?.id.isNullOrEmpty()) {
             val newCheck = Check(
                 checkText.value, false, 0, "", "", 1,
@@ -85,6 +87,7 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
             )
             editCheckList?.add(newCheck)
         }
+
         checkList.value = editCheckList
     }
 
@@ -139,7 +142,6 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
     }
 
     fun updatePlan() {
-
         val planRef = planGet.let { db.collection("plan").document(planGet.value!!.id!!) }
 
         planRef
@@ -167,6 +169,7 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
 
     fun getCategoryFromUser() {
         Log.i("Rita", "EditVM getCategoryFromUser")
+
         db.collection("user")
             .whereEqualTo("email", currentUser!!.email)
             .addSnapshotListener { snapshot, e ->
@@ -189,6 +192,7 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
 
     fun getCategoryFromPlan() {
         Log.i("Rita", "EditVM getCategoryFromPlan")
+
         db.collection("plan")
             .whereEqualTo("id", "${planGet.value?.id}")
             .addSnapshotListener { snapshot, e ->
@@ -211,6 +215,7 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
 
     fun changeCategory(position: Int, lastPosition: Int) {
         Log.i("Rita", "$lastPosition")
+
         val categoryListGet = categoryList.value
 
         // deselected the origin position value
@@ -221,10 +226,10 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
         if (lastPosition != -1) {
             categoryListGet!![lastPosition].isSelected = false
         }
+
         categoryListGet!![position].isSelected = true
         val item = categoryListGet[position]
         categoryStatus.value = item
-
         categoryPosition.value = position
         categoryList.value = categoryListGet
     }
@@ -249,7 +254,6 @@ class EditViewModel(plan: Plan, repository: CalendarRepository) : ViewModel() {
     init {
         title.value = plan.title ?: ""
         description.value = plan.description ?: ""
-        // location.value = planGet.value.location ?: ""
         start_time.value = plan.start_time
         end_time.value = plan.end_time
         start_time_detail.value = plan.start_time_detail

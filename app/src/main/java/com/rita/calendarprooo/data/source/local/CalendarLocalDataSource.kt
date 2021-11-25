@@ -33,30 +33,18 @@ class CalendarLocalDataSource(val context: Context) : CalendarDataSource {
         TODO("not implemented")
     }
 
-    override suspend fun updatePlan(plan: Plan): Result<Boolean> {
+    override suspend fun updatePlanForDoneStatus(plan: Plan): Result<Boolean> {
         TODO("not implemented")
     }
 
     override suspend fun updatePlanByCheck(
-        check: Check,
+        plan: Plan,
         checkList: MutableLiveData<MutableList<Check>>
     ): Result<Boolean> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getCheckAndChangeStatus(
-        check: Check,
-        checkList: Int,
-        checkList1: MutableLiveData<MutableList<Check>>
-    ): Result<Boolean> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getCheckAndRemoveItem(
-        check: Check,
-        checkList: Int,
-        checkList1: MutableLiveData<MutableList<Check>>
-    ): Result<Boolean> {
+    override suspend fun getPlanByCheck(check: Check): Result<Plan>{
         TODO("Not yet implemented")
     }
 

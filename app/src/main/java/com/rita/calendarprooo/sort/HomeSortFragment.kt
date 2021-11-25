@@ -37,13 +37,13 @@ class HomeSortFragment : Fragment() {
 
         // init plans
         viewModel.currentUser.observe(viewLifecycleOwner, {
-            Log.i("Rita", "currentUser.observe: $it")
+            Log.i("Rita", "sort currentUser observe: $it")
             viewModel.initCategory(it)
         })
 
 
         viewModel.categoryStatus.observe(viewLifecycleOwner, {
-            Log.i("Rita", "categoryStatus.observe: $it")
+            Log.i("Rita", "sort categoryStatus observe: $it")
             viewModel.getPlansToday()
             viewModel.getLivePlans()
         })
@@ -51,7 +51,7 @@ class HomeSortFragment : Fragment() {
 
         // read Plans when date selected changed
         viewModel.selectedEndTime.observe(viewLifecycleOwner, {
-            Log.i("Rita", "selectedEndTime observe- $it")
+            Log.i("Rita", "sort selectedEndTime observe: $it")
             it?.let {
                 viewModel.getPlansToday()
                 viewModel.getLivePlans()
@@ -60,7 +60,7 @@ class HomeSortFragment : Fragment() {
 
 
         viewModel.plansToday.observe(viewLifecycleOwner, {
-            Log.i("Rita", "plansToday observe - $it")
+            Log.i("Rita", "sort plansToday observe: $it")
             it?.let {
                 viewModel.getPlansBeforeToday()
             }
@@ -68,7 +68,7 @@ class HomeSortFragment : Fragment() {
 
 
         viewModel.plansBeforeToday.observe(viewLifecycleOwner, {
-            Log.i("Rita", "plansBeforeToday observe - $it")
+            Log.i("Rita", "sort plansBeforeToday observe: $it")
             it?.let {
                 viewModel.getTotalPlans()
             }
@@ -76,6 +76,7 @@ class HomeSortFragment : Fragment() {
 
 
         viewModel.startToGetViewList.observe(viewLifecycleOwner, {
+            Log.i("Rita", "sort startToGetViewList observe: $it")
             if (it == true) {
                 viewModel.getViewList()
                 viewModel.doneGetViewList()
@@ -83,16 +84,10 @@ class HomeSortFragment : Fragment() {
         })
 
 
-        // test
-        viewModel.scheduleViewList.observe(viewLifecycleOwner, {
-            Log.i("Rita", "scheduleViewList.observe: $it")
-        })
-
-
         // update plans on home pages when data changed
         viewModel.livePlansToday.observe(viewLifecycleOwner, {
             it?.let {
-                Log.i("Rita", "livePlansToday.observe: $it")
+                Log.i("Rita", "sort livePlansToday observe: $it")
                 viewModel.getTotalLivePlans()
             }
         })
@@ -100,7 +95,7 @@ class HomeSortFragment : Fragment() {
 
         viewModel.livePlansBeforeToday.observe(viewLifecycleOwner, {
             it?.let {
-                Log.i("Rita", "livePlansBeforeToday.observe: $it")
+                Log.i("Rita", "sort livePlansBeforeToday observe: $it")
                 viewModel.getTotalLivePlansBefore()
             }
         })
@@ -135,7 +130,7 @@ class HomeSortFragment : Fragment() {
         val adapter = ScheduleAdapter(viewModel)
         binding.homeScheduleList.adapter = adapter
         viewModel.scheduleList.observe(viewLifecycleOwner, {
-            Log.i("Rita", "scheduleList.observe: $it")
+            Log.i("Rita", "sort scheduleList observe: $it")
             if (viewModel.getViewListAlready.value == true) {
                 createScheduleRecyclerview()
             }
@@ -148,10 +143,9 @@ class HomeSortFragment : Fragment() {
         binding.homeTodoList.adapter = todoAdapter
 
         viewModel.todoList.observe(viewLifecycleOwner, {
-            Log.i("Rita", "todoList.observe: $it")
+            Log.i("Rita", "sort todoList observe: $it")
 
             // get size again for to-do/done mode changed
-            Log.i("Rita", "todoList.observe: ${viewModel.startToGetViewListForTodoMode.value}")
             if (viewModel.startToGetViewListForTodoMode.value == true) {
                 viewModel.getViewListForTodoMode()
                 viewModel.startToGetViewListForTodoMode.value = null
@@ -172,14 +166,13 @@ class HomeSortFragment : Fragment() {
             Log.i("Rita", "doneList.observe: $it")
 
             // get size again for to-do/done mode changed
-            Log.i("Rita", "doneList.observe: ${viewModel.startToGetViewListForDoneMode.value}")
             if (viewModel.startToGetViewListForDoneMode.value == true) {
                 viewModel.getViewListForTodoMode()
                 viewModel.startToGetViewListForDoneMode.value = null
             }
 
             if (viewModel.getViewListAlready.value == true) {
-                Log.e("Rita", "viewModel.getViewListAlready.value == true, submit")
+                Log.e("Rita", "sortVM.getViewListAlready.value == true, submit")
                 createDoneRecyclerview()
             }
         })
@@ -187,7 +180,7 @@ class HomeSortFragment : Fragment() {
 
         // After the viewList is got, the recyclerView will show
         viewModel.getViewListAlready.observe(viewLifecycleOwner, {
-            Log.e("Rita", "getViewListAlready observe - $it")
+            Log.e("Rita", "sort getViewListAlready observe: $it")
             it?.let {
                 if (it) {
                     createScheduleRecyclerview()
@@ -205,7 +198,7 @@ class HomeSortFragment : Fragment() {
 
 
         viewModel.categoryList.observe(viewLifecycleOwner, {
-            Log.i("Rita", "categoryList.observe: $it")
+            Log.i("Rita", "sort categoryList.observe: $it")
             it?.let {
                 categoryAdapter.submitList(it)
                 categoryAdapter.notifyDataSetChanged()
@@ -217,6 +210,7 @@ class HomeSortFragment : Fragment() {
         val plan = Plan()
         // Edit page navigation
         viewModel.navigateToEdit.observe(viewLifecycleOwner, {
+            Log.i("Rita", "sort navigateToEditn observe: $it")
             it?.let {
                 view?.findNavController()?.navigate(
                     NavigationDirections.navigateToEditFragment(
@@ -229,8 +223,8 @@ class HomeSortFragment : Fragment() {
 
 
         viewModel.navigateToEditByPlan.observe(viewLifecycleOwner, {
+            Log.i("Rita", "sort navigateToEditByPlan observe: $it")
             it?.let {
-                Log.i("Rita", "navigateToEditByPlan.observe: $it")
                 view?.findNavController()?.navigate(
                     NavigationDirections.navigateToEditFragment(
                         address, viewModel.navigateToEditByPlan.value
@@ -243,7 +237,7 @@ class HomeSortFragment : Fragment() {
 
         viewModel.navigateToInvite.observe(viewLifecycleOwner, {
             it?.let {
-                Log.i("Rita", "navigateToInvite.observe: $it")
+                Log.i("Rita", "sort navigateToInvite observe: $it")
                 view?.findNavController()?.navigate(
                     NavigationDirections.navigateToInviteFragment(
                         viewModel.navigateToInvite.value
@@ -255,7 +249,7 @@ class HomeSortFragment : Fragment() {
 
 
         viewModel.navigateToInviteCategory.observe(viewLifecycleOwner, {
-            Log.i("Rita", "navigateToInviteCategory.observe: $it")
+            Log.i("Rita", "navigateToInviteCategory observe: $it")
             it?.let {
                 view?.findNavController()?.navigate(
                     NavigationDirections.navigateToInviteCategoryDialog(
@@ -270,7 +264,7 @@ class HomeSortFragment : Fragment() {
 
         viewModel.navigateToAlarm.observe(viewLifecycleOwner, {
             it?.let {
-                Log.i("Rita", "navigateToAlarm.observe: $it")
+                Log.i("Rita", "navigateToAlarm observe: $it")
                 view?.findNavController()?.navigate(
                     NavigationDirections.navigateToAlarmDialog(it)
                 )

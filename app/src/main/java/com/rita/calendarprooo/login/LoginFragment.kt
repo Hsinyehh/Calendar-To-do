@@ -133,22 +133,18 @@ class LoginFragment : Fragment() {
             val account = completedTask.getResult(ApiException::class.java)
 
             UserManager.userToken = account.idToken
-
             val idToken = account.idToken
-
             val displayName = account.displayName
-
             val email = account.email
-
             val photoUrl = account.photoUrl
 
             viewModel.createUser(idToken, email, displayName, photoUrl)
 
-            Log.i("Rita", "Sign-in success id:$idToken, displayName:$displayName" +
-                        "email:$email, photo:$photoUrl ")
+            Log.i("Rita", "Sign-in success id: $idToken, displayName: $displayName" +
+                        "email: $email, photo: $photoUrl ")
 
         } catch (e: ApiException) {
-            Log.w(TAG, "signInResult:failed code=" + e.statusCode)
+            Log.w(TAG, "signInResult failed code: " + e.statusCode)
         }
     }
 
@@ -159,10 +155,10 @@ class LoginFragment : Fragment() {
             .addOnCompleteListener(requireActivity()) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "signInWithCredential:success")
+                    Log.d(TAG, "signInWithCredential success")
                 } else {
                     // If sign in fails, display a message to the user.
-                    Log.w(TAG, "signInWithCredential:failure", task.exception)
+                    Log.w(TAG, "signInWithCredential failure: ", task.exception)
                 }
             }
     }

@@ -1,10 +1,10 @@
 package com.rita.calendarprooo.home
 
-import android.content.ContentValues.TAG
+
 import android.util.Log
-import androidx.lifecycle.*
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.rita.calendarprooo.CalendarProApplication
 import com.rita.calendarprooo.R
 import com.rita.calendarprooo.data.Check
@@ -57,11 +57,6 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
     val doneList: LiveData<List<Plan>>
         get() = _doneList
 
-    var checkList = MutableLiveData<MutableList<Check>>()
-
-    //Firebase
-    private val db = Firebase.firestore
-
     var selectedStartTime = MutableLiveData<Long>()
 
     var selectedEndTime = MutableLiveData<Long>()
@@ -73,6 +68,8 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
     var livePlansToday = MutableLiveData<List<Plan>>()
 
     var livePlansBeforeToday = MutableLiveData<List<Plan>>()
+
+    var livePlansReset = MutableLiveData<Boolean>()
 
     var scheduleViewList = MutableLiveData<MutableList<Boolean>>()
 
@@ -88,6 +85,22 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
 
     // the variable is used after viewList is created so that the recyclerView can show
     var getViewListAlready = MutableLiveData<Boolean>()
+
+    // update
+    private var checkListUpdate = MutableLiveData<MutableList<Check>>()
+
+    private var checkUpdate = MutableLiveData<Check>()
+
+    private var positionUpdate = MutableLiveData<Int>()
+
+    var planUpdate = MutableLiveData<Plan>()
+
+    var isCheckDoneChanged = MutableLiveData<Boolean>()
+
+    var isCheckRemoved = MutableLiveData<Boolean>()
+
+    var isPlanDoneChanged = MutableLiveData<Boolean>()
+
 
     // status: The internal MutableLiveData that stores the status of the most recent request
     private val _status = MutableLiveData<LoadApiStatus>()
@@ -120,21 +133,26 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
         _todoList.value = todoListGet
     }
 
+
     fun startNavigateToEdit() {
         _navigateToEdit.value = true
     }
+
 
     fun startNavigateToEditByPlan(plan: Plan) {
         _navigateToEditByPlan.value = plan
     }
 
+
     fun startNavigateToInvite(plan: Plan) {
         _navigateToInvite.value = plan
     }
 
+
     fun startNavigateToAlarm(plan: Plan) {
         _navigateToAlarm.value = plan
     }
+
 
     fun doneNavigated() {
         _navigateToEdit.value = null
@@ -142,6 +160,7 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
         _navigateToInvite.value = null
         _navigateToAlarm.value = null
     }
+
 
     fun getPlansToday() {
 
@@ -152,7 +171,7 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
             val result = currentUser.value?.let {
                 repository.getPlansToday(selectedStartTime.value!!, selectedEndTime.value!!, it)
             }
-                 plansToday.value = when (result) {
+            plansToday.value = when (result) {
                 is Result.Success -> {
                     // reGet viewList
                     getViewListAlready.value = null
@@ -181,6 +200,7 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
             _refreshStatus.value = false
         }
     }
+
 
     fun getPlansBeforeToday() {
 
@@ -218,6 +238,7 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
         }
     }
 
+
     fun getTotalPlans() {
 
         var list = plansToday.value?.toMutableList()
@@ -233,7 +254,7 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
             }
         }
         if (list != null) {
-            _scheduleList.value = list.filter {  it.isToDoList == false }
+            _scheduleList.value = list.filter { it.isToDoList == false }
             _todoList.value = list.filter { it.isToDoList == true && !it.isToDoListDone }
             _doneList.value = list.filter { it.isToDoListDone }
             startToGetViewList.value = true
@@ -245,6 +266,7 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
         startToGetViewListForTodoMode.value = true
         startToGetViewListForDoneMode.value = true
     }
+
 
     // create list to store detail showing/hiding status
     fun getViewList() {
@@ -261,24 +283,25 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
                 list.add(false)
             }
             scheduleViewList.value = list
-            Log.i("Rita","getViewList scheduleViewList: ${scheduleViewList.value}")
+            Log.i("Rita", "getViewList scheduleViewList: ${scheduleViewList.value}")
         }
         if (todoSize != null && todoSize > 0) {
             for (i in 1..todoSize) {
                 todoList.add(false)
             }
             todoViewList.value = todoList
-            Log.i("Rita","getViewList todoViewList: ${todoViewList.value}")
+            Log.i("Rita", "getViewList todoViewList: ${todoViewList.value}")
         }
         if (doneSize != null && doneSize > 0) {
             for (i in 1..doneSize) {
                 doneList.add(false)
             }
             doneViewList.value = doneList
-            Log.i("Rita","getViewList doneViewList: ${doneViewList.value}")
+            Log.i("Rita", "getViewList doneViewList: ${doneViewList.value}")
         }
         getViewListAlready.value = true
     }
+
 
     fun getViewListForTodoMode() {
 
@@ -304,6 +327,7 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
         Log.i("Rita", "getViewListForTodoMode  done- ${doneViewList.value}")
     }
 
+
     // change detail showing/hiding status
     fun changeScheduleView(position: Int) {
         val list = scheduleViewList.value
@@ -316,6 +340,7 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
 
     }
 
+
     fun changeTodoView(position: Int) {
         val list = todoViewList.value
         var status = list?.get(position)
@@ -326,6 +351,7 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
         todoViewList.value = list
         Log.i("Rita", "todoViewList changed- ${todoViewList.value}")
     }
+
 
     fun changeDoneView(position: Int) {
         val list = doneViewList.value
@@ -339,98 +365,160 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
 
     }
 
-    fun getCheckAndChangeStatus(item: Check, position: Int) {
-        loadingStatus.value = true
 
-        if (item.isDone) {
-            item.isDone = false
-            item.done_time = null
-            item.doner = null
-        } else if (!item.isDone) {
-            item.isDone = true
-            item.done_time = Calendar.getInstance().timeInMillis
-            item.doner = currentUser.value?.name
+    // update check
+    private fun getPlanByCheck(check: Check) {
+
+        coroutineScope.launch {
+            _status.value = LoadApiStatus.LOADING
+            val result = currentUser.value?.let { repository.getPlanByCheck(check) }
+
+            planUpdate.value = when (result) {
+                is Result.Success -> {
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
+                    result.data
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                    null
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                    null
+                }
+                else -> {
+                    _error.value = CalendarProApplication.instance.getString(R.string.error)
+                    _status.value = LoadApiStatus.ERROR
+                    null
+                }
+            }
+            _refreshStatus.value = false
         }
-
-        val planRef = item.plan_id?.let { db.collection("plan").document(it) }
-
-        planRef!!.get()
-            .addOnSuccessListener { document ->
-                if (document != null) {
-                    val plan = document.toObject(Plan::class.java)
-                    if (plan != null) {
-                        plan.checkList!![position] = item
-                        checkList.value = plan.checkList
-                        Log.i("Rita", " getCheckList-itemUpdate as $item")
-
-                        // Store isDone status
-                        updateCheckList(item)
-                    }
-                } else {
-                    Log.d(TAG, "No such document")
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.d(TAG, "get failed with ", exception)
-            }
     }
 
-    fun getCheckAndRemoveItem(item: Check, position: Int) {
 
+    fun updatePlanByCheck(plan: Plan) {
+
+        coroutineScope.launch {
+            _status.value = LoadApiStatus.LOADING
+
+            when (val result = repository.updatePlanByCheck(plan, checkListUpdate)) {
+                is Result.Success -> {
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
+                    Log.i("Rita","home VM updatePlanByCheck: $result")
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                    Log.i("Rita","home VM updatePlanByCheck: $result")
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                    Log.i("Rita","home VM updatePlanByCheck: $result")
+                }
+                else -> {
+                    _error.value =
+                        CalendarProApplication.instance.getString(R.string.Error)
+                    _status.value = LoadApiStatus.ERROR
+                }
+            }
+        }
+    }
+
+
+    //  update check - change check done status
+    private fun changeDoneStatus(check: Check): Check{
+        if (check.isDone) {
+            check.isDone = false
+            check.done_time = null
+            check.doner = null
+        } else if (!check.isDone) {
+            check.isDone = true
+            check.done_time = Calendar.getInstance().timeInMillis
+            check.doner = currentUser.value?.name
+        }
+        return check
+    }
+
+
+    // update check - change check done status step1 - checkAdapter
+    fun changeCheckDoneStatus(check: Check, position: Int) {
+        // init
         loadingStatus.value = true
+        isCheckDoneChanged.value = true
+        positionUpdate.value = position
 
-        val planRef = item.plan_id?.let { db.collection("plan").document(it) }
+        checkUpdate.value = changeDoneStatus(check)
 
-        planRef!!.get()
-            .addOnSuccessListener { document ->
-                if (document != null) {
-                    Log.d(TAG, "DocumentSnapshot data: ${document.data}")
-                    val plan = document.toObject(Plan::class.java)
-                    if (plan != null) {
-                        plan.checkList!!.removeAt(position)
-                        checkList.value = plan.checkList
-                        Log.i("Rita", " getCheckList-itemRemoved as $item")
-
-                        // Store isDone status
-                        updateCheckList(item)
-                    }
-                } else {
-                    Log.d(TAG, "No such document")
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.d(TAG, "get failed with ", exception)
-            }
+        // get Plan for new checkList
+        getPlanByCheck(checkUpdate.value!!)
     }
 
-    private fun updateCheckList(item: Check) {
-        val planRef = item.plan_id?.let { db.collection("plan").document(it) }
-        Log.i("Rita", "writeCheckItemDone-planRef: $planRef")
-        planRef!!
-            .update("checkList", checkList.value)
-            .addOnSuccessListener {
-                Log.d(TAG, "DocumentSnapshot successfully updated!")
-            }
-            .addOnFailureListener { e -> Log.w(TAG, "Error updating document", e) }
+
+    // update check - change check done status step2 - fragment
+    fun renewCheckDoneStatus(plan: Plan): Plan{
+        // Plan's checkList renewal
+        plan.checkList!![positionUpdate.value!!] = checkUpdate.value!!
+
+        // checkListUpdated renewal
+        checkListUpdate.value = plan.checkList
+
+        Log.i("Rita", "renewDoneForCheckList checkList: ${checkListUpdate.value}")
+
+        return plan
+    }
+
+
+    // update check - remove check step1 - checkAdapter
+    fun removeCheck(position: Int) {
+        loadingStatus.value = true
+        isCheckRemoved.value = true
+        positionUpdate.value = position
+
+        // get Plan for new checkList
+        getPlanByCheck(checkUpdate.value!!)
+    }
+
+
+    // update check - remove check step2 - checkAdapter
+    fun renewCheckRemoval(plan: Plan): Plan{
+        plan.checkList!!.removeAt(positionUpdate.value!!)
+        checkListUpdate.value = plan.checkList
+
+        return plan
+    }
+
+
+    fun doneUpdated(){
+        isCheckDoneChanged.value = null
+        isCheckRemoved.value = null
+        isPlanDoneChanged.value = null
     }
 
 
     fun getLivePlans() {
-        if(selectedStartTime.value!=null && selectedEndTime.value != null
-            && currentUser.value!=null)
-        {
-            livePlansToday = repository.getLivePlansToday(
-                selectedStartTime.value!!, selectedEndTime.value!!, currentUser.value!!)
+        if (selectedStartTime.value != null && selectedEndTime.value != null
+            && currentUser.value != null) {
 
-            livePlansBeforeToday = repository.getLivePlansBeforeToday(
-                selectedStartTime.value!!, currentUser.value!!)
+                livePlansToday = repository.getLivePlansToday(
+                    selectedStartTime.value!!, selectedEndTime.value!!, currentUser.value!!
+                )
+
+                livePlansBeforeToday = repository.getLivePlansBeforeToday(
+                    selectedStartTime.value!!, currentUser.value!!
+                )
+
+            livePlansReset.value = true
         }
     }
 
 
-
     fun getTotalLivePlans() {
-
         val list = livePlansToday.value?.toMutableList()
 
         livePlansBeforeToday.value?.let { list?.addAll(it) }
@@ -444,16 +532,36 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
     }
 
 
-    fun getPlanAndChangeStatus(item: Plan) {
-        val planRef = item.id?.let { db.collection("plan").document(it) }
+    fun updatePlanDoneStatus(plan: Plan) {
 
-        planRef!!
-            .update("toDoListDone", item.isToDoListDone,
-                "done_time", item.done_time,
-                "doner", item.doner)
-            .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully updated!") }
-            .addOnFailureListener { e -> Log.w(TAG, "Error updating document", e) }
+        coroutineScope.launch {
+            _status.value = LoadApiStatus.LOADING
+
+            when (val result = repository.updatePlanForDoneStatus(plan)) {
+                is Result.Success -> {
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
+                    Log.i("Rita","home VM updatePlanDoneStatus: $result")
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                    Log.i("Rita","home VM updatePlanDoneStatus: $result")
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                    Log.i("Rita","home VM updatePlanDoneStatus: $result")
+                }
+                else -> {
+                    _error.value =
+                        CalendarProApplication.instance.getString(R.string.Error)
+                    _status.value = LoadApiStatus.ERROR
+                }
+            }
+        }
     }
+
 
 
     fun selectedTimeSet(date: String) {
@@ -462,11 +570,13 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
         selectedEndTime.value = timeList?.get(1)
     }
 
+
     private fun getUserData(userId: String) {
         Log.d("Rita", "userId: $userId")
         currentUser = repository.getUser(userId)
         UserManager.user = repository.getUser(userId)
     }
+
 
     init {
         loadingStatus.value = true

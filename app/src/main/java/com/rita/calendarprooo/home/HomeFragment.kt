@@ -35,73 +35,76 @@ class HomeFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
 
+        // get user at first to get plans
         viewModel.currentUser.observe(viewLifecycleOwner,  {
-            Log.i("Rita", "currentUser.observe: $it")
+            Log.i("Rita", "home currentUser observe: $it")
             it?.let{
+                // need to get plans once to create viewList, which control whether the detail hide or show
                 viewModel.getPlansToday()
+
+                // if plans update in firebase, it will fetch data again
                 viewModel.getLivePlans()
-
-                // we need to set Observer here, so list can be observed for the same reference
-                viewModel.livePlansToday.observe(viewLifecycleOwner, {
-                   it?.let{
-                       Log.i("Rita", "livePlansToday.observe: $it")
-                       viewModel.getTotalLivePlans()
-                       binding.viewModel = viewModel
-                   }
-                })
-
-                viewModel.livePlansBeforeToday.observe(viewLifecycleOwner, {
-                    Log.e("Rita", "livePlansBeforeToday observe - $it")
-                    it?.let {
-                        viewModel.getTotalLivePlans()
-                        binding.viewModel = viewModel
-                    }
-                })
             }
         })
 
 
         // read Plans when date selected changed
         viewModel.selectedEndTime.observe(viewLifecycleOwner, {
-            Log.i("Rita", "selectedEndTime observe- $it")
+            Log.i("Rita", "home selectedEndTime observe: $it")
             it?.let {
                 if (viewModel.currentUser.value != null) {
-
+                    // need to get plans once to create viewList, which control whether the detail hide or show
                     viewModel.getPlansToday()
-                    viewModel.getLivePlans()
 
-                    viewModel.livePlansToday.observe(viewLifecycleOwner, {
-                            Log.i("Rita", "livePlansToday.observe: $it")
-                            it?.let {
-                                viewModel.getTotalLivePlans()
-                                binding.viewModel = viewModel
-                            }
+                    // if plans update in firebase, it will fetch data again
+                    viewModel.getLivePlans()
+                }
+            }
+        })
+
+
+        // get plans once
+        viewModel.plansToday.observe(viewLifecycleOwner, {
+            Log.i("Rita", "home plansToday observe: $it")
+            viewModel.getPlansBeforeToday()
+        })
+
+
+        viewModel.plansBeforeToday.observe(viewLifecycleOwner, {
+            Log.i("Rita", "home plansBeforeToday observe: $it")
+            viewModel.getTotalPlans()
+        })
+
+
+        // get plans onChanged
+        viewModel.livePlansReset.observe(viewLifecycleOwner, {
+            Log.i("Rita", "home livePlansReset observe: $it")
+
+            // need to set Observer here so we can get the same reference for livedata
+            it?.let{
+                if(it){
+                    viewModel.livePlansToday.observe(viewLifecycleOwner, { plans ->
+                        Log.i("Rita", "home livePlansToday observe: $plans")
+                        plans?.let {
+                            viewModel.getTotalLivePlans()
+                            binding.viewModel = viewModel
+                        }
                     })
 
-                    viewModel.livePlansBeforeToday.observe(viewLifecycleOwner, {
-                            Log.e("Rita", "livePlansBeforeToday observe - $it")
-                            it?.let {
-                                viewModel.getTotalLivePlans()
-                                binding.viewModel = viewModel
-                            }
+                    viewModel.livePlansBeforeToday.observe(viewLifecycleOwner, { plans->
+                        Log.i("Rita", "home livePlansBeforeToday observe: $plans")
+                        plans?.let {
+                            viewModel.getTotalLivePlans()
+                            binding.viewModel = viewModel
+                        }
                     })
                 }
             }
         })
 
-        viewModel.plansToday.observe(viewLifecycleOwner, {
-            Log.i("Rita", "plansToday observe - $it")
-            viewModel.getPlansBeforeToday()
-        })
-
-        viewModel.plansBeforeToday.observe(viewLifecycleOwner, {
-            Log.i("Rita", "plansBeforeToday observe - $it")
-            viewModel.getTotalPlans()
-        })
-
 
         viewModel.startToGetViewList.observe(viewLifecycleOwner, {
-            Log.e("Rita", "startToGetViewList observe - $it")
+            Log.i("Rita", "home startToGetViewList observe: $it")
             it?.let {
                     viewModel.getViewList()
                     binding.viewModel = viewModel
@@ -139,7 +142,7 @@ class HomeFragment : Fragment() {
 
         // schedule adapter
         viewModel.scheduleList.observe(viewLifecycleOwner, {
-            Log.i("Rita", "scheduleList.observe: $it")
+            Log.i("Rita", "home scheduleList observe: $it")
             if (viewModel.getViewListAlready.value == true) {
                 createScheduleRecyclerview()
             }
@@ -148,11 +151,9 @@ class HomeFragment : Fragment() {
 
         // to-do adapter
         viewModel.todoList.observe(viewLifecycleOwner, {
-            Log.i("Rita", "todoList.observe: $it")
+            Log.i("Rita", "home todoList observe: $it")
 
             // get size again for to-do/done mode changed
-            Log.i("Rita", "todoList.observe: ${viewModel.startToGetViewListForTodoMode.value}")
-
             if (viewModel.startToGetViewListForTodoMode.value == true) {
                 //Because the size of todoList and doneList may change
                 viewModel.getViewListForTodoMode()
@@ -164,13 +165,12 @@ class HomeFragment : Fragment() {
             }
         })
 
+
         // done adapter
         viewModel.doneList.observe(viewLifecycleOwner, {
-            Log.i("Rita", "doneList.observe: $it")
+            Log.i("Rita", "home doneList observe: $it")
 
             // get size again for to-do/done mode changed
-            Log.i("Rita", "doneList.observe: ${viewModel.startToGetViewListForDoneMode.value}")
-
             if (viewModel.startToGetViewListForDoneMode.value == true) {
                 //Because the size of todoList and doneList may change
                 viewModel.getViewListForTodoMode()
@@ -178,14 +178,15 @@ class HomeFragment : Fragment() {
             }
 
             if (viewModel.getViewListAlready.value == true) {
-                Log.e("Rita", "viewModel.getViewListAlready.value == true, submit")
+                Log.i("Rita", "homeVM.getViewListAlready.value == true, submit")
                 createDoneRecyclerview()
             }
         })
 
+
         // After the viewList is got, the recyclerView will show
         viewModel.getViewListAlready.observe(viewLifecycleOwner, {
-            Log.e("Rita", "getViewListAlready observe - $it")
+            Log.i("Rita", "home getViewListAlready observe: $it")
             it?.let {
                 if (it) {
                     createScheduleRecyclerview()
@@ -196,9 +197,34 @@ class HomeFragment : Fragment() {
         })
 
 
+        // update Plan
+        viewModel.planUpdate.observe(viewLifecycleOwner, {
+            Log.i("Rita", "home planUpdate observe: $it")
+
+            it?.let{
+                if(viewModel.isCheckDoneChanged.value == true){
+                    val plan = viewModel.renewCheckDoneStatus(it)
+
+                    // update check - change check done status step3 - firebase update
+                    viewModel.updatePlanByCheck(plan)
+                }
+                else if(viewModel.isCheckRemoved.value == true){
+                    val plan = viewModel.renewCheckRemoval(it)
+
+                    // update check - remove check step3 - firebase update
+                    viewModel.updatePlanByCheck(plan)
+                }
+            }
+            if(viewModel.isPlanDoneChanged.value == true){
+
+            }
+
+            viewModel.doneUpdated()
+        })
+
+
         val address = ""
         val plan = Plan()
-        //Edit page navigation
         viewModel.navigateToEdit.observe(viewLifecycleOwner, {
             it?.let {
                 view?.findNavController()?.navigate(
@@ -208,8 +234,9 @@ class HomeFragment : Fragment() {
             }
         })
 
+
         viewModel.navigateToEditByPlan.observe(viewLifecycleOwner, {
-            Log.i("Rita", "navigateToEditByPlan.observe: $it")
+            Log.i("Rita", "home navigateToEditByPlan observe: $it")
             it?.let {
                 view?.findNavController()?.navigate(
                     NavigationDirections.navigateToEditFragment(address, it)
@@ -218,8 +245,9 @@ class HomeFragment : Fragment() {
             }
         })
 
+
         viewModel.navigateToInvite.observe(viewLifecycleOwner, {
-            Log.i("Rita", "navigateToInvite.observe: $it")
+            Log.i("Rita", "home navigateToInvite observe: $it")
             it?.let {
                 view?.findNavController()?.navigate(
                     NavigationDirections.navigateToInviteFragment(it)
@@ -228,8 +256,9 @@ class HomeFragment : Fragment() {
             }
         })
 
+
         viewModel.navigateToAlarm.observe(viewLifecycleOwner, {
-            Log.i("Rita", "navigateToAlarm.observe: $it")
+            Log.i("Rita", "home navigateToAlarm observe: $it")
             it?.let {
                 view?.findNavController()?.navigate(
                     NavigationDirections.navigateToAlarmDialog(it)
@@ -239,17 +268,14 @@ class HomeFragment : Fragment() {
         })
 
 
-        // to-do adapter drag item
+        // To-do adapter drag item
         val simpleCallback = setupTouchHelper()
-
         val toToListRecyclerView = binding.homeTodoList
-
         val itemTouchHelper = ItemTouchHelper(simpleCallback)
-
         itemTouchHelper.attachToRecyclerView(toToListRecyclerView)
 
 
-        // calendar
+        // Calendar
         val collapsibleCalendar: CollapsibleCalendar = binding.calendarView
         collapsibleCalendar.setCalendarListener(object : CollapsibleCalendar.CalendarListener {
             override fun onDayChanged() {}
@@ -260,7 +286,7 @@ class HomeFragment : Fragment() {
 
                 viewModel.selectedTimeSet(dateSelected)
 
-                Log.i("Rita", "Selected Day: $dateSelected")
+                Log.i("Rita", "home Selected Day: $dateSelected")
             }
 
             override fun onItemClick(v: View) {}

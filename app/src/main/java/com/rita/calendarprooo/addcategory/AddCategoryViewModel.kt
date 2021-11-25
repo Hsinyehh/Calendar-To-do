@@ -46,8 +46,7 @@ class AddCategoryViewModel : ViewModel() {
         if (categoryAdded.value.isNullOrBlank()) {
             startToUpdate.value = false
             Log.i("Rita", "Can't update the category because it's null")
-        }
-        else {
+        } else {
             Log.i("Rita", "prepareForCategory categoryList ${categoryList.value}")
             val list = categoryList.value
             val newCategory = Category("${categoryAdded.value}", false)
@@ -63,7 +62,6 @@ class AddCategoryViewModel : ViewModel() {
 
     // if the plan is at edited Status
     fun getCategoryFromThePlan() {
-
         db.collection("plan")
             .whereEqualTo("id", "${planGet.value?.id}")
             .get()
@@ -84,7 +82,6 @@ class AddCategoryViewModel : ViewModel() {
 
     // if the plan is at created Status
     fun getCategoryFromUser(isCreated: Boolean) {
-
         db.collection("user")
             .whereEqualTo("email", currentUser!!.email)
             .get()
@@ -106,7 +103,6 @@ class AddCategoryViewModel : ViewModel() {
 
     // Both Conditions Needs the function below
     fun updateUser() {
-
         val userRef = db.collection("user").document(currentUser!!.email)
 
         userRef
@@ -124,7 +120,6 @@ class AddCategoryViewModel : ViewModel() {
 
     // only for edit status
     fun updateThePlan() {
-
         val planRef = db.collection("plan").document("${planGet.value?.id}")
 
         planRef
@@ -138,7 +133,6 @@ class AddCategoryViewModel : ViewModel() {
     }
 
     fun convertToStringList(list: List<Category>): MutableList<String> {
-
         val stringList = mutableListOf<String>()
 
         for (item in list) {
@@ -161,11 +155,9 @@ class AddCategoryViewModel : ViewModel() {
     }
 
     fun getPlanFromUserFirst() {
-
         if (planGet.value?.id == "") {
             getCategoryFromUser(true)
-        }
-        else {
+        } else {
             getCategoryFromUser(false)
         }
     }
