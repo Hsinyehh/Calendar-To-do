@@ -55,12 +55,14 @@ class ResultViewModel(val repository: CalendarRepository) : ViewModel() {
         )
     }
 
+
     fun readPlanBeforeToday() {
         readListBeforeToday = repository.getLivePlansBeforeToday(
             selectedStartTime.value!!,
             UserManager.user.value!!
         )
     }
+
 
     fun readDone() {
         _doneList = repository.getLiveDone(
@@ -91,6 +93,7 @@ class ResultViewModel(val repository: CalendarRepository) : ViewModel() {
         }
     }
 
+
     fun countForCategory(list: List<Plan>) {
         val categoryMap = mutableMapOf<String, Float>()
 
@@ -110,6 +113,7 @@ class ResultViewModel(val repository: CalendarRepository) : ViewModel() {
         categoryForDoneList.value = categoryMap
 
     }
+
 
     fun selectedTimeSet(date: String) {
         val timeList = convertToTimeStamp(date)

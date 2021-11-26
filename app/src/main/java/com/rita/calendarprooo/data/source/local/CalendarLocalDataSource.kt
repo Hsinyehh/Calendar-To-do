@@ -7,6 +7,7 @@ import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.data.User
 import com.rita.calendarprooo.data.source.CalendarDataSource
 import com.rita.calendarprooo.data.Result
+import kotlin.coroutines.suspendCoroutine
 
 class CalendarLocalDataSource(val context: Context) : CalendarDataSource {
     override suspend fun getPlansToday(selectedStartTime: Long, selectedEndTime: Long, user: User):
@@ -33,7 +34,7 @@ class CalendarLocalDataSource(val context: Context) : CalendarDataSource {
         TODO("not implemented")
     }
 
-    override suspend fun updatePlanByCheck(
+    override suspend fun updatePlanForCheckList(
         plan: Plan, checkList: MutableLiveData<MutableList<Check>>
     ): Result<Boolean> {
         TODO("Not yet implemented")
@@ -59,6 +60,18 @@ class CalendarLocalDataSource(val context: Context) : CalendarDataSource {
     }
 
     override suspend fun updatePlan(plan: Plan): Result<Boolean>{
+        TODO("not implemented")
+    }
+
+    override suspend fun updatePlanExtra(plan: Plan): Result<Boolean>{
+        TODO("not implemented")
+    }
+
+    override suspend fun updateUserExtra(user: User): Result<Boolean>{
+        TODO("not implemented")
+    }
+
+    override suspend fun getUserByEmail(email: String): Result<User>{
         TODO("not implemented")
     }
 

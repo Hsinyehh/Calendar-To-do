@@ -265,7 +265,7 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
 
 
     // create list to store detail showing/hiding status
-    private fun createViewList(planList: List<Plan>): MutableList<Boolean>{
+    private fun createViewList(planList: List<Plan>): MutableList<Boolean> {
         val list = mutableListOf<Boolean>()
         val size = planList.size
 
@@ -380,21 +380,21 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
 
             _status.value = LoadApiStatus.LOADING
 
-            when (val result = repository.updatePlanByCheck(plan, checkListUpdate)) {
+            when (val result = repository.updatePlanForCheckList(plan, checkListUpdate)) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    Log.i("Rita","home VM updatePlanByCheck: $result")
+                    Log.i("Rita", "home VM updatePlanByCheck: $result")
                 }
                 is Result.Fail -> {
                     _error.value = result.error
                     _status.value = LoadApiStatus.ERROR
-                    Log.i("Rita","home VM updatePlanByCheck: $result")
+                    Log.i("Rita", "home VM updatePlanByCheck: $result")
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
                     _status.value = LoadApiStatus.ERROR
-                    Log.i("Rita","home VM updatePlanByCheck: $result")
+                    Log.i("Rita", "home VM updatePlanByCheck: $result")
                 }
                 else -> {
                     _error.value =
@@ -407,7 +407,7 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
 
 
     //  update check - change check done status
-    private fun changeDoneStatus(check: Check): Check{
+    private fun changeDoneStatus(check: Check): Check {
         if (check.isDone) {
             check.isDone = false
             check.done_time = null
@@ -436,7 +436,7 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
 
 
     // update check - change check done status step2 - fragment
-    fun renewCheckDoneStatus(plan: Plan): Plan{
+    fun renewCheckDoneStatus(plan: Plan): Plan {
         // Plan's checkList renewal
         plan.checkList!![positionUpdate.value!!] = checkUpdate.value!!
 
@@ -451,7 +451,7 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
 
     // update check - remove check step1 - checkAdapter
     fun removeCheck(check: Check, position: Int) {
-        Log.i("Rita","removeCheck check: $check, position: $position")
+        Log.i("Rita", "removeCheck check: $check, position: $position")
         loadingStatus.value = true
         isCheckRemoved.value = true
         positionUpdate.value = position
@@ -463,7 +463,7 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
 
 
     // update check - remove check step2 - checkAdapter
-    fun renewCheckRemoval(plan: Plan): Plan{
+    fun renewCheckRemoval(plan: Plan): Plan {
         plan.checkList!!.removeAt(positionUpdate.value!!)
         checkListUpdate.value = plan.checkList
 
@@ -471,7 +471,7 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
     }
 
 
-    fun doneUpdated(){
+    fun doneUpdated() {
         isCheckDoneChanged.value = null
         isCheckRemoved.value = null
     }
@@ -479,15 +479,16 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
 
     fun getLivePlans() {
         if (selectedStartTime.value != null && selectedEndTime.value != null
-            && currentUser.value != null) {
+            && currentUser.value != null
+        ) {
 
-                livePlansToday = repository.getLivePlansToday(
-                    selectedStartTime.value!!, selectedEndTime.value!!, currentUser.value!!
-                )
+            livePlansToday = repository.getLivePlansToday(
+                selectedStartTime.value!!, selectedEndTime.value!!, currentUser.value!!
+            )
 
-                livePlansBeforeToday = repository.getLivePlansBeforeToday(
-                    selectedStartTime.value!!, currentUser.value!!
-                )
+            livePlansBeforeToday = repository.getLivePlansBeforeToday(
+                selectedStartTime.value!!, currentUser.value!!
+            )
 
             livePlansReset.value = true
         }
@@ -517,17 +518,17 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    Log.i("Rita","home VM updatePlanDoneStatus: $result")
+                    Log.i("Rita", "home VM updatePlanDoneStatus: $result")
                 }
                 is Result.Fail -> {
                     _error.value = result.error
                     _status.value = LoadApiStatus.ERROR
-                    Log.i("Rita","home VM updatePlanDoneStatus: $result")
+                    Log.i("Rita", "home VM updatePlanDoneStatus: $result")
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
                     _status.value = LoadApiStatus.ERROR
-                    Log.i("Rita","home VM updatePlanDoneStatus: $result")
+                    Log.i("Rita", "home VM updatePlanDoneStatus: $result")
                 }
                 else -> {
                     _error.value =
@@ -537,7 +538,6 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
             }
         }
     }
-
 
 
     fun selectedTimeSet(date: String) {

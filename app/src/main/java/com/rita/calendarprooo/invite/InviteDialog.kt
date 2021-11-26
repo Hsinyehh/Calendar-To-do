@@ -8,16 +8,15 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import com.rita.calendarprooo.R
 import com.rita.calendarprooo.databinding.DialogInviteBinding
+import com.rita.calendarprooo.ext.getVmFactory
 
 
 class InviteDialog : DialogFragment() {
 
-    private val viewModel: InviteViewModel by lazy {
-        ViewModelProvider(this).get(InviteViewModel::class.java)
-    }
+    private val viewModel by viewModels<InviteViewModel> { getVmFactory() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,7 +42,7 @@ class InviteDialog : DialogFragment() {
         viewModel.invitation.observe(viewLifecycleOwner, {
             Log.i("Rita", "invitation observe: $it")
             it?.let {
-                viewModel.writeInvitation()
+                viewModel.updateInvitation()
             }
         })
 
@@ -69,7 +68,7 @@ class InviteDialog : DialogFragment() {
             Log.i("Rita", "isInvited.observe: $it")
             if (it == true) {
                 Toast.makeText(context, "Invite Success", Toast.LENGTH_LONG).show()
-                viewModel.doneWritten()
+                viewModel.doneUpdate()
                 dismiss()
             }
         })

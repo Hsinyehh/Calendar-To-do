@@ -42,10 +42,33 @@ class InviteCategoryDialog : DialogFragment() {
         }
 
 
-        viewModel.userTobeInvited.observe(viewLifecycleOwner, {
-            Log.i("Rita", "userTobeInvited observe: $it")
+        viewModel.isInputBlank.observe(viewLifecycleOwner, {
+            Log.i("Rita", "isInputBlank observe: $it")
             it?.let {
-                viewModel.createInvitation()
+                Toast.makeText(activity, "The input can't be blank!", Toast.LENGTH_LONG).show()
+            }
+            viewModel.isUserNotExist.value = null
+        })
+
+
+        viewModel.userTobeInvited.observe(viewLifecycleOwner, { user ->
+            Log.i("Rita", "userTobeInvited observe: $user")
+            user?.let {
+                if (user.email != "") {
+                    viewModel.createInvitation()
+                } else {
+                    viewModel.isUserNotExist.value = true
+                }
+            }
+        })
+
+
+        viewModel.isUserNotExist.observe(viewLifecycleOwner, {
+            Log.i("Rita", "isUserNotExist observe: $it")
+            it?.let {
+                Toast.makeText(activity, "The user doesn't use the app yet.", Toast.LENGTH_LONG)
+                    .show()
+                viewModel.isUserNotExist.value = null
             }
         })
 
@@ -53,7 +76,7 @@ class InviteCategoryDialog : DialogFragment() {
         viewModel.invitationList.observe(viewLifecycleOwner, {
             Log.i("Rita", "invitationList observe: $it")
             it?.let {
-                viewModel.updateInvitation(it)
+                viewModel.updateInvitation()
             }
         })
 
@@ -61,7 +84,8 @@ class InviteCategoryDialog : DialogFragment() {
         viewModel.isInvited.observe(viewLifecycleOwner, {
             Log.i("Rita", "isInvited observe: $it")
             if (it == true) {
-                Toast.makeText(context, "The person is invited already.", Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, "The person is invited already.", Toast.LENGTH_LONG).show()
+                viewModel.isInvited.value = null
             }
         })
 
@@ -71,7 +95,7 @@ class InviteCategoryDialog : DialogFragment() {
             if (it == true) {
                 Toast.makeText(context, "Invite Success", Toast.LENGTH_LONG).show()
                 dismiss()
-                viewModel.doneWritten()
+                viewModel.doneUpdate()
             }
         })
 

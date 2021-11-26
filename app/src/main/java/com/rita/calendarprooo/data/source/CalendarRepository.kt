@@ -21,7 +21,7 @@ interface CalendarRepository {
 
     suspend fun updatePlanForDoneStatus(plan: Plan): Result<Boolean>
 
-    suspend fun updatePlanByCheck(
+    suspend fun updatePlanForCheckList(
         plan: Plan,
         checkList: MutableLiveData<MutableList<Check>>
     ): Result<Boolean>
@@ -38,6 +38,12 @@ interface CalendarRepository {
     suspend fun createPlan(plan: Plan): Result<Boolean>
 
     suspend fun updatePlan(plan: Plan): Result<Boolean>
+
+    suspend fun updatePlanExtra(plan: Plan): Result<Boolean>
+
+    suspend fun updateUserExtra(user: User): Result<Boolean>
+
+    suspend fun getUserByEmail(email: String): Result<User>
 
     fun getUser(id: String): MutableLiveData<User>
 

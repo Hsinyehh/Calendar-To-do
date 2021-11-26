@@ -143,7 +143,6 @@ class AddCategoryViewModel : ViewModel() {
     }
 
     fun convertToUnselectedList(list: List<Category>) {
-
         val newList = mutableListOf<Category>()
 
         for (item in list) {

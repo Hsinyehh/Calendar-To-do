@@ -7,6 +7,7 @@ import com.rita.calendarprooo.data.source.CalendarRepository
 import com.rita.calendarprooo.home.HomeViewModel
 import com.rita.calendarprooo.invitation.InvitationViewModel
 import com.rita.calendarprooo.invite.InviteCategoryViewModel
+import com.rita.calendarprooo.invite.InviteViewModel
 import com.rita.calendarprooo.login.LoginViewModel
 import com.rita.calendarprooo.result.ResultViewModel
 import com.rita.calendarprooo.sort.HomeSortViewModel
@@ -33,6 +34,9 @@ class RepoViewModelFactory constructor(
 
                 isAssignableFrom(HomeSortViewModel::class.java) ->
                     HomeSortViewModel(repository)
+
+                isAssignableFrom(InviteViewModel::class.java) ->
+                    InviteViewModel(repository)
 
                 isAssignableFrom(InviteCategoryViewModel::class.java) ->
                     InviteCategoryViewModel(repository)

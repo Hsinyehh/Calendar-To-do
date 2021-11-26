@@ -59,6 +59,7 @@ class LoginViewModel(val repository: CalendarRepository) : ViewModel() {
         )
     }
 
+
     fun createUser(token: String, email: String, name: String, photo: Uri) {
         val user = User(
             id = token,
@@ -69,6 +70,7 @@ class LoginViewModel(val repository: CalendarRepository) : ViewModel() {
         newUser.value = user
         UserManager.user.value = user
     }
+
 
     fun addUser(user: User) {
 
@@ -99,6 +101,7 @@ class LoginViewModel(val repository: CalendarRepository) : ViewModel() {
         }
     }
 
+
     fun updateUser(user: User) {
 
         coroutineScope.launch {
@@ -128,6 +131,7 @@ class LoginViewModel(val repository: CalendarRepository) : ViewModel() {
             }
         }
     }
+
 
     fun checkUserCreated(user: User) {
         Log.i("Rita", "checkUserCreated")
@@ -173,13 +177,16 @@ class LoginViewModel(val repository: CalendarRepository) : ViewModel() {
         UserManager.user = repository.getUser(id)
     }
 
+
     fun startToNavigateToHome() {
         navigateToHome.value = true
     }
 
+
     fun doneNavigated() {
         navigateToHome.value = null
     }
+
 
     init {
         newUser.value = null

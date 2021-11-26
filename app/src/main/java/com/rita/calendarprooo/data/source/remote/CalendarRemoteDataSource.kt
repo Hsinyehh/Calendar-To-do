@@ -166,7 +166,7 @@ object CalendarRemoteDataSource : CalendarDataSource {
                 }
         }
 
-    override suspend fun updatePlanByCheck(plan: Plan, checkList: MutableLiveData<MutableList<Check>>
+    override suspend fun updatePlanForCheckList(plan: Plan, checkList: MutableLiveData<MutableList<Check>>
     ): Result<Boolean> = suspendCoroutine { continuation ->
 
         val planRef = plan.id?.let {
@@ -319,6 +319,71 @@ object CalendarRemoteDataSource : CalendarDataSource {
                 }
         }
 
+    override suspend fun updatePlanExtra(plan: Plan): Result<Boolean> =
+        suspendCoroutine { continuation ->
+            val planRef = plan.id?.let {
+                FirebaseFirestore.getInstance().collection(PATH_PLAN).document(it)
+            }
+
+            planRef!!
+                .update("invitation", plan.invitation)
+                .addOnSuccessListener {
+                    Log.d(TAG, "DocumentSnapshot successfully updated!")
+                    continuation.resume(Result.Success(true))
+                }
+                .addOnFailureListener {
+                    Log.w(TAG, "Error updating document", it)
+                    continuation.resume(Result.Error(it))
+                }
+    }
+
+    override suspend fun updateUserExtra(user: User): Result<Boolean> =
+        suspendCoroutine { continuation ->
+            val userRef = user.email.let {
+                FirebaseFirestore.getInstance().collection(PATH_USER).document(it)
+            }
+            Log.i("Rita", "updateUser - user: $user")
+            Log.i("Rita", "updateUser - userRef: $userRef")
+
+            userRef
+                .update("invitationList", user.invitationList)
+                .addOnSuccessListener {
+                    Log.d(TAG, "DocumentSnapshot successfully updated!")
+                    continuation.resume(Result.Success(true))
+                }
+                .addOnFailureListener {
+                    Log.w(TAG, "Error updating document", it)
+                    continuation.resume(Result.Error(it))
+                }
+
+    }
+
+    override suspend fun getUserByEmail(email: String): Result<User> =
+        suspendCoroutine { continuation ->
+
+        Log.i("Rita","fb - getUserByEmail email: $email")
+
+        val userRef = FirebaseFirestore.getInstance().collection(PATH_USER).document(email)
+
+        userRef.get()
+            .addOnSuccessListener { document ->
+                Log.i("Rita","fb - getUserByEmail doc "+ document.data)
+                if (document != null) {
+                    val user = document.toObject(User::class.java)
+                    if(user != null) {
+                        continuation.resume(Result.Success(user))
+                    }else{
+                        val nullUser = User()
+                        continuation.resume(Result.Success(nullUser))
+                    }
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d(TAG, "get failed with ", exception)
+                continuation.resume(Result.Error(exception))
+            }
+    }
+
     override fun getUser(id: String): MutableLiveData<User> {
         val liveData = MutableLiveData<User>()
 
@@ -330,12 +395,12 @@ object CalendarRemoteDataSource : CalendarDataSource {
                 exception?.let {
                     Log.d(TAG, "[${this::class.simpleName}] Error getting documents. ${it.message}")
                 }
-
                 for (document in snapshot) {
                     val user = document.toObject(User::class.java)
                     liveData.value = user
                 }
             }
+        Log.i("Rita", "getUser: ${liveData.value}")
         return liveData
     }
 

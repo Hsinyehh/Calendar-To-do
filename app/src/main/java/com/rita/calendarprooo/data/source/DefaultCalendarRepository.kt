@@ -35,11 +35,11 @@ class DefaultCalendarRepository(
         return remoteDataSource.updatePlanForDoneStatus(plan)
     }
 
-    override suspend fun updatePlanByCheck(
+    override suspend fun updatePlanForCheckList(
         plan: Plan, checkList:
         MutableLiveData<MutableList<Check>>
     ): Result<Boolean> {
-        return remoteDataSource.updatePlanByCheck(plan, checkList)
+        return remoteDataSource.updatePlanForCheckList(plan, checkList)
     }
 
     override suspend fun getPlanByCheck(check: Check): Result<Plan> {
@@ -64,6 +64,18 @@ class DefaultCalendarRepository(
 
     override suspend fun updatePlan(plan: Plan): Result<Boolean> {
         return remoteDataSource.updatePlan(plan)
+    }
+
+    override suspend fun updatePlanExtra(plan: Plan): Result<Boolean>{
+        return remoteDataSource.updatePlanExtra(plan)
+    }
+
+    override suspend fun updateUserExtra(user: User): Result<Boolean>{
+        return remoteDataSource.updateUserExtra(user)
+    }
+
+    override suspend fun getUserByEmail(email: String): Result<User>{
+        return remoteDataSource.getUserByEmail(email)
     }
 
     override fun getUser(id: String): MutableLiveData<User> {
