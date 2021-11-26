@@ -31,10 +31,6 @@ class TodoAdapter(val viewModel: HomeViewModel) : ListAdapter<Plan,
             viewModel.changeTodoView(position)
         }
 
-        /*holder.binding.root.setOnClickListener {
-            viewModel.changeTodoView(position)
-        }*/
-
         holder.binding.scheduleBtnUncheck.setOnClickListener {
             if (!item.isToDoListDone) {
                 item.isToDoListDone = true

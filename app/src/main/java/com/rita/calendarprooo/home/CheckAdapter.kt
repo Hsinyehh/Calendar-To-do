@@ -20,8 +20,8 @@ class CheckAdapter(val viewModel: HomeViewModel) : ListAdapter<Check,
         }
 
         holder.binding.checklistBtnRemoved.setOnClickListener {
-            Log.i("Rita", "home remove btn clicked")
-            viewModel.removeCheck(position)
+            Log.i("Rita", "home remove btn clicked item: $item, position: $position")
+            viewModel.removeCheck(item, position)
             notifyDataSetChanged()
         }
 

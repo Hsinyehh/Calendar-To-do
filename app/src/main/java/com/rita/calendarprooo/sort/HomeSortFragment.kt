@@ -75,28 +75,38 @@ class HomeSortFragment : Fragment() {
         })
 
 
+        // get plans onChanged
+        viewModel.livePlansReset.observe(viewLifecycleOwner, {
+            Log.i("Rita", "home livePlansReset observe: $it")
+
+            // need to set Observer here so we can get the same reference for livedata
+            it?.let{
+                if(it){
+                    viewModel.livePlansToday.observe(viewLifecycleOwner, { plans ->
+                        Log.i("Rita", "home livePlansToday observe: $plans")
+                        plans?.let {
+                            viewModel.getTotalLivePlans()
+                            binding.viewModel = viewModel
+                        }
+                    })
+
+                    viewModel.livePlansBeforeToday.observe(viewLifecycleOwner, { plans->
+                        Log.i("Rita", "home livePlansBeforeToday observe: $plans")
+                        plans?.let {
+                            viewModel.getTotalLivePlans()
+                            binding.viewModel = viewModel
+                        }
+                    })
+                }
+            }
+        })
+
+
         viewModel.startToGetViewList.observe(viewLifecycleOwner, {
             Log.i("Rita", "sort startToGetViewList observe: $it")
             if (it == true) {
                 viewModel.getViewList()
                 viewModel.doneGetViewList()
-            }
-        })
-
-
-        // update plans on home pages when data changed
-        viewModel.livePlansToday.observe(viewLifecycleOwner, {
-            it?.let {
-                Log.i("Rita", "sort livePlansToday observe: $it")
-                viewModel.getTotalLivePlans()
-            }
-        })
-
-
-        viewModel.livePlansBeforeToday.observe(viewLifecycleOwner, {
-            it?.let {
-                Log.i("Rita", "sort livePlansBeforeToday observe: $it")
-                viewModel.getTotalLivePlansBefore()
             }
         })
 
@@ -127,8 +137,6 @@ class HomeSortFragment : Fragment() {
 
 
         // schedule adapter
-        val adapter = ScheduleAdapter(viewModel)
-        binding.homeScheduleList.adapter = adapter
         viewModel.scheduleList.observe(viewLifecycleOwner, {
             Log.i("Rita", "sort scheduleList observe: $it")
             if (viewModel.getViewListAlready.value == true) {
@@ -138,10 +146,6 @@ class HomeSortFragment : Fragment() {
 
 
         // to-do adapter
-        val todoAdapter = TodoAdapter(viewModel)
-
-        binding.homeTodoList.adapter = todoAdapter
-
         viewModel.todoList.observe(viewLifecycleOwner, {
             Log.i("Rita", "sort todoList observe: $it")
 
@@ -158,10 +162,6 @@ class HomeSortFragment : Fragment() {
 
 
         // done adapter
-        val doneAdapter = DoneAdapter(viewModel)
-
-        binding.homeDoneList.adapter = doneAdapter
-
         viewModel.doneList.observe(viewLifecycleOwner, {
             Log.i("Rita", "doneList.observe: $it")
 
@@ -193,16 +193,35 @@ class HomeSortFragment : Fragment() {
 
         // category Adapter
         val categoryAdapter = CategoryAdapter(viewModel)
-
         binding.categoryList.adapter = categoryAdapter
-
-
         viewModel.categoryList.observe(viewLifecycleOwner, {
-            Log.i("Rita", "sort categoryList.observe: $it")
+            Log.i("Rita", "sort categoryList observe: $it")
             it?.let {
                 categoryAdapter.submitList(it)
                 categoryAdapter.notifyDataSetChanged()
             }
+        })
+
+
+        // update Plan
+        viewModel.planUpdate.observe(viewLifecycleOwner, {
+            Log.i("Rita", "home planUpdate observe: $it")
+
+            it?.let{
+                if(viewModel.isCheckDoneChanged.value == true){
+                    val plan = viewModel.renewCheckDoneStatus(it)
+
+                    // update check - change check done status step3 - firebase update
+                    viewModel.updatePlanByCheck(plan)
+                }
+                else if(viewModel.isCheckRemoved.value == true){
+                    val plan = viewModel.renewCheckRemoval(it)
+
+                    // update check - remove check step3 - firebase update
+                    viewModel.updatePlanByCheck(plan)
+                }
+            }
+            viewModel.doneUpdated()
         })
 
 
@@ -236,8 +255,8 @@ class HomeSortFragment : Fragment() {
 
 
         viewModel.navigateToInvite.observe(viewLifecycleOwner, {
+            Log.i("Rita", "sort navigateToInvite observe: $it")
             it?.let {
-                Log.i("Rita", "sort navigateToInvite observe: $it")
                 view?.findNavController()?.navigate(
                     NavigationDirections.navigateToInviteFragment(
                         viewModel.navigateToInvite.value
@@ -263,8 +282,8 @@ class HomeSortFragment : Fragment() {
 
 
         viewModel.navigateToAlarm.observe(viewLifecycleOwner, {
+            Log.i("Rita", "navigateToAlarm observe: $it")
             it?.let {
-                Log.i("Rita", "navigateToAlarm observe: $it")
                 view?.findNavController()?.navigate(
                     NavigationDirections.navigateToAlarmDialog(it)
                 )
@@ -275,11 +294,8 @@ class HomeSortFragment : Fragment() {
 
         // to-do adapter drag item
         val simpleCallback = setupTouchHelper()
-
         val toToListRecyclerView = binding.homeTodoList
-
         val itemTouchHelper = ItemTouchHelper(simpleCallback)
-
         itemTouchHelper.attachToRecyclerView(toToListRecyclerView)
 
 

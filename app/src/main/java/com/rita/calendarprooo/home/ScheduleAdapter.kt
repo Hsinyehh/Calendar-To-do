@@ -29,11 +29,6 @@ class ScheduleAdapter(val viewModel: HomeViewModel) : ListAdapter<Plan,
             viewModel.changeScheduleView(position)
         }
 
-        /*holder.binding.root.setOnClickListener {
-            Log.i("Rita","binding.root onclick")
-            viewModel.changeScheduleView(position)
-        }*/
-
         holder.binding.scheduleImageEdit.setOnClickListener {
             viewModel.startNavigateToEditByPlan(item)
         }

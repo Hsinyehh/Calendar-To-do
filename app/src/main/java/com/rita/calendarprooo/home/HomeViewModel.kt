@@ -237,7 +237,6 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
 
 
     fun getTotalPlans() {
-
         var list = plansToday.value?.toMutableList()
         val listBefore = plansBeforeToday.value?.toMutableList()
 
@@ -266,59 +265,37 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
 
 
     // create list to store detail showing/hiding status
-    fun getViewList() {
-
+    private fun createViewList(planList: List<Plan>): MutableList<Boolean>{
         val list = mutableListOf<Boolean>()
-        val todoList = mutableListOf<Boolean>()
-        val doneList = mutableListOf<Boolean>()
-        val size = _scheduleList.value?.size
-        val todoSize = _todoList.value?.size
-        val doneSize = _doneList.value?.size
+        val size = planList.size
 
-        if (size != null && size > 0) {
+        if (size > 0) {
             for (i in 1..size) {
                 list.add(false)
             }
-            scheduleViewList.value = list
-            Log.i("Rita", "getViewList scheduleViewList: ${scheduleViewList.value}")
         }
-        if (todoSize != null && todoSize > 0) {
-            for (i in 1..todoSize) {
-                todoList.add(false)
-            }
-            todoViewList.value = todoList
-            Log.i("Rita", "getViewList todoViewList: ${todoViewList.value}")
-        }
-        if (doneSize != null && doneSize > 0) {
-            for (i in 1..doneSize) {
-                doneList.add(false)
-            }
-            doneViewList.value = doneList
-            Log.i("Rita", "getViewList doneViewList: ${doneViewList.value}")
-        }
+
+        Log.i("Rita", "createViewList: $list")
+        return list
+    }
+
+
+    fun getViewList() {
+        scheduleViewList.value = createViewList(_scheduleList.value!!)
+        todoViewList.value = createViewList(_todoList.value!!)
+        doneViewList.value = createViewList(_doneList.value!!)
+
+        Log.i("Rita", "getViewList scheduleViewList: ${scheduleViewList.value}")
+        Log.i("Rita", "getViewList todoViewList: ${todoViewList.value}")
+        Log.i("Rita", "getViewList doneViewList: ${doneViewList.value}")
+
         getViewListAlready.value = true
     }
 
 
     fun getViewListForTodoMode() {
-
-        val todoList = mutableListOf<Boolean>()
-        val doneList = mutableListOf<Boolean>()
-        val todoSize = _todoList.value?.size
-        val doneSize = _doneList.value?.size
-
-        if (todoSize != null && todoSize > 0) {
-            for (i in 1..todoSize) {
-                todoList.add(false)
-            }
-            todoViewList.value = todoList
-        }
-        if (doneSize != null && doneSize > 0) {
-            for (i in 1..doneSize) {
-                doneList.add(false)
-            }
-            doneViewList.value = doneList
-        }
+        todoViewList.value = createViewList(_todoList.value!!)
+        doneViewList.value = createViewList(_doneList.value!!)
 
         Log.i("Rita", "getViewListForTodoMode  todo- ${todoViewList.value}")
         Log.i("Rita", "getViewListForTodoMode  done- ${doneViewList.value}")
@@ -473,13 +450,15 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
 
 
     // update check - remove check step1 - checkAdapter
-    fun removeCheck(position: Int) {
+    fun removeCheck(check: Check, position: Int) {
+        Log.i("Rita","removeCheck check: $check, position: $position")
         loadingStatus.value = true
         isCheckRemoved.value = true
         positionUpdate.value = position
+        checkUpdate.value = check
 
         // get Plan for new checkList
-        getPlanByCheck(checkUpdate.value!!)
+        getPlanByCheck(check)
     }
 
 

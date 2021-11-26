@@ -28,10 +28,6 @@ class DoneAdapter(val viewModel: HomeSortViewModel) : ListAdapter<Plan,
             viewModel.changeDoneView(position)
         }
 
-        /*holder.binding.root.setOnClickListener {
-            viewModel.changeDoneView(position)
-        }*/
-
         holder.binding.scheduleBtnCheck.setOnClickListener {
             if (!item.isToDoListDone) {
                 item.isToDoListDone = true
@@ -42,7 +38,7 @@ class DoneAdapter(val viewModel: HomeSortViewModel) : ListAdapter<Plan,
                 item.done_time = null
                 item.doner = null
             }
-            viewModel.getPlanAndChangeStatus(item)
+            viewModel.updatePlanDoneStatus(item)
 
             // get viewList again
             viewModel.startToGetViewListForTodo()

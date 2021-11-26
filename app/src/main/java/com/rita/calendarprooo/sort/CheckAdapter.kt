@@ -19,11 +19,11 @@ class CheckAdapter(val viewModel: HomeSortViewModel) : ListAdapter<Check,
         Log.i("Rita", "CheckAdapter dataSetChanged")
 
         holder.binding.checklistImage.setOnClickListener {
-            viewModel.getCheckAndChangeStatus(item, position)
+            viewModel.changeCheckDoneStatus(item, position)
         }
         holder.binding.checklistBtnRemoved.setOnClickListener {
             Log.i("Rita", "homeSort remove btn clicked")
-            viewModel.getCheckAndRemoveItem(item, position)
+            viewModel.removeCheck(item, position)
             notifyDataSetChanged()
         }
 

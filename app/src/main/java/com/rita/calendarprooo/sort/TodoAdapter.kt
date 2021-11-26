@@ -30,10 +30,6 @@ class TodoAdapter(val viewModel: HomeSortViewModel) : ListAdapter<Plan,
             viewModel.changeTodoView(position)
         }
 
-        /*holder.binding.root.setOnClickListener {
-            viewModel.changeTodoView(position)
-        }*/
-
         holder.binding.scheduleBtnUncheck.setOnClickListener {
             if (!item.isToDoListDone) {
                 item.isToDoListDone = true
@@ -44,7 +40,7 @@ class TodoAdapter(val viewModel: HomeSortViewModel) : ListAdapter<Plan,
                 item.done_time = null
                 item.doner = null
             }
-            viewModel.getPlanAndChangeStatus(item)
+            viewModel.updatePlanDoneStatus(item)
 
             // get viewList again
             viewModel.startToGetViewListForTodo()

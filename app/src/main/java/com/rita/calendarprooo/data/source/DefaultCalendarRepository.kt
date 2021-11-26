@@ -46,6 +46,18 @@ class DefaultCalendarRepository(
         return remoteDataSource.getPlanByCheck(check)
     }
 
+    override fun getSortLivePlansToday(selectedStartTime: Long, selectedEndTime: Long, user: User,
+                                       category: String):
+            MutableLiveData<List<Plan>>{
+        return remoteDataSource.getSortLivePlansToday(selectedStartTime, selectedEndTime,
+            user, category)
+    }
+
+    override fun getSortLivePlansBeforeToday(selectedStartTime: Long, user: User, category: String):
+            MutableLiveData<List<Plan>>{
+        return remoteDataSource.getSortLivePlansBeforeToday(selectedStartTime, user, category)
+    }
+
     override suspend fun createPlan(plan: Plan): Result<Boolean> {
         return remoteDataSource.createPlan(plan)
     }

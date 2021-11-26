@@ -43,6 +43,17 @@ class CalendarLocalDataSource(val context: Context) : CalendarDataSource {
         TODO("Not yet implemented")
     }
 
+    override fun getSortLivePlansToday(selectedStartTime: Long, selectedEndTime: Long, user: User,
+                                       category: String):
+            MutableLiveData<List<Plan>>{
+        TODO("Not yet implemented")
+    }
+
+    override fun getSortLivePlansBeforeToday(selectedStartTime: Long, user: User, category: String):
+            MutableLiveData<List<Plan>>{
+        TODO("Not yet implemented")
+    }
+
     override suspend fun createPlan(plan: Plan): Result<Boolean> {
         TODO("not implemented")
     }

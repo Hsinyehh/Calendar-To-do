@@ -31,8 +31,10 @@ fun convertToTimeStamp(dateSelected: String): List<Long>? {
         var list = listOf<Long>(selectedStartTime, selectedEndTime)
 
         return list
+
     } catch (e: java.text.ParseException) {
         Log.i("Rita", "$e")
+
         return null
     }
 }
@@ -45,7 +47,9 @@ fun stringToTimestamp(dateSelected: String): Long? {
     try {
         val dateSelectedFormat = SimpleDateFormat("dd-MM-yyyy HH:mm").parse(dateSelected)
         Log.i("Rita", "stringToTimestamp: ${dateSelectedFormat.time} ")
+
         return dateSelectedFormat.time
+
     } catch (e: java.text.ParseException) {
         Log.i("Rita", "stringToTimestamp: $e")
         return null

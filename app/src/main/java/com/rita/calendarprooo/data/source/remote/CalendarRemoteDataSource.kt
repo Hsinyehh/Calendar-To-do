@@ -186,8 +186,10 @@ object CalendarRemoteDataSource : CalendarDataSource {
             }
     }
 
-    override suspend fun getPlanByCheck(
-        check: Check): Result<Plan> = suspendCoroutine { continuation ->
+    override suspend fun getPlanByCheck(check: Check):
+            Result<Plan> = suspendCoroutine { continuation ->
+
+        Log.i("Rita","fb - getPlanByCheck check: $check")
 
         val planRef = check.plan_id?.let {
             FirebaseFirestore.getInstance().collection(PATH_PLAN).document(it)
@@ -196,15 +198,77 @@ object CalendarRemoteDataSource : CalendarDataSource {
         planRef!!.get()
             .addOnSuccessListener { document ->
                 val plan : Plan?
+                Log.i("Rita","fb - getPlanByCheck doc"+ document.data)
                 if (document != null) {
-                    plan = document.toObject(Plan::class.java)!!
-                    continuation.resume(Result.Success(plan))
+                    plan = document.toObject(Plan::class.java)
+                    if(plan != null) {
+                        continuation.resume(Result.Success(plan))
+                    }
                 }
             }
             .addOnFailureListener { exception ->
                 Log.d(TAG, "get failed with ", exception)
                 continuation.resume(Result.Error(exception))
             }
+    }
+
+    override fun getSortLivePlansToday(selectedStartTime: Long, selectedEndTime: Long, user: User,
+                              category: String):
+            MutableLiveData<List<Plan>>{
+        val livedata = MutableLiveData<List<Plan>>()
+        FirebaseFirestore.getInstance()
+            .collection(PATH_PLAN)
+            .whereArrayContains("collaborator", user.email)
+            .whereEqualTo("category", category)
+            .whereGreaterThanOrEqualTo("start_time", selectedStartTime)
+            .whereLessThanOrEqualTo("start_time", selectedEndTime)
+            .addSnapshotListener { snapshot, e ->
+                Log.i("Rita", "Today SnapshotListener user email:${user.email} ")
+                e?.let {
+                    Log.i(
+                        "Rita",
+                        "[${this::class.simpleName}] Error getting documents. ${it.message}"
+                    )
+                }
+                val list = mutableListOf<Plan>()
+                for (item in snapshot!!) {
+                    Log.i("Rita", "plan:　${item.data}")
+                    val plan = item.toObject(Plan::class.java)
+                    list.add(plan)
+                }
+                Log.i("Rita", "list onChanged:　$list")
+                livedata.value = list
+            }
+        return livedata
+    }
+
+    override fun getSortLivePlansBeforeToday(selectedStartTime: Long, user: User, category: String):
+            MutableLiveData<List<Plan>>{
+        val livedata = MutableLiveData<List<Plan>>()
+        FirebaseFirestore.getInstance()
+            .collection(PATH_PLAN)
+            .whereArrayContains("collaborator", user.email)
+            .whereEqualTo("category", category)
+            .whereLessThanOrEqualTo("start_time", selectedStartTime)
+            .addSnapshotListener { snapshot, e ->
+                Log.i("Rita", "Before SnapshotListener user email:${user.email} ")
+
+                e?.let {
+                    Log.i(
+                        "Rita",
+                        "[${this::class.simpleName}] Error getting documents. ${it.message}"
+                    )
+                }
+                val list = mutableListOf<Plan>()
+                for (item in snapshot!!) {
+                    val plan = item.toObject(Plan::class.java)
+                    list.add(plan)
+                }
+                Log.i("Rita", "list onChanged:　$list")
+                val filteredList = list.filter { it.end_time!! >= selectedStartTime }
+                livedata.value = filteredList
+            }
+        return livedata
     }
 
     override suspend fun createPlan(plan: Plan): Result<Boolean> =
