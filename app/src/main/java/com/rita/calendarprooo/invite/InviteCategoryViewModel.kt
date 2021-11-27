@@ -115,8 +115,8 @@ class InviteCategoryViewModel(val repository: CalendarRepository) : ViewModel() 
         val list = userTobeInvited.value?.invitationList
 
         invitation.value = Invitation(
-            title = category.value,
-            inviter = user.value?.email,
+            title = category.value!!,
+            inviter = user.value?.email!!,
             collaborator = user.value?.categoryList?.get(categoryPosition.value!!)!!.collaborator
         )
 

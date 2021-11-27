@@ -1,10 +1,7 @@
 package com.rita.calendarprooo.data.source
 
 import androidx.lifecycle.MutableLiveData
-import com.rita.calendarprooo.data.Check
-import com.rita.calendarprooo.data.Plan
-import com.rita.calendarprooo.data.User
-import com.rita.calendarprooo.data.Result
+import com.rita.calendarprooo.data.*
 
 class DefaultCalendarRepository(
     private val remoteDataSource: CalendarDataSource,
@@ -97,5 +94,13 @@ class DefaultCalendarRepository(
     override fun getLiveDone(selectedStartTime: Long, selectedEndTime: Long, user: User):
             MutableLiveData<List<Plan>> {
         return remoteDataSource.getLiveDone(selectedStartTime, selectedEndTime, user)
+    }
+
+    override fun getLiveInvitations(user: User): MutableLiveData<List<Plan>>{
+        return remoteDataSource.getLiveInvitations(user)
+    }
+
+    override suspend fun getPlansByInvitation(item: Invitation): Result<MutableList<Plan>>{
+        return remoteDataSource.getPlansByInvitation(item)
     }
 }

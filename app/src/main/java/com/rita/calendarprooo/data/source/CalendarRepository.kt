@@ -1,10 +1,7 @@
 package com.rita.calendarprooo.data.source
 
 import androidx.lifecycle.MutableLiveData
-import com.rita.calendarprooo.data.Check
-import com.rita.calendarprooo.data.Plan
-import com.rita.calendarprooo.data.Result
-import com.rita.calendarprooo.data.User
+import com.rita.calendarprooo.data.*
 
 interface CalendarRepository {
 
@@ -58,4 +55,8 @@ interface CalendarRepository {
 
     fun getLiveDone(selectedStartTime: Long, selectedEndTime: Long, user: User):
             MutableLiveData<List<Plan>>
+
+    fun getLiveInvitations(user: User): MutableLiveData<List<Plan>>
+
+    suspend fun getPlansByInvitation(item: Invitation): Result<MutableList<Plan>>
 }

@@ -1,19 +1,20 @@
 package com.rita.calendarprooo.invitation
 
-import android.content.ContentValues
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import com.rita.calendarprooo.data.Category
-import com.rita.calendarprooo.data.Invitation
-import com.rita.calendarprooo.data.Plan
-import com.rita.calendarprooo.data.User
+import com.rita.calendarprooo.CalendarProApplication
+import com.rita.calendarprooo.R
+import com.rita.calendarprooo.data.*
 import com.rita.calendarprooo.data.source.CalendarRepository
 import com.rita.calendarprooo.login.UserManager
+import com.rita.calendarprooo.network.LoadApiStatus
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
 
@@ -23,17 +24,21 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
     var user = MutableLiveData<User>()
 
     // Plan
-    var invitationList = MutableLiveData<MutableList<Plan>>()
+    var invitationList = MutableLiveData<List<Plan>>()
+
+    var invitationListReset = MutableLiveData<Boolean>()
 
     var invitationForCategoryList = MutableLiveData<MutableList<Invitation>>()
 
-    var invitationListSize: LiveData<Int> = Transformations.map(invitationList) {
+    var invitationListSize = MutableLiveData<Int>()
+
+    /*var invitationListSize: LiveData<Int> = Transformations.map(invitationList) {
         var size = 0
         if (!it.isNullOrEmpty()) {
             size = it.size
         }
         size
-    }
+    }*/
 
     // Category
     var invitationForCategoryListSize: LiveData<Int> =
@@ -53,81 +58,146 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
 
     var plans = MutableLiveData<MutableList<Plan>>()
 
-    var addCollaboratorForPlan = MutableLiveData<Boolean>()
-
-    var updatePlan = MutableLiveData<Boolean>()
+    var plansUpdate = MutableLiveData<MutableList<Plan>>()
 
     var startToUpdate = MutableLiveData<Boolean>()
 
     val categoryListTobeUpdated = MutableLiveData<MutableList<Category>>()
 
-    val updateCategories = MutableLiveData<Boolean>()
+    val renewCategories = MutableLiveData<Boolean>()
 
     val updateCategoriesForUser = MutableLiveData<Boolean>()
 
     var updateSuccess = MutableLiveData<Boolean>()
 
+    // status: The internal MutableLiveData that stores the status of the most recent request
+    private val _status = MutableLiveData<LoadApiStatus>()
 
-    // Firebase
-    private val db = Firebase.firestore
+    val status: LiveData<LoadApiStatus>
+        get() = _status
 
-    fun readInvitation() {
-        db.collection("plan")
-            .whereArrayContains("invitation", user.value!!.email)
-            .addSnapshotListener { snapshot, e ->
-                if (e != null) {
-                    Log.w(ContentValues.TAG, "Listen failed.", e)
-                    return@addSnapshotListener
+    // error: The internal MutableLiveData that stores the error of the most recent request
+    private val _error = MutableLiveData<String>()
+
+    val error: LiveData<String>
+        get() = _error
+
+    // status for the loading icon of swl
+    private val _refreshStatus = MutableLiveData<Boolean>()
+
+    val refreshStatus: LiveData<Boolean>
+        get() = _refreshStatus
+
+    // Create a Coroutine scope using a job to be able to cancel when needed
+    private var viewModelJob = Job()
+
+    // the Coroutine runs using the Main (UI) dispatcher
+    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
+
+
+    fun convertToSize(list: List<Plan>) {
+        invitationListSize.value = list.size
+    }
+
+
+    fun getInvitations() {
+        invitationList = repository.getLiveInvitations(user.value!!)
+
+        invitationListReset.value = true
+    }
+
+
+    fun updatePlan(plan: Plan) {
+
+        coroutineScope.launch {
+
+            _status.value = LoadApiStatus.LOADING
+
+            when (val result = repository.updatePlanExtra(plan)) {
+                is Result.Success -> {
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
+                    loadingStatus.value = false
+                    Log.i("Rita", "invitation VM updatePlan: $result")
                 }
-                if (snapshot != null && !snapshot.isEmpty) {
-                    val list = mutableListOf<Plan>()
-                    for (item in snapshot) {
-                        val plan = item.toObject(Plan::class.java)
-                        list.add(plan)
-                    }
-                    Log.i("Rita", "Invitation list onChanged:　$list")
-                    invitationList.value = list
-                } else {
-                    val nullList = mutableListOf<Plan>()
-                    Log.d(ContentValues.TAG, "Current data: null: $nullList")
-                    invitationList.value = nullList
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                    Log.i("Rita", "invitation VM updatePlan: $result")
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                    Log.i("Rita", "invitation VM updatePlan: $result")
+                }
+                else -> {
+                    _error.value =
+                        CalendarProApplication.instance.getString(R.string.Error)
+                    _status.value = LoadApiStatus.ERROR
                 }
             }
+        }
     }
+
+
+    fun updateUser(user: User) {
+
+        coroutineScope.launch {
+
+            _status.value = LoadApiStatus.LOADING
+
+            when (val result = repository.updateUserExtra(user)) {
+                is Result.Success -> {
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
+                    loadingStatus.value = false
+                    Log.i("Rita", "invitation VM updateUser: $result")
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                    Log.i("Rita", "invitation VM updateUser: $result")
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                    Log.i("Rita", "invitation VM updateUser: $result")
+                }
+                else -> {
+                    _error.value =
+                        CalendarProApplication.instance.getString(R.string.Error)
+                    _status.value = LoadApiStatus.ERROR
+                }
+            }
+        }
+    }
+
 
     fun acceptOrDeclineInvitation(plan: Plan, isAccepted: Boolean) {
         loadingStatus.value = true
         // update plan collaborator & invitation
-        val invitationGet = plan.invitation
-        val collaboratorGet = plan.collaborator
+        val invitationUpdate = plan.invitation
+        val collaboratorUpdate = plan.collaborator
 
-        val indexRemoved = invitationGet?.indexOf(user.value!!.email)
+        val indexRemoved = invitationUpdate?.indexOf(user.value!!.email)
         if (indexRemoved != null && indexRemoved >= 0) {
-            invitationGet.removeAt(indexRemoved)
+            invitationUpdate.removeAt(indexRemoved)
         }
         if (isAccepted) {
-            collaboratorGet?.add(user.value!!.email)
+            collaboratorUpdate?.add(user.value!!.email)
         }
 
-        val planRef = db.collection("plan").document(plan.id!!)
-        Log.i("Rita", "updatePlan-planRef: $planRef")
+        plan.invitation = invitationUpdate
+        plan.collaborator = collaboratorUpdate
 
-        planRef
-            .update(
-                "invitation", invitationGet,
-                "collaborator", collaboratorGet,
-            )
-            .addOnSuccessListener {
-                Log.d(ContentValues.TAG, "successfully updated!")
-                loadingStatus.value = false
-            }
-            .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error updating document", e) }
+        updatePlan(plan)
+
     }
 
 
     // update category
 
-    fun updateInvitation(item: Invitation, accepted: Boolean) {
+    fun renewInvitation(item: Invitation, accepted: Boolean) {
         loadingStatus.value = true
         isAccepted.value = accepted
 
@@ -146,53 +216,58 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
     }
 
 
-    fun updateInvitationList(list: MutableList<Invitation>) {
-        val userRef =
-            db.collection("user").document(user.value!!.email)
+    fun updateUserForInvitationList(list: MutableList<Invitation>) {
+        val userRenewal = user.value
+        userRenewal!!.invitationList = list
 
-        userRef
-            .update("invitationList", list)
-            .addOnSuccessListener {
-                Log.d(ContentValues.TAG, "successfully updated!")
+        updateUser(userRenewal)
 
-                if (isAccepted.value == true) {
-                    startToUpdate.value = true
-                }
-            }
-            .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error updating document", e) }
-
+        if (isAccepted.value == true) {
+            startToUpdate.value = true
+        }
     }
 
 
     // get All plans with query for the category
     fun getPlans() {
-        Log.i("Rita", "readPlans user: ${user.value}")
         val item = invitationAccepted.value
 
-        item?.let {
-            db.collection("plan")
-                .whereArrayContains("collaborator", it.inviter!!)
-                .whereEqualTo("category", it.title)
-                .get()
-                .addOnSuccessListener { result ->
-                    val list = mutableListOf<Plan>()
-                    for (document in result) {
-                        Log.d(ContentValues.TAG, "${document.id} => ${document.data}")
-                        val plan = document.toObject(Plan::class.java)
-                        list.add(plan)
-                    }
-                    Log.i("Rita", "list: $list")
-                    plans.value = list
-                    addCollaboratorForPlan.value = true
+        coroutineScope.launch {
+            _status.value = LoadApiStatus.LOADING
+
+            val result = item?.let { repository.getPlansByInvitation(it) }
+
+            plans.value = when (result) {
+                is Result.Success -> {
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
+                    result.data
                 }
-                .addOnFailureListener { exception ->
-                    Log.w(ContentValues.TAG, "Error getting documents.", exception)
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                    null
                 }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                    null
+                }
+                else -> {
+                    _error.value = CalendarProApplication.instance.getString(R.string.error)
+                    _status.value = LoadApiStatus.ERROR
+                    null
+                }
+            }
+            _refreshStatus.value = false
         }
     }
 
+
     fun addCollaboratorForPlan() {
         val list = plans.value
+
+        Log.i("Rita", "addCollaboratorForPlan list: $list")
 
         if (list != null) {
             for (item in list) {
@@ -202,34 +277,31 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
             }
         }
 
-        plans.value = list
-        updatePlan.value = true
+        plansUpdate.value = list
     }
 
 
     // update collaborator for All plans with loop in fragment
-    fun updatePlan(plan: Plan) {
-        val planRef = plan.let { db.collection("plan").document(plan.id!!) }
-
-        planRef
-            .update(
-                "collaborator", plan.collaborator,
-            )
-            .addOnSuccessListener { Log.d(ContentValues.TAG, "successfully updated!") }
-            .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error updating document", e) }
+    fun updateCollaboratorForPlans(list: MutableList<Plan>) {
+            for (plan in list) {
+                updatePlan(plan)
+            }
+        renewCategories.value = true
     }
 
+
     // update user's categoryList
-    fun updateCategories() {
+    fun renewCategories() {
         val item = invitationAccepted.value
         val title = item!!.title
         val categoryList = user.value!!.categoryList
         val index = categoryList.indexOfFirst { it.name == title }
         Log.i("Rita", "updateCategories index:　$index")
 
+        // if the category isn't in User's categoryList, then update it
         if (index == -1) {
             val categoryAdded = Category(
-                name = title!!,
+                name = title,
                 isSelected = false,
                 mutableListOf<String>(user.value!!.email)
             )
@@ -249,36 +321,31 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
             loadingStatus.value = false
         }
 
-
     }
 
+
     fun updateCategoriesForUser() {
-        val userRef = user.value?.let { db.collection("user").document(it.email) }
-        Log.i("Rita", "updateUserCategories - userRef: $userRef")
-        userRef!!
-            .update("categoryList", categoryListTobeUpdated.value)
-            .addOnSuccessListener {
-                Log.d(ContentValues.TAG, "successfully updated!")
-                loadingStatus.value = false
-            }
-            .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error updating document", e) }
+        val userRenewal = user.value
+        userRenewal!!.categoryList = categoryListTobeUpdated.value!!
+
+        updateUser(userRenewal)
+
+        loadingStatus.value = false
+
     }
 
 
     fun doneWritten() {
         invitationAccepted.value = null
-        addCollaboratorForPlan.value = null
-        updatePlan.value = null
         startToUpdate.value = null
         updateSuccess.value = null
         categoryListTobeUpdated.value = null
-        updateCategories.value = null
+        renewCategories.value = null
         updateCategoriesForUser.value = null
     }
 
 
     private fun getUserData(userId: String) {
-        Log.d("Rita", "userId: $userId")
         user = repository.getUser(userId)
         UserManager.user = repository.getUser(userId)
     }
@@ -287,11 +354,9 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
     init {
 
         invitationList.value = null
-        addCollaboratorForPlan.value = null
-        updatePlan.value = null
         updateSuccess.value = null
         categoryListTobeUpdated.value = null
-        updateCategories.value = null
+        renewCategories.value = null
         updateCategoriesForUser.value = null
 
         UserManager.userToken?.let { getUserData(it) }

@@ -6,10 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.FirebaseFirestore
 import com.rita.calendarprooo.CalendarProApplication
 import com.rita.calendarprooo.R
-import com.rita.calendarprooo.data.Check
-import com.rita.calendarprooo.data.Plan
-import com.rita.calendarprooo.data.User
-import com.rita.calendarprooo.data.Result
+import com.rita.calendarprooo.data.*
 import com.rita.calendarprooo.data.source.CalendarDataSource
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -327,7 +324,8 @@ object CalendarRemoteDataSource : CalendarDataSource {
 
             planRef!!
                 .update("invitation", plan.invitation,
-                "categoryList", plan.categoryList)
+                "categoryList", plan.categoryList,
+                    "collaborator", plan.collaborator)
                 .addOnSuccessListener {
                     Log.d(TAG, "DocumentSnapshot successfully updated!")
                     continuation.resume(Result.Success(true))
@@ -495,6 +493,7 @@ object CalendarRemoteDataSource : CalendarDataSource {
     override fun getLiveDone(selectedStartTime: Long, selectedEndTime: Long, user: User):
             MutableLiveData<List<Plan>> {
         val livedata = MutableLiveData<List<Plan>>()
+
         FirebaseFirestore.getInstance()
             .collection(PATH_PLAN)
             .whereArrayContains("collaborator", user.email)
@@ -522,4 +521,66 @@ object CalendarRemoteDataSource : CalendarDataSource {
         Log.i("Rita", "livedata:　${livedata.value}")
         return livedata
     }
+
+    override fun getLiveInvitations(user: User): MutableLiveData<List<Plan>>{
+        val livedata = MutableLiveData<List<Plan>>()
+
+        FirebaseFirestore.getInstance()
+            .collection(PATH_PLAN)
+            .whereArrayContains("invitation", user.email)
+            .addSnapshotListener { snapshot, e ->
+                e?.let {
+                    Log.i(
+                        "Rita",
+                        "[${this::class.simpleName}] Error getting documents. ${it.message}"
+                    )
+                }
+                if (snapshot != null && !snapshot.isEmpty) {
+                    val list = mutableListOf<Plan>()
+                    for (item in snapshot) {
+                        val plan = item.toObject(Plan::class.java)
+                        list.add(plan)
+                    }
+                    Log.i("Rita", "Invitation list onChanged:　$list")
+                    livedata.value = list
+                } else {
+                    val nullList = mutableListOf<Plan>()
+                    Log.d(TAG, "Current data: null: $nullList")
+                    livedata.value = nullList
+                }
+            }
+        return livedata
+    }
+
+    override suspend fun getPlansByInvitation(item: Invitation):
+            Result<MutableList<Plan>> = suspendCoroutine { continuation ->
+
+        FirebaseFirestore.getInstance()
+            .collection(PATH_PLAN)
+            .whereArrayContains("collaborator", item.inviter)
+            .whereEqualTo("category", item.title)
+            .get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.i("Rita","fb - getPlansByInvitation result.size"+ task.result.size())
+                    val list = mutableListOf<Plan>()
+                    for (document in task.result!!) {
+                        Log.i("Rita","fb - getPlansByInvitation doc"+ document.id + " =>"  + document.data)
+
+                        val plan = document.toObject(Plan::class.java)
+                        list.add(plan)
+                    }
+                    continuation.resume(Result.Success(list))
+                } else {
+                    task.exception?.let {
+                        Log.w("Rita",
+                            "[${this::class.simpleName}] Error getting documents. ${it.message}")
+                        continuation.resume(Result.Error(it))
+                        return@addOnCompleteListener
+                    }
+                    continuation.resume(Result.Fail(CalendarProApplication.instance.getString(R.string.error)))
+                }
+            }
+    }
+
 }
