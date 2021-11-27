@@ -36,9 +36,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
     }
 
     private lateinit var mMap: GoogleMap
-
     private val DEFAULT_ZOOM: Float = 15f
-
     private val AUTOCOMPLETE_REQUEST_CODE = 1
 
     override fun onCreateView(
@@ -94,7 +92,9 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
             }
         })
 
+
         return binding.root
+
 
     }
 

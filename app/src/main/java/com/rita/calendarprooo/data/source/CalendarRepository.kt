@@ -3,12 +3,13 @@ package com.rita.calendarprooo.data.source
 import androidx.lifecycle.MutableLiveData
 import com.rita.calendarprooo.data.Check
 import com.rita.calendarprooo.data.Plan
-import com.rita.calendarprooo.data.User
 import com.rita.calendarprooo.data.Result
+import com.rita.calendarprooo.data.User
 
 interface CalendarRepository {
+
     suspend fun getPlansToday(selectedStartTime: Long, selectedEndTime: Long, user: User):
-    Result<List<Plan>>
+            Result<List<Plan>>
 
     suspend fun getPlansBeforeToday(selectedStartTime: Long, user: User):
             Result<List<Plan>>
@@ -28,8 +29,10 @@ interface CalendarRepository {
 
     suspend fun getPlanByCheck(check: Check): Result<Plan>
 
-    fun getSortLivePlansToday(selectedStartTime: Long, selectedEndTime: Long, user: User,
-                              category: String):
+    fun getSortLivePlansToday(
+        selectedStartTime: Long, selectedEndTime: Long, user: User,
+        category: String
+    ):
             MutableLiveData<List<Plan>>
 
     fun getSortLivePlansBeforeToday(selectedStartTime: Long, user: User, category: String):

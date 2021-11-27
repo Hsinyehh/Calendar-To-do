@@ -9,15 +9,16 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.rita.calendarprooo.R
 import com.rita.calendarprooo.databinding.DialogAddCategoryBinding
+import com.rita.calendarprooo.ext.getVmFactory
+import com.rita.calendarprooo.home.HomeViewModel
 
 class AddCategoryDialog : DialogFragment() {
 
-    private val viewModel: AddCategoryViewModel by lazy {
-        ViewModelProvider(this).get(AddCategoryViewModel::class.java)
-    }
+    private val viewModel by viewModels<AddCategoryViewModel> { getVmFactory() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,10 +35,10 @@ class AddCategoryDialog : DialogFragment() {
         viewModel.planGet.value = AddCategoryDialogArgs.fromBundle(requireArguments()).plan
 
 
-        viewModel.planGet.observe(viewLifecycleOwner, {
-            Log.i("Rita", "planGet observe: $it")
+        viewModel.currentUser.observe(viewLifecycleOwner, {
+            Log.i("Rita", "currentUser observe: $it")
             it?.let {
-                viewModel.getPlanFromUserFirst()
+                viewModel.getCategoryFromUserFirst()
             }
         })
 
@@ -45,11 +46,14 @@ class AddCategoryDialog : DialogFragment() {
         viewModel.startToCreate.observe(viewLifecycleOwner, {
             Log.i("Rita", "startToCreate observe: $it")
             if (it == true) {
-                if (viewModel.planGet.value?.id == "") {
+                // if the plan is created
+                if (viewModel.isPlanCreated.value!!) {
+
                     viewModel.startToPrepare.value = true
                 }
+                // if the plan is edited
                 else {
-                    viewModel.getCategoryFromThePlan()
+                    viewModel.getCategoryFromPlan()
                 }
             }
         })
@@ -66,9 +70,11 @@ class AddCategoryDialog : DialogFragment() {
         viewModel.startToUpdate.observe(viewLifecycleOwner, {
             Log.i("Rita", "startToUpdate observe: $it")
             if (it == true) {
-                if (viewModel.planGet.value?.id !== "") {
-                    viewModel.updateThePlan()
+                if (!viewModel.isPlanCreated.value!!) {
+                    // if the plan is edited, update the plan's categoryList
+                    viewModel.updatePlan()
                 }
+                // if the plan is edited or created, update the user's categoryList
                 viewModel.updateUser()
             }
         })
@@ -76,17 +82,20 @@ class AddCategoryDialog : DialogFragment() {
 
         viewModel.startToNavigate.observe(viewLifecycleOwner, {
             Log.i("Rita", "startToNavigate observe: $it")
-            if (it == true) {
-                dismiss()
-            }
-            else if (it == false) {
-                Toast.makeText(context, "The input can't be blank!", Toast.LENGTH_LONG).show()
+            it?.let {
+                if (it) {
+                    dismiss()
+                } else {
+                    Toast.makeText(context, "The input can't be blank!", Toast.LENGTH_LONG).show()
+                }
+                viewModel.doneNavigated()
             }
         })
 
 
-        viewModel.categoryListFromUser.observe(viewLifecycleOwner, {
-            Log.i("Rita", "categoryListFromUser observe: $it")
+        // AutoComplete Input
+        viewModel.categoryListForAutoInput.observe(viewLifecycleOwner, {
+            Log.i("Rita", "categoryListForAutoInput observe: $it")
             it?.let {
                 val adapter = ArrayAdapter(
                     requireContext(),
@@ -98,17 +107,13 @@ class AddCategoryDialog : DialogFragment() {
         })
 
 
-        viewModel.categoryList.observe(viewLifecycleOwner, {
-            Log.i("Rita", "categoryList observe: $it")
-            viewModel.convertToUnselectedList(it)
-        })
-
-
         binding.inviteBtnCancel.setOnClickListener {
             dismiss()
         }
 
+
         return binding.root
+
 
     }
 }

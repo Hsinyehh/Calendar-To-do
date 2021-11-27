@@ -319,7 +319,9 @@ class HomeSortFragment : Fragment() {
             override fun onWeekChange(position: Int) {}
         })
 
+
         return binding.root
+
 
     }
 

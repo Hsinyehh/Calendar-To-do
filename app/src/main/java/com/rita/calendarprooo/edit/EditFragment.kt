@@ -42,6 +42,7 @@ class EditFragment : Fragment() {
         viewModel.planGet.value = EditFragmentArgs.fromBundle(requireArguments()).plan
         viewModel.location.value = EditFragmentArgs.fromBundle(requireArguments()).address
 
+
         // Time&Date Picker binding
         val startTimePicker = binding.startTimepicker
         val startDatePicker = binding.startDatepicker
@@ -49,9 +50,19 @@ class EditFragment : Fragment() {
         val endDatePicker = binding.endDatepicker
 
 
+        viewModel.updatedUser.observe(viewLifecycleOwner, {
+            Log.i("Rita", "updatedUser observe: $it")
+            it?.let {
+                // if plan is created, then get category from User
+                viewModel.getCategoryFromUser()
+            }
+        })
+
+
         val adapter = CategoryAdapter(viewModel)
         binding.categoryList.adapter = adapter
         viewModel.categoryList.observe(viewLifecycleOwner, {
+            Log.i("Rita", "categoryList observe: $it")
             adapter.submitList(it)
             adapter.notifyDataSetChanged()
         })
@@ -89,10 +100,8 @@ class EditFragment : Fragment() {
                 endDatePicker.init(list[0], list[1] - 1, list[2], null)
             }
 
-            it?.let{
-                if (it.categoryList.isNullOrEmpty()) {
-                    viewModel.categoryList.value = viewModel.currentUser!!.categoryList
-                } else {
+            it?.let {
+                if (!it.categoryList.isNullOrEmpty()) {
                     viewModel.categoryList.value = it.categoryList
                 }
             }
@@ -161,8 +170,8 @@ class EditFragment : Fragment() {
         // update is done, then navigate to home page
         viewModel.loadingStatus.observe(viewLifecycleOwner, {
             Log.i("Rita", "loadingStatus observe: $it")
-            it?.let{
-                if(!it){
+            it?.let {
+                if (!it) {
                     view?.findNavController()?.navigate(R.id.navigate_to_home_fragment)
                     viewModel.doneNavigated()
                 }
@@ -176,7 +185,7 @@ class EditFragment : Fragment() {
         }
 
 
-        // TimePicker
+        // TimePicker setup as 24 hrs format
         binding.startTimepicker.setIs24HourView(true)
         binding.endTimepicker.setIs24HourView(true)
 
@@ -203,6 +212,7 @@ class EditFragment : Fragment() {
 
 
         return binding.root
+
 
     }
 

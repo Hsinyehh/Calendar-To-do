@@ -3,6 +3,7 @@ package com.rita.calendarprooo.factory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.rita.calendarprooo.MainViewModel
+import com.rita.calendarprooo.addcategory.AddCategoryViewModel
 import com.rita.calendarprooo.data.source.CalendarRepository
 import com.rita.calendarprooo.home.HomeViewModel
 import com.rita.calendarprooo.invitation.InvitationViewModel
@@ -43,6 +44,9 @@ class RepoViewModelFactory constructor(
 
                 isAssignableFrom(InvitationViewModel::class.java) ->
                     InvitationViewModel(repository)
+
+                isAssignableFrom(AddCategoryViewModel::class.java) ->
+                    AddCategoryViewModel(repository)
 
                 else ->
                     throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")

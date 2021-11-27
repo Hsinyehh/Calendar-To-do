@@ -73,7 +73,9 @@ class InviteDialog : DialogFragment() {
             }
         })
 
+
         return binding.root
+
 
     }
 }

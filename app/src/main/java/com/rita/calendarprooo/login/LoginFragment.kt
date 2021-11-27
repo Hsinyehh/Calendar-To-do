@@ -89,7 +89,9 @@ class LoginFragment : Fragment() {
             }
         })
 
+
         return binding.root
+
 
     }
 
@@ -126,6 +128,7 @@ class LoginFragment : Fragment() {
             }
         }
     }
+
 
     // [START handleSignInResult]
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {

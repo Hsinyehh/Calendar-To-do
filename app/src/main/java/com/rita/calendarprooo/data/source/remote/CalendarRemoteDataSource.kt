@@ -326,7 +326,8 @@ object CalendarRemoteDataSource : CalendarDataSource {
             }
 
             planRef!!
-                .update("invitation", plan.invitation)
+                .update("invitation", plan.invitation,
+                "categoryList", plan.categoryList)
                 .addOnSuccessListener {
                     Log.d(TAG, "DocumentSnapshot successfully updated!")
                     continuation.resume(Result.Success(true))
@@ -346,7 +347,8 @@ object CalendarRemoteDataSource : CalendarDataSource {
             Log.i("Rita", "updateUser - userRef: $userRef")
 
             userRef
-                .update("invitationList", user.invitationList)
+                .update("invitationList", user.invitationList,
+                    "categoryList", user.categoryList)
                 .addOnSuccessListener {
                     Log.d(TAG, "DocumentSnapshot successfully updated!")
                     continuation.resume(Result.Success(true))

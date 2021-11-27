@@ -152,7 +152,9 @@ class ResultFragment : Fragment() {
             override fun onWeekChange(position: Int) {}
         })
 
+
         return binding.root
+
 
     }
 

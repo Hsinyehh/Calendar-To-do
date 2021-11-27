@@ -10,7 +10,7 @@ data class User (
     val email : String = "",
     val name : String? = "",
     val photo : String? = "",
-    val categoryList : MutableList<Category> = mutableListOf<Category>(),
+    var categoryList : MutableList<Category> = mutableListOf<Category>(),
     var invitationList : MutableList<Invitation> = mutableListOf<Invitation>()
 ) : Parcelable {
     constructor(parcel: Parcel) : this(

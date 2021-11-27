@@ -99,7 +99,9 @@ class InviteCategoryDialog : DialogFragment() {
             }
         })
 
+
         return binding.root
+
 
     }
 }

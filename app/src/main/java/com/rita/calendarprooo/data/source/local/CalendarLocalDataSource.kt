@@ -4,19 +4,19 @@ import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.rita.calendarprooo.data.Check
 import com.rita.calendarprooo.data.Plan
+import com.rita.calendarprooo.data.Result
 import com.rita.calendarprooo.data.User
 import com.rita.calendarprooo.data.source.CalendarDataSource
-import com.rita.calendarprooo.data.Result
-import kotlin.coroutines.suspendCoroutine
 
 class CalendarLocalDataSource(val context: Context) : CalendarDataSource {
+
     override suspend fun getPlansToday(selectedStartTime: Long, selectedEndTime: Long, user: User):
-            Result<List<Plan>>{
+            Result<List<Plan>> {
         TODO("not implemented")
     }
 
     override suspend fun getPlansBeforeToday(selectedStartTime: Long, user: User):
-            Result<List<Plan>>{
+            Result<List<Plan>> {
         TODO("not implemented")
     }
 
@@ -40,18 +40,20 @@ class CalendarLocalDataSource(val context: Context) : CalendarDataSource {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getPlanByCheck(check: Check): Result<Plan>{
+    override suspend fun getPlanByCheck(check: Check): Result<Plan> {
         TODO("Not yet implemented")
     }
 
-    override fun getSortLivePlansToday(selectedStartTime: Long, selectedEndTime: Long, user: User,
-                                       category: String):
-            MutableLiveData<List<Plan>>{
+    override fun getSortLivePlansToday(
+        selectedStartTime: Long, selectedEndTime: Long, user: User,
+        category: String
+    ):
+            MutableLiveData<List<Plan>> {
         TODO("Not yet implemented")
     }
 
     override fun getSortLivePlansBeforeToday(selectedStartTime: Long, user: User, category: String):
-            MutableLiveData<List<Plan>>{
+            MutableLiveData<List<Plan>> {
         TODO("Not yet implemented")
     }
 
@@ -59,19 +61,19 @@ class CalendarLocalDataSource(val context: Context) : CalendarDataSource {
         TODO("not implemented")
     }
 
-    override suspend fun updatePlan(plan: Plan): Result<Boolean>{
+    override suspend fun updatePlan(plan: Plan): Result<Boolean> {
         TODO("not implemented")
     }
 
-    override suspend fun updatePlanExtra(plan: Plan): Result<Boolean>{
+    override suspend fun updatePlanExtra(plan: Plan): Result<Boolean> {
         TODO("not implemented")
     }
 
-    override suspend fun updateUserExtra(user: User): Result<Boolean>{
+    override suspend fun updateUserExtra(user: User): Result<Boolean> {
         TODO("not implemented")
     }
 
-    override suspend fun getUserByEmail(email: String): Result<User>{
+    override suspend fun getUserByEmail(email: String): Result<User> {
         TODO("not implemented")
     }
 
@@ -83,11 +85,11 @@ class CalendarLocalDataSource(val context: Context) : CalendarDataSource {
         TODO("Not yet implemented")
     }
 
-    override suspend fun updateUser(user: User): Result<Boolean>{
+    override suspend fun updateUser(user: User): Result<Boolean> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun checkUserCreated(user: User): Result<Boolean>{
+    override suspend fun checkUserCreated(user: User): Result<Boolean> {
         TODO("Not yet implemented")
     }
 

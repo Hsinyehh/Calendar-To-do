@@ -41,11 +41,14 @@ class AlarmDialog : DialogFragment() {
             inflater, R.layout.dialog_alarm, container, false
         )
 
+
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+
         // safe args
         viewModel.plan.value = InviteDialogArgs.fromBundle(requireArguments()).plan
+
 
         // TimePicker
         binding.alarmTimepicker.setIs24HourView(true)
@@ -91,9 +94,12 @@ class AlarmDialog : DialogFragment() {
             dismiss()
         }
 
+
         return binding.root
 
+
     }
+
 
     private fun createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
@@ -109,6 +115,7 @@ class AlarmDialog : DialogFragment() {
             requireActivity().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
     }
+
 
     private fun setAlarm(time: Long, plan: Plan) {
         val timeShowed = plan.start_time?.let { timestampToString(it) } + "  -  " +

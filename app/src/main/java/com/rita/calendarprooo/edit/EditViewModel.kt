@@ -8,10 +8,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.rita.calendarprooo.CalendarProApplication
 import com.rita.calendarprooo.R
-import com.rita.calendarprooo.data.Category
-import com.rita.calendarprooo.data.Check
-import com.rita.calendarprooo.data.Plan
-import com.rita.calendarprooo.data.Result
+import com.rita.calendarprooo.data.*
 import com.rita.calendarprooo.data.source.CalendarRepository
 import com.rita.calendarprooo.ext.stringToTimestamp
 import com.rita.calendarprooo.login.UserManager
@@ -26,7 +23,9 @@ class EditViewModel(plan: Plan, val repository: CalendarRepository) : ViewModel(
 
     val loadingStatus = MutableLiveData<Boolean?>()
 
-    var currentUser = UserManager.user.value
+    var currentUser = UserManager.user
+
+    var updatedUser = MutableLiveData<User>()
 
     var planGet = MutableLiveData<Plan?>()
 
@@ -97,12 +96,12 @@ class EditViewModel(plan: Plan, val repository: CalendarRepository) : ViewModel(
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
 
-
     fun toToListModeChanged() {
         Log.i("Rita", "editVM isTodoList ${isTodoList.value}")
         isTodoList.value = isTodoList.value == false
         Log.i("Rita", "editVM isTodoList changed ${isTodoList.value}")
     }
+
 
     fun checkListTextCreated() {
         val editCheckList = checkList.value
@@ -125,6 +124,7 @@ class EditViewModel(plan: Plan, val repository: CalendarRepository) : ViewModel(
         checkList.value = editCheckList
     }
 
+
     fun checkListTextRemoved(position: Int) {
         val listGet = checkList.value
         listGet?.removeAt(position)
@@ -132,9 +132,11 @@ class EditViewModel(plan: Plan, val repository: CalendarRepository) : ViewModel(
         checkList.value = listGet
     }
 
+
     fun clearText() {
         checkText.value = ""
     }
+
 
     fun prepareNewPlan() {
         val plan = Plan(
@@ -152,8 +154,8 @@ class EditViewModel(plan: Plan, val repository: CalendarRepository) : ViewModel(
             checkList = checkList.value,
             isToDoList = isTodoList.value,
             isToDoListDone = false,
-            owner = currentUser!!.email,
-            owner_name = currentUser!!.name,
+            owner = currentUser.value!!.email,
+            owner_name = currentUser.value!!.name,
             invitation = mutableListOf<String>(),
             collaborator = collaborator.value,
             order_id = 1
@@ -161,6 +163,7 @@ class EditViewModel(plan: Plan, val repository: CalendarRepository) : ViewModel(
         Log.i("Rita", "new plan: $plan")
         newPlan.value = plan
     }
+
 
     fun preparePlan() {
         val plan = Plan(
@@ -181,6 +184,7 @@ class EditViewModel(plan: Plan, val repository: CalendarRepository) : ViewModel(
         Log.i("Rita", "new plan: $plan")
         newPlan.value = plan
     }
+
 
     fun updatePlan(plan: Plan) {
 
@@ -213,6 +217,7 @@ class EditViewModel(plan: Plan, val repository: CalendarRepository) : ViewModel(
             }
         }
     }
+
 
     fun createPlan(plan: Plan) {
 
@@ -268,15 +273,18 @@ class EditViewModel(plan: Plan, val repository: CalendarRepository) : ViewModel(
         categoryList.value = categoryListGet
     }
 
+
     fun convertToTimestamp(startDateSelected: String, endDateSelected: String){
         start_time.value = stringToTimestamp(startDateSelected)
         end_time.value = stringToTimestamp(endDateSelected)
         doneConverted.value = true
     }
 
+
     fun doneConverted() {
         doneConverted.value = null
     }
+
 
     fun doneNavigated() {
         newPlan.value = null
@@ -285,7 +293,23 @@ class EditViewModel(plan: Plan, val repository: CalendarRepository) : ViewModel(
     }
 
 
+    private fun getUserData(){
+        updatedUser = repository.getUser(UserManager.userToken!!)
+    }
+
+
+    fun getCategoryFromUser() {
+        if(editStatus.value != true) {
+            categoryList.value = updatedUser.value?.categoryList
+        }
+    }
+
+
+
     init {
+
+        getUserData()
+
         title.value = plan.title ?: ""
         description.value = plan.description ?: ""
         start_time.value = plan.start_time
@@ -302,7 +326,7 @@ class EditViewModel(plan: Plan, val repository: CalendarRepository) : ViewModel(
             categoryStatus.value = Category(plan.category!!, true)
         }
         categoryPosition.value = plan.categoryPosition
-        collaborator.value = mutableListOf(currentUser!!.email)
+        collaborator.value = mutableListOf(currentUser.value!!.email)
     }
 
 }
