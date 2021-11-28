@@ -15,8 +15,8 @@ android {
         applicationId "com.rita.calendarprooo"
         minSdk 29
         targetSdk 31
-        versionCode 8
-        versionName "3.2.1"
+        versionCode 9
+        versionName "3.3.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
