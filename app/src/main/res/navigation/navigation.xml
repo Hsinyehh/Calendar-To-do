@@ -88,7 +88,9 @@
         app:destination="@id/editFragment" />
     <action
         android:id="@+id/navigate_to_home_fragment"
-        app:destination="@id/homeFragment" />
+        app:destination="@id/homeFragment"
+        app:popUpTo="@id/editFragment"
+        app:popUpToInclusive="true" />
     <action
         android:id="@+id/navigate_to_invite_fragment"
         app:destination="@id/inviteFragment" />
@@ -97,7 +99,9 @@
         app:destination="@id/addCategoryDialog" />
     <action
         android:id="@+id/navigate_to_login_fragment"
-        app:destination="@id/loginFragment" />
+        app:destination="@id/loginFragment"
+        app:popUpTo="@id/homeFragment"
+        app:popUpToInclusive="true" />
     <action
         android:id="@+id/navigate_to_invite_category_dialog"
         app:destination="@id/inviteCategoryDialog" />

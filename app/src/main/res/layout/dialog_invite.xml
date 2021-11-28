@@ -61,11 +61,13 @@
 
         <TextView
             android:id="@+id/invite_text_title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/invite_image_title"
             app:layout_constraintTop_toBottomOf="@id/separation_line"
             app:title="@{viewModel.plan}"
@@ -78,16 +80,18 @@
             android:layout_marginStart="29dp"
             android:layout_marginTop="16dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/invite_image_title"
+            app:layout_constraintTop_toBottomOf="@id/invite_text_title"
             app:srcCompat="@drawable/time__2_" />
 
         <TextView
             android:id="@+id/invite_text_time"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/invite_image_time"
             app:layout_constraintTop_toBottomOf="@id/invite_text_title"
             app:time="@{viewModel.plan}"

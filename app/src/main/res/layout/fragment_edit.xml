@@ -51,11 +51,11 @@
                     android:layout_height="15dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="30dp"
-                    android:textSize="15sp"
                     android:onClick="@{()->viewModel.toToListModeChanged()}"
+                    android:src="@{viewModel.isTodoList==true? @drawable/check:@drawable/uncheck}"
+                    android:textSize="15sp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:src="@{viewModel.isTodoList==true? @drawable/check:@drawable/uncheck}" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
 
                 <TextView
@@ -92,8 +92,8 @@
                     android:layout_marginEnd="16dp"
                     android:ems="30"
                     android:inputType="textPersonName"
-                    android:text="@={viewModel.title}"
                     android:maxLength="30"
+                    android:text="@={viewModel.title}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/text_title" />
@@ -117,8 +117,8 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
                     android:ems="30"
-                    android:maxLength="30"
                     android:inputType="textPersonName"
+                    android:maxLength="30"
                     android:text="@={viewModel.description}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -214,10 +214,10 @@
                         android:layout_marginStart="5dp"
                         android:layout_marginEnd="30dp"
                         android:hint="Add your task"
-                        android:inputType="textPersonName"
-                        android:text="@={viewModel.checkText}"
-                        android:maxLength="30"
                         android:imeOptions="actionDone"
+                        android:inputType="textPersonName"
+                        android:maxLength="30"
+                        android:text="@={viewModel.checkText}"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/checklist_image"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -239,14 +239,14 @@
 
                 <TextView
                     android:id="@+id/text_location"
+                    style="@style/edit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:text="@string/location"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/check_list_add"
-                    style="@style/edit" />
+                    app:layout_constraintTop_toBottomOf="@id/check_list_add" />
 
                 <EditText
                     android:id="@+id/editText_location"
@@ -257,8 +257,8 @@
                     android:layout_marginTop="2dp"
                     android:layout_marginEnd="16dp"
                     android:ems="30"
-                    android:maxLength="100"
                     android:inputType="textPersonName"
+                    android:maxLength="100"
                     android:text="@={viewModel.location}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -266,64 +266,69 @@
 
                 <TextView
                     android:id="@+id/text_start_time"
+                    style="@style/edit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:text="@string/start_time"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/editText_location"
-                    style="@style/edit" />
+                    app:layout_constraintTop_toBottomOf="@id/editText_location" />
 
-
-
-                <DatePicker
-                    android:id="@+id/start_datepicker"
-                    android:layout_width="230dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="-55dp"
-                    android:calendarViewShown="false"
-                    android:datePickerMode="spinner"
-                    android:scaleX="0.8"
-                    android:scaleY="0.65"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/text_start_time" />
 
                 <TimePicker
                     android:id="@+id/start_timepicker"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="-55dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginStart="-20dp"
+                    android:layout_marginTop="-45dp"
+                    android:layout_marginEnd="10dp"
                     android:scaleX="0.8"
                     android:scaleY="0.6"
                     android:timePickerMode="spinner"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/start_datepicker"
+                    app:layout_constraintTop_toBottomOf="@id/text_start_time" />
+
+                <DatePicker
+                    android:id="@+id/start_datepicker"
+                    android:layout_width="230dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="-45dp"
+                    android:layout_marginEnd="-20dp"
+                    android:calendarViewShown="false"
+                    android:datePickerMode="spinner"
+                    android:scaleX="0.8"
+                    android:scaleY="0.65"
+                    app:layout_constraintEnd_toStartOf="@id/start_timepicker"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/text_start_time" />
 
                 <TextView
                     android:id="@+id/text_end_time"
+                    style="@style/edit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="110dp"
+                    android:layout_marginTop="130dp"
                     android:text="@string/end_time"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/text_start_time"
-                    style="@style/edit" />
+                    app:layout_constraintTop_toBottomOf="@id/text_start_time" />
 
 
                 <DatePicker
                     android:id="@+id/end_datepicker"
                     android:layout_width="230dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="-55dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="-45dp"
+                    android:layout_marginEnd="-20dp"
                     android:calendarViewShown="false"
                     android:datePickerMode="spinner"
                     android:scaleX="0.8"
                     android:scaleY="0.65"
+                    app:layout_constraintEnd_toStartOf="@id/end_timepicker"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/text_end_time" />
 
@@ -331,12 +336,14 @@
                     android:id="@+id/end_timepicker"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="-55dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginStart="-20dp"
+                    android:layout_marginTop="-45dp"
+                    android:layout_marginEnd="10dp"
                     android:scaleX="0.8"
                     android:scaleY="0.6"
                     android:timePickerMode="spinner"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/end_datepicker"
                     app:layout_constraintTop_toBottomOf="@id/text_end_time" />
 
 
@@ -356,14 +363,14 @@
                     android:id="@+id/button_save"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
                     android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
                     android:layout_marginBottom="16dp"
                     android:text="@string/save"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/end_timepicker"
                     app:layout_constraintStart_toEndOf="@+id/button_cancel"
-                    app:layout_constraintBottom_toBottomOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@id/end_timepicker" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
