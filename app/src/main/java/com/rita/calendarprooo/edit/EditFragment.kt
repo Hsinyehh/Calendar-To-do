@@ -83,11 +83,10 @@ class EditFragment : Fragment() {
         viewModel.planGet.observe(viewLifecycleOwner, {
             Log.i("Rita", "planGet observe: ${viewModel.planGet.value}")
 
+            // if the plan is edited
             it?.start_time_detail?.let { list ->
-                //recognize as edit rather than created a plan
-                viewModel.editStatus.value = true
-                viewModel.id.value = it.id
-                viewModel.location.value = it.location
+
+                viewModel.initPlanExtra(it)
 
                 startTimePicker.currentMinute = list[4]
                 startTimePicker.currentHour = list[3]
@@ -101,9 +100,8 @@ class EditFragment : Fragment() {
             }
 
             it?.let {
-                if (!it.categoryList.isNullOrEmpty()) {
-                    viewModel.categoryList.value = it.categoryList
-                }
+                // if plan is edited, then get category from Plan
+                viewModel.getCategoryFromPlan(it)
             }
 
             Log.i("Rita", "planGet id: ${viewModel.id.value}")
@@ -149,8 +147,8 @@ class EditFragment : Fragment() {
                     viewModel.preparePlan()
                 } else {
                     viewModel.prepareNewPlan()
-                    viewModel.doneConverted()
                 }
+                viewModel.doneConverted()
             }
         })
 

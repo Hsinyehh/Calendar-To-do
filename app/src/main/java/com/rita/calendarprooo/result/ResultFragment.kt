@@ -40,44 +40,44 @@ class ResultFragment : Fragment() {
 
             it?.let {
                 if (it) {
-                    viewModel.doneList.observe(viewLifecycleOwner, {
-                        Log.i("Rita", "result doneList observe: $it")
-                        it?.let {
-                            viewModel.countForCategory(it)
+                    viewModel.doneList.observe(viewLifecycleOwner, { list ->
+                        Log.i("Rita", "result doneList observe: $list")
+                        list?.let {
+                            viewModel.countForCategory(list)
                         }
                     })
                     // assign the reference by binding the viewModel again
                     binding.viewModel = viewModel
-                    viewModel.doneListReset.value = null
+                    viewModel.doneReset()
                 }
             }
 
         })
 
 
-        // read Plans when date selected changed
+        // get Plans when date selected changed
         viewModel.selectedEndTime.observe(viewLifecycleOwner, {
             Log.i("Rita", "result selectedEndTime observe: $it")
 
             it?.let {
-                viewModel.readDone()
-                viewModel.readPlanFromToday()
+                viewModel.getDone()
+                viewModel.getPlansToday()
 
                 // When the livedata is assigned, it will be assigned for different memory reference.
-                // So we need to set Observer here, readListFromToday as livedata can be observed
+                // So we need to set Observer here, getListFromToday as livedata can be observed
                 // for the same reference
-                viewModel.readListFromToday.observe(viewLifecycleOwner, {
-                        Log.i("Rita", "result readListFromToday observe: $it")
-                        it?.let {
-                            viewModel.readPlanBeforeToday()
+                viewModel.listToday.observe(viewLifecycleOwner, { list ->
+                    Log.i("Rita", "result getListFromToday observe: $list")
+                    list?.let {
+                        viewModel.getPlansBeforeToday()
 
-                            viewModel.readListBeforeToday.observe(viewLifecycleOwner, {
-                                    Log.i("Rita", "result readListBeforeToday observe: $it")
-                                    it?.let {
-                                        viewModel.readPlanInTotal()
-                                    }
-                            })
-                        }
+                        viewModel.listBeforeToday.observe(viewLifecycleOwner, { list2 ->
+                            Log.i("Rita", "result getListBeforeToday observe: $list2")
+                            list2?.let {
+                                viewModel.getPlansInTotal()
+                            }
+                        })
+                    }
                 })
             }
         })
@@ -86,7 +86,7 @@ class ResultFragment : Fragment() {
         // pie chart setup
         val pieChart = binding.barPie
 
-        viewModel.categoryForDoneList.observe(viewLifecycleOwner,{
+        viewModel.categoryForDoneList.observe(viewLifecycleOwner, {
             Log.i("Rita", "result categoryForDoneList observe: $it")
 
             it?.let {

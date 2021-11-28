@@ -7,7 +7,7 @@ import android.os.Parcelable
 @SuppressLint("ParcelCreator")
 @Parcelize
 data class Plan(
-    var id: String? = "",
+    var id: String? = null,
     var title: String? = "",
     var description: String? = "",
     var location: String? = "",

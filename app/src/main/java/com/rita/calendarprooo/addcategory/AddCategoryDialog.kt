@@ -10,11 +10,9 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import com.rita.calendarprooo.R
 import com.rita.calendarprooo.databinding.DialogAddCategoryBinding
 import com.rita.calendarprooo.ext.getVmFactory
-import com.rita.calendarprooo.home.HomeViewModel
 
 class AddCategoryDialog : DialogFragment() {
 
@@ -103,7 +101,6 @@ class AddCategoryDialog : DialogFragment() {
                 )
                 binding.inviteEditEmail.setAdapter(adapter)
             }
-
         })
 
 

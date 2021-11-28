@@ -17,9 +17,9 @@ class ResultViewModel(val repository: CalendarRepository) : ViewModel() {
 
     var currentUser = MutableLiveData<User>()
 
-    var readListFromToday = MutableLiveData<List<Plan>>()
+    var listToday = MutableLiveData<List<Plan>>()
 
-    var readListBeforeToday = MutableLiveData<List<Plan>>()
+    var listBeforeToday = MutableLiveData<List<Plan>>()
 
     var selectedStartTime = MutableLiveData<Long>()
 
@@ -48,35 +48,30 @@ class ResultViewModel(val repository: CalendarRepository) : ViewModel() {
     var pieEntryList = MutableLiveData<MutableList<PieEntry>>()
 
 
-    fun readPlanFromToday() {
-        readListFromToday = repository.getLivePlansToday(
+    fun doneReset(){
+        doneListReset.value = null
+    }
+
+
+    fun getPlansToday() {
+        listToday = repository.getLivePlansToday(
             selectedStartTime.value!!,
             selectedEndTime.value!!, UserManager.user.value!!
         )
     }
 
 
-    fun readPlanBeforeToday() {
-        readListBeforeToday = repository.getLivePlansBeforeToday(
+    fun getPlansBeforeToday() {
+        listBeforeToday = repository.getLivePlansBeforeToday(
             selectedStartTime.value!!,
             UserManager.user.value!!
         )
     }
 
 
-    fun readDone() {
-        _doneList = repository.getLiveDone(
-            selectedStartTime.value!!,
-            selectedEndTime.value!!, UserManager.user.value!!
-        )
-
-        doneListReset.value = true
-    }
-
-
-    fun readPlanInTotal() {
-        var list = readListFromToday.value?.toMutableList()
-        val listBefore = readListBeforeToday.value?.toMutableList()
+    fun getPlansInTotal() {
+        var list = listToday.value?.toMutableList()
+        val listBefore = listBeforeToday.value?.toMutableList()
 
         if (list != null) {
             if (listBefore != null) {
@@ -91,6 +86,16 @@ class ResultViewModel(val repository: CalendarRepository) : ViewModel() {
         if (list != null) {
             _todoList.value = list.filter { it -> it.isToDoList == true && !it.isToDoListDone }
         }
+    }
+
+
+    fun getDone() {
+        _doneList = repository.getLiveDone(
+            selectedStartTime.value!!,
+            selectedEndTime.value!!, UserManager.user.value!!
+        )
+
+        doneListReset.value = true
     }
 
 
@@ -125,7 +130,7 @@ class ResultViewModel(val repository: CalendarRepository) : ViewModel() {
     init {
         Log.i("Rita", "${UserManager.user.value}")
         selectedTimeSet(getToday())
-        readDone()
+        getDone()
     }
 
 }

@@ -97,9 +97,7 @@ class EditViewModel(plan: Plan, val repository: CalendarRepository) : ViewModel(
 
 
     fun toToListModeChanged() {
-        Log.i("Rita", "editVM isTodoList ${isTodoList.value}")
         isTodoList.value = isTodoList.value == false
-        Log.i("Rita", "editVM isTodoList changed ${isTodoList.value}")
     }
 
 
@@ -304,6 +302,20 @@ class EditViewModel(plan: Plan, val repository: CalendarRepository) : ViewModel(
         }
     }
 
+
+    fun getCategoryFromPlan(plan: Plan){
+        if (!plan.categoryList.isNullOrEmpty()) {
+            categoryList.value = plan.categoryList
+        }
+    }
+
+
+    fun initPlanExtra(plan: Plan){
+        //recognize as edit rather than created a plan
+        editStatus.value = true
+        id.value = plan.id
+        location.value = plan.location
+    }
 
 
     init {

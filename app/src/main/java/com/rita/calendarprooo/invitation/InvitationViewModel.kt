@@ -32,14 +32,6 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
 
     var invitationListSize = MutableLiveData<Int>()
 
-    /*var invitationListSize: LiveData<Int> = Transformations.map(invitationList) {
-        var size = 0
-        if (!it.isNullOrEmpty()) {
-            size = it.size
-        }
-        size
-    }*/
-
     // Category
     var invitationForCategoryListSize: LiveData<Int> =
         Transformations.map(invitationForCategoryList) {
@@ -267,8 +259,6 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
     fun addCollaboratorForPlan() {
         val list = plans.value
 
-        Log.i("Rita", "addCollaboratorForPlan list: $list")
-
         if (list != null) {
             for (item in list) {
                 if (!item.collaborator!!.contains(user.value?.email)) {
@@ -296,7 +286,6 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
         val title = item!!.title
         val categoryList = user.value!!.categoryList
         val index = categoryList.indexOfFirst { it.name == title }
-        Log.i("Rita", "updateCategories index:　$index")
 
         // if the category isn't in User's categoryList, then update it
         if (index == -1) {
@@ -306,12 +295,6 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
                 mutableListOf<String>(user.value!!.email)
             )
             categoryList.add(categoryAdded)
-
-            Log.i("Rita", "updateCategories categoryAdded: $categoryAdded")
-            Log.i(
-                "Rita", "updateCategories categoryListTobeUpdated: " +
-                        " ${categoryListTobeUpdated.value}"
-            )
 
             categoryListTobeUpdated.value = categoryList
             updateCategoriesForUser.value = true

@@ -197,7 +197,6 @@ class AddCategoryViewModel(val repository: CalendarRepository) : ViewModel() {
         for (item in list) {
             stringList.add(item.name)
         }
-
         return stringList
     }
 
