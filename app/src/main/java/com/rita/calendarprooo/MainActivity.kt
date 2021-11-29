@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.rita.calendarprooo.Util.Logger
 import com.rita.calendarprooo.databinding.ActivityMainBinding
 import com.rita.calendarprooo.databinding.NavHeaderBinding
 import com.rita.calendarprooo.ext.getVmFactory
@@ -86,7 +87,7 @@ class MainActivity : AppCompatActivity() {
 
 
         viewModel.currentUser.observe(this, {
-            Log.i("Rita", "Create mainActivity.currentUser observe - $it")
+            Logger.i("Create mainActivity.currentUser observe - $it")
         })
 
         auth = Firebase.auth
@@ -124,7 +125,7 @@ class MainActivity : AppCompatActivity() {
 
 
         viewModel.currentUser.observe(this, {
-            Log.i("Rita", "onResume mainActivity.currentUser observe - $it")
+            Logger.i("onResume mainActivity.currentUser observe - $it")
         })
 
     }

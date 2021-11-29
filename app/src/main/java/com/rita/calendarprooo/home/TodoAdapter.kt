@@ -1,12 +1,12 @@
 package com.rita.calendarprooo.home
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.rita.calendarprooo.Util.Logger
 import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.databinding.ItemTodoBinding
 import com.rita.calendarprooo.login.UserManager
@@ -16,7 +16,7 @@ class TodoAdapter(val viewModel: HomeViewModel) : ListAdapter<Plan,
         TodoAdapter.ViewHolder>(TodoDiffCallback()) {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        Log.i("Rita", "todo onBindViewHolder position=$position")
+        Logger.i("todo onBindViewHolder position: $position")
         val item = getItem(position)
 
 
@@ -27,7 +27,7 @@ class TodoAdapter(val viewModel: HomeViewModel) : ListAdapter<Plan,
         adapter.notifyDataSetChanged()
 
         holder.binding.scheduleOverview.setOnClickListener {
-            Log.i("Rita", "todoOverview click position=$position")
+            Logger.i("todoOverview click position: $position")
             viewModel.changeTodoView(position)
         }
 

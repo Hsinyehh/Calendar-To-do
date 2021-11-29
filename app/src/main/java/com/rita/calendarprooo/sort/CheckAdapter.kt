@@ -1,11 +1,11 @@
 package com.rita.calendarprooo.sort
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.rita.calendarprooo.Util.Logger
 import com.rita.calendarprooo.data.Check
 import com.rita.calendarprooo.databinding.ItemCheckBinding
 
@@ -16,13 +16,12 @@ class CheckAdapter(val viewModel: HomeSortViewModel) : ListAdapter<Check,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
 
-        Log.i("Rita", "CheckAdapter dataSetChanged")
-
         holder.binding.checklistImage.setOnClickListener {
             viewModel.changeCheckDoneStatus(item, position)
         }
+
         holder.binding.checklistBtnRemoved.setOnClickListener {
-            Log.i("Rita", "homeSort remove btn clicked")
+            Logger.i("homeSort remove btn clicked")
             viewModel.removeCheck(item, position)
             notifyDataSetChanged()
         }

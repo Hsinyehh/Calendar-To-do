@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.rita.calendarprooo.CalendarProApplication
 import com.rita.calendarprooo.R
+import com.rita.calendarprooo.Util.Logger
 import com.rita.calendarprooo.data.Category
 import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.data.Result
@@ -89,7 +90,7 @@ class AddCategoryViewModel(val repository: CalendarRepository) : ViewModel() {
         categoryListForAutoInput.value = convertToStringList(currentUser.value!!.categoryList)
         if (isCreated) {
             categoryList.value = currentUser.value!!.categoryList
-            Log.i("Rita", "getCategoryFromUser - category:　${categoryList.value}")
+            Logger.i("getCategoryFromUser - category:　${categoryList.value}")
         }
     }
 
@@ -132,17 +133,17 @@ class AddCategoryViewModel(val repository: CalendarRepository) : ViewModel() {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
                     startToNavigate.value = true
-                    Log.i("Rita", "add VM updateUser $result")
+                    Logger.i("add VM updateUser $result")
                 }
                 is Result.Fail -> {
                     _error.value = result.error
                     _status.value = LoadApiStatus.ERROR
-                    Log.i("Rita", "add VM updateUser: $result")
+                    Logger.i("add VM updateUser: $result")
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
                     _status.value = LoadApiStatus.ERROR
-                    Log.i("Rita", "add VM updateUser: $result")
+                    Logger.i("add VM updateUser: $result")
                 }
                 else -> {
                     _error.value =
@@ -169,17 +170,17 @@ class AddCategoryViewModel(val repository: CalendarRepository) : ViewModel() {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    Log.i("Rita", "add VM updatePlan: $result")
+                    Logger.i("add VM updatePlan: $result")
                 }
                 is Result.Fail -> {
                     _error.value = result.error
                     _status.value = LoadApiStatus.ERROR
-                    Log.i("Rita", "add VM updatePlan: $result")
+                    Logger.i("add VM updatePlan: $result")
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
                     _status.value = LoadApiStatus.ERROR
-                    Log.i("Rita", "add VM updatePlan: $result")
+                    Logger.i("add VM updatePlan: $result")
                 }
                 else -> {
                     _error.value =

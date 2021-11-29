@@ -1,12 +1,12 @@
 package com.rita.calendarprooo.edit
 
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.rita.calendarprooo.Util.Logger
 import com.rita.calendarprooo.data.Check
 import com.rita.calendarprooo.databinding.ItemCheckBinding
 import com.rita.calendarprooo.login.UserManager
@@ -30,7 +30,7 @@ class CheckAdapter(val viewModel: EditViewModel) : ListAdapter<Check,
             notifyDataSetChanged()
         }
         holder.binding.checklistBtnRemoved.setOnClickListener {
-            Log.i("Rita", "edit remove btn clicked")
+            Logger.i("edit remove btn clicked")
             viewModel.checkListTextRemoved(position)
             notifyDataSetChanged()
         }

@@ -1,6 +1,5 @@
 package com.rita.calendarprooo
 
-import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.net.toUri
@@ -8,6 +7,7 @@ import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
+import com.rita.calendarprooo.Util.Logger
 import com.rita.calendarprooo.data.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -119,7 +119,8 @@ fun TextView.bindDone(item: Check?) {
 
 @BindingAdapter("userName")
 fun TextView.bindUserName(item: User?) {
-    Log.i("Rita", "name: $item")
+
+    Logger.i("name: $item")
     item?.name?.let {
         text = it
     }
@@ -127,7 +128,8 @@ fun TextView.bindUserName(item: User?) {
 
 @BindingAdapter("userEmail")
 fun TextView.bindUserEmail(item: User?) {
-    Log.i("Rita", "email: $item")
+
+    Logger.i("email: $item")
     item?.email?.let {
         text = it
     }
@@ -136,7 +138,8 @@ fun TextView.bindUserEmail(item: User?) {
 @BindingAdapter("imageUrl")
 fun bindImage(imgView: ImageView, item: User?) {
 
-    Log.i("Rita", "imageUri: $item")
+
+    Logger.i("imageUri: $item")
     item?.photo?.let {
         val imgUri = it.toUri().buildUpon().scheme("https").build()
         Glide.with(imgView.context)
@@ -154,20 +157,13 @@ fun bindImage(imgView: ImageView, item: User?) {
 @BindingAdapter("invitationTitle")
 fun TextView.bindInvitationTitle(item: Invitation?) {
     item?.let {
-        text = "${it.title}"
+        text = it.title
     }
 }
 
 @BindingAdapter("inviter")
 fun TextView.bindInviter(item: Invitation?) {
     item?.let {
-        text = "${it.inviter}"
+        text = it.inviter
     }
 }
-
-
-/*@BindingAdapter("detailView")
-fun bindDetailView(layout:ConstraintLayout, item:  Long) {
-
-    Log.i("Rita","bindDetailView- $item")
-}*/

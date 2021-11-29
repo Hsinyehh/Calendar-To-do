@@ -11,6 +11,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import com.rita.calendarprooo.R
+import com.rita.calendarprooo.Util.Logger
 import com.rita.calendarprooo.databinding.DialogAddCategoryBinding
 import com.rita.calendarprooo.ext.getVmFactory
 
@@ -34,7 +35,7 @@ class AddCategoryDialog : DialogFragment() {
 
 
         viewModel.currentUser.observe(viewLifecycleOwner, {
-            Log.i("Rita", "currentUser observe: $it")
+            Logger.i( "currentUser observe: $it")
             it?.let {
                 viewModel.getCategoryFromUserFirst()
             }
@@ -42,7 +43,7 @@ class AddCategoryDialog : DialogFragment() {
 
 
         viewModel.startToCreate.observe(viewLifecycleOwner, {
-            Log.i("Rita", "startToCreate observe: $it")
+            Logger.i( "startToCreate observe: $it")
             if (it == true) {
                 // if the plan is created
                 if (viewModel.isPlanCreated.value!!) {
@@ -58,7 +59,7 @@ class AddCategoryDialog : DialogFragment() {
 
 
         viewModel.startToPrepare.observe(viewLifecycleOwner, {
-            Log.i("Rita", "startToPrepare observe: $it")
+            Logger.i( "startToPrepare observe: $it")
             if (it == true) {
                 viewModel.prepareForCategory()
             }
@@ -66,7 +67,7 @@ class AddCategoryDialog : DialogFragment() {
 
 
         viewModel.startToUpdate.observe(viewLifecycleOwner, {
-            Log.i("Rita", "startToUpdate observe: $it")
+            Logger.i( "startToUpdate observe: $it")
             if (it == true) {
                 if (!viewModel.isPlanCreated.value!!) {
                     // if the plan is edited, update the plan's categoryList
@@ -79,7 +80,7 @@ class AddCategoryDialog : DialogFragment() {
 
 
         viewModel.startToNavigate.observe(viewLifecycleOwner, {
-            Log.i("Rita", "startToNavigate observe: $it")
+            Logger.i( "startToNavigate observe: $it")
             it?.let {
                 if (it) {
                     dismiss()
@@ -93,7 +94,7 @@ class AddCategoryDialog : DialogFragment() {
 
         // AutoComplete Input
         viewModel.categoryListForAutoInput.observe(viewLifecycleOwner, {
-            Log.i("Rita", "categoryListForAutoInput observe: $it")
+            Logger.i( "categoryListForAutoInput observe: $it")
             it?.let {
                 val adapter = ArrayAdapter(
                     requireContext(),

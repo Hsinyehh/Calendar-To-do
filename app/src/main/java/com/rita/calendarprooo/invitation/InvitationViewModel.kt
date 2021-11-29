@@ -1,12 +1,12 @@
 package com.rita.calendarprooo.invitation
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.rita.calendarprooo.CalendarProApplication
 import com.rita.calendarprooo.R
+import com.rita.calendarprooo.Util.Logger
 import com.rita.calendarprooo.data.*
 import com.rita.calendarprooo.data.source.CalendarRepository
 import com.rita.calendarprooo.login.UserManager
@@ -110,17 +110,14 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
                     loadingStatus.value = false
-                    Log.i("Rita", "invitation VM updatePlan: $result")
                 }
                 is Result.Fail -> {
                     _error.value = result.error
                     _status.value = LoadApiStatus.ERROR
-                    Log.i("Rita", "invitation VM updatePlan: $result")
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
                     _status.value = LoadApiStatus.ERROR
-                    Log.i("Rita", "invitation VM updatePlan: $result")
                 }
                 else -> {
                     _error.value =
@@ -143,17 +140,14 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
                     loadingStatus.value = false
-                    Log.i("Rita", "invitation VM updateUser: $result")
                 }
                 is Result.Fail -> {
                     _error.value = result.error
                     _status.value = LoadApiStatus.ERROR
-                    Log.i("Rita", "invitation VM updateUser: $result")
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
                     _status.value = LoadApiStatus.ERROR
-                    Log.i("Rita", "invitation VM updateUser: $result")
                 }
                 else -> {
                     _error.value =
@@ -273,9 +267,9 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
 
     // update collaborator for All plans with loop in fragment
     fun updateCollaboratorForPlans(list: MutableList<Plan>) {
-            for (plan in list) {
-                updatePlan(plan)
-            }
+        for (plan in list) {
+            updatePlan(plan)
+        }
         renewCategories.value = true
     }
 

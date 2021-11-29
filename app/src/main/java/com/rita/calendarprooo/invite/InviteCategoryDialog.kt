@@ -1,7 +1,6 @@
 package com.rita.calendarprooo.invite
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import com.rita.calendarprooo.R
+import com.rita.calendarprooo.Util.Logger
 import com.rita.calendarprooo.databinding.DialogInviteCategoryBinding
 import com.rita.calendarprooo.ext.getVmFactory
 
@@ -43,7 +43,7 @@ class InviteCategoryDialog : DialogFragment() {
 
 
         viewModel.isInputBlank.observe(viewLifecycleOwner, {
-            Log.i("Rita", "isInputBlank observe: $it")
+            Logger.i("isInputBlank observe: $it")
             it?.let {
                 Toast.makeText(activity, "The input can't be blank!", Toast.LENGTH_LONG).show()
             }
@@ -52,7 +52,7 @@ class InviteCategoryDialog : DialogFragment() {
 
 
         viewModel.userTobeInvited.observe(viewLifecycleOwner, { user ->
-            Log.i("Rita", "userTobeInvited observe: $user")
+            Logger.i("userTobeInvited observe: $user")
             user?.let {
                 if (user.email != "") {
                     viewModel.createInvitation()
@@ -64,7 +64,7 @@ class InviteCategoryDialog : DialogFragment() {
 
 
         viewModel.isUserNotExist.observe(viewLifecycleOwner, {
-            Log.i("Rita", "isUserNotExist observe: $it")
+            Logger.i("isUserNotExist observe: $it")
             it?.let {
                 Toast.makeText(activity, "The user doesn't use the app yet.", Toast.LENGTH_LONG)
                     .show()
@@ -74,7 +74,7 @@ class InviteCategoryDialog : DialogFragment() {
 
 
         viewModel.invitationList.observe(viewLifecycleOwner, {
-            Log.i("Rita", "invitationList observe: $it")
+            Logger.i("invitationList observe: $it")
             it?.let {
                 viewModel.updateInvitation()
             }
@@ -82,7 +82,7 @@ class InviteCategoryDialog : DialogFragment() {
 
 
         viewModel.isInvited.observe(viewLifecycleOwner, {
-            Log.i("Rita", "isInvited observe: $it")
+            Logger.i("isInvited observe: $it")
             if (it == true) {
                 Toast.makeText(activity, "The person is invited already.", Toast.LENGTH_LONG).show()
                 viewModel.isInvited.value = null
@@ -91,7 +91,7 @@ class InviteCategoryDialog : DialogFragment() {
 
 
         viewModel.updateSuccess.observe(viewLifecycleOwner, {
-            Log.i("Rita", "updateSuccess observe: $it")
+            Logger.i("updateSuccess observe: $it")
             if (it == true) {
                 Toast.makeText(context, "Invite Success", Toast.LENGTH_LONG).show()
                 dismiss()

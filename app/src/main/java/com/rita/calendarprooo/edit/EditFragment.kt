@@ -2,7 +2,6 @@ package com.rita.calendarprooo.edit
 
 import android.app.Activity
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +14,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.rita.calendarprooo.NavigationDirections
 import com.rita.calendarprooo.R
+import com.rita.calendarprooo.Util.Logger
 import com.rita.calendarprooo.databinding.FragmentEditBinding
 import com.rita.calendarprooo.ext.getVmFactory
 
@@ -51,7 +51,7 @@ class EditFragment : Fragment() {
 
 
         viewModel.updatedUser.observe(viewLifecycleOwner, {
-            Log.i("Rita", "updatedUser observe: $it")
+            Logger.i("updatedUser observe: $it")
             it?.let {
                 // if plan is created, then get category from User
                 viewModel.getCategoryFromUser()
@@ -62,7 +62,7 @@ class EditFragment : Fragment() {
         val adapter = CategoryAdapter(viewModel)
         binding.categoryList.adapter = adapter
         viewModel.categoryList.observe(viewLifecycleOwner, {
-            Log.i("Rita", "categoryList observe: $it")
+            Logger.i("categoryList observe: $it")
             adapter.submitList(it)
             adapter.notifyDataSetChanged()
         })
@@ -72,7 +72,7 @@ class EditFragment : Fragment() {
         val checkAdapter = CheckAdapter(viewModel)
         binding.checkList.adapter = checkAdapter
         viewModel.checkList.observe(viewLifecycleOwner, {
-            Log.i("Rita", "checkList observe: $it")
+            Logger.i("checkList observe: $it")
             checkAdapter.submitList(it)
             checkAdapter.notifyDataSetChanged()
             viewModel.clearText()
@@ -81,7 +81,7 @@ class EditFragment : Fragment() {
 
         // Default value setup for timepicker
         viewModel.planGet.observe(viewLifecycleOwner, {
-            Log.i("Rita", "planGet observe: ${viewModel.planGet.value}")
+            Logger.i("planGet observe: ${viewModel.planGet.value}")
 
             // if the plan is edited
             it?.start_time_detail?.let { list ->
@@ -104,7 +104,7 @@ class EditFragment : Fragment() {
                 viewModel.getCategoryFromPlan(it)
             }
 
-            Log.i("Rita", "planGet id: ${viewModel.id.value}")
+            Logger.i("planGet id: ${viewModel.id.value}")
 
         })
 
@@ -141,7 +141,7 @@ class EditFragment : Fragment() {
 
 
         viewModel.doneConverted.observe(viewLifecycleOwner, {
-            Log.i("Rita", "doneConverted observe: $it")
+            Logger.i("doneConverted observe: $it")
             if (it == true) {
                 if (viewModel.editStatus.value == true) {
                     viewModel.preparePlan()
@@ -154,7 +154,7 @@ class EditFragment : Fragment() {
 
 
         viewModel.newPlan.observe(viewLifecycleOwner, {
-            Log.i("Rita", "newPlan observe: $it")
+            Logger.i("newPlan observe: $it")
             it?.let {
                 if (viewModel.editStatus.value == true) {
                     viewModel.updatePlan(it)
@@ -167,7 +167,7 @@ class EditFragment : Fragment() {
 
         // update is done, then navigate to home page
         viewModel.loadingStatus.observe(viewLifecycleOwner, {
-            Log.i("Rita", "loadingStatus observe: $it")
+            Logger.i("loadingStatus observe: $it")
             it?.let {
                 if (!it) {
                     view?.findNavController()?.navigate(R.id.navigate_to_home_fragment)
@@ -201,7 +201,7 @@ class EditFragment : Fragment() {
             if (i == EditorInfo.IME_ACTION_DONE
                 || keyEvent.action == KeyEvent.ACTION_DOWN || keyEvent.action == KeyEvent.KEYCODE_ENTER
             ) {
-                Log.i("Rita", "checklist item setOnEditorActionListener")
+                Logger.i("checklist item setOnEditorActionListener")
                 viewModel.checkListTextCreated()
                 binding.checklistEditText.hideKeyboard()
             }

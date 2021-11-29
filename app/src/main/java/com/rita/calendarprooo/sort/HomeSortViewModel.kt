@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.rita.calendarprooo.CalendarProApplication
 import com.rita.calendarprooo.R
+import com.rita.calendarprooo.Util.Logger
 import com.rita.calendarprooo.data.*
 import com.rita.calendarprooo.data.source.CalendarRepository
 import com.rita.calendarprooo.ext.convertToTimeStamp
@@ -295,7 +296,7 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
             }
         }
 
-        Log.i("Rita", "createViewList: $list")
+        Logger.i("createViewList: $list")
         return list
     }
 
@@ -305,9 +306,9 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
         todoViewList.value = createViewList(_todoList.value!!)
         doneViewList.value = createViewList(_doneList.value!!)
 
-        Log.i("Rita", "getViewList scheduleViewList: ${scheduleViewList.value}")
-        Log.i("Rita", "getViewList todoViewList: ${todoViewList.value}")
-        Log.i("Rita", "getViewList doneViewList: ${doneViewList.value}")
+        Logger.i("getViewList scheduleViewList: ${scheduleViewList.value}")
+        Logger.i("getViewList todoViewList: ${todoViewList.value}")
+        Logger.i("getViewList doneViewList: ${doneViewList.value}")
 
         getViewListAlready.value = true
     }
@@ -317,8 +318,8 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
         todoViewList.value = createViewList(_todoList.value!!)
         doneViewList.value = createViewList(_doneList.value!!)
 
-        Log.i("Rita", "getViewListForTodoMode  todo- ${todoViewList.value}")
-        Log.i("Rita", "getViewListForTodoMode  done- ${doneViewList.value}")
+        Logger.i("getViewListForTodoMode  todo- ${todoViewList.value}")
+        Logger.i("getViewListForTodoMode  done- ${doneViewList.value}")
     }
 
 
@@ -330,7 +331,7 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
         list?.set(position, status)
 
         scheduleViewList.value = list
-        Log.i("Rita", "scheduleViewList changed: ${scheduleViewList.value}")
+        Logger.i("scheduleViewList changed: ${scheduleViewList.value}")
     }
 
 
@@ -342,7 +343,7 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
         list?.set(position, status)
 
         todoViewList.value = list
-        Log.i("Rita", "todoViewList changed: ${todoViewList.value}")
+        Logger.i("todoViewList changed: ${todoViewList.value}")
     }
 
 
@@ -355,7 +356,7 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
 
         doneViewList.value = list
 
-        Log.i("Rita", "doneViewList changed: ${doneViewList.value}")
+        Logger.i("doneViewList changed: ${doneViewList.value}")
 
     }
 
@@ -404,17 +405,17 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    Log.i("Rita", "home VM updatePlanByCheck: $result")
+                    Logger.i("home VM updatePlanByCheck: $result")
                 }
                 is Result.Fail -> {
                     _error.value = result.error
                     _status.value = LoadApiStatus.ERROR
-                    Log.i("Rita", "home VM updatePlanByCheck: $result")
+                    Logger.i("home VM updatePlanByCheck: $result")
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
                     _status.value = LoadApiStatus.ERROR
-                    Log.i("Rita", "home VM updatePlanByCheck: $result")
+                    Logger.i("home VM updatePlanByCheck: $result")
                 }
                 else -> {
                     _error.value =
@@ -463,7 +464,7 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
         // checkListUpdated renewal
         checkListUpdate.value = plan.checkList
 
-        Log.i("Rita", "renewDoneForCheckList checkList: ${checkListUpdate.value}")
+        Logger.i("renewDoneForCheckList checkList: ${checkListUpdate.value}")
 
         return plan
     }
@@ -471,7 +472,7 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
 
     // update check - remove check step1 - checkAdapter
     fun removeCheck(check: Check, position: Int) {
-        Log.i("Rita", "removeCheck check: $check, position: $position")
+        Logger.i("removeCheck check: $check, position: $position")
         loadingStatus.value = true
         isCheckRemoved.value = true
         positionUpdate.value = position
@@ -539,17 +540,17 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    Log.i("Rita", "home VM updatePlanDoneStatus: $result")
+                    Logger.i("home VM updatePlanDoneStatus: $result")
                 }
                 is Result.Fail -> {
                     _error.value = result.error
                     _status.value = LoadApiStatus.ERROR
-                    Log.i("Rita", "home VM updatePlanDoneStatus: $result")
+                    Logger.i("home VM updatePlanDoneStatus: $result")
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
                     _status.value = LoadApiStatus.ERROR
-                    Log.i("Rita", "home VM updatePlanDoneStatus: $result")
+                    Logger.i("home VM updatePlanDoneStatus: $result")
                 }
                 else -> {
                     _error.value =
@@ -576,7 +577,7 @@ class HomeSortViewModel(val repository: CalendarRepository) : ViewModel() {
 
 
     fun changeCategory(position: Int, lastPosition: Int) {
-        Log.i("Rita", "$lastPosition")
+        Logger.i("$lastPosition")
         val categoryListGet = categoryList.value
 
         // deselected the origin position value

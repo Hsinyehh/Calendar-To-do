@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.rita.calendarprooo.Util.Logger
 import com.rita.calendarprooo.data.Category
 import com.rita.calendarprooo.databinding.ItemCategoryBinding
 
@@ -19,7 +20,7 @@ class CategoryAdapter(viewModel: HomeSortViewModel) : ListAdapter<Category,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
         holder.binding.categoryView.setOnClickListener {
-            Log.i("Rita", "$selectedItemPosition")
+            Logger.i( "$selectedItemPosition")
             viewModel.changeCategory(position, selectedItemPosition)
             selectedItemPosition = position
             notifyDataSetChanged()

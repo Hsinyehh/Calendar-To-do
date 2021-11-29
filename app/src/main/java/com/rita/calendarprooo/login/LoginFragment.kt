@@ -2,7 +2,6 @@ package com.rita.calendarprooo.login
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +21,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.rita.calendarprooo.NavigationDirections
 import com.rita.calendarprooo.R
+import com.rita.calendarprooo.Util.Logger
 import com.rita.calendarprooo.databinding.FragmentLoginBinding
 import com.rita.calendarprooo.ext.getVmFactory
 
@@ -61,7 +61,7 @@ class LoginFragment : Fragment() {
 
 
         viewModel.newUser.observe(viewLifecycleOwner, {
-            Log.i("Rita", "newUser observe: $it")
+            Logger.i("newUser observe: $it")
             it?.let {
                 viewModel.checkUserCreated(it)
             }
@@ -69,7 +69,7 @@ class LoginFragment : Fragment() {
 
 
         viewModel.isUserCreated.observe(viewLifecycleOwner, {
-            Log.i("Rita", "isUserCreated observe: $it")
+            Logger.i("isUserCreated observe: $it")
             it?.let {
                 if (it) {
                     viewModel.newUser.value?.let { it1 -> viewModel.updateUser(it1) }
@@ -82,7 +82,7 @@ class LoginFragment : Fragment() {
 
 
         viewModel.navigateToHome.observe(viewLifecycleOwner, {
-            Log.i("Rita", "navigateToHome observe: $it")
+            Logger.i("navigateToHome observe: $it")
             if (it == true) {
                 findNavController().navigate(NavigationDirections.navigateToHomeFragment())
                 viewModel.doneNavigated()
@@ -120,11 +120,11 @@ class LoginFragment : Fragment() {
                 handleSignInResult(task)
                 // Google Sign In was successful, authenticate with Firebase
                 val account = task.getResult(ApiException::class.java)!!
-                Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
+                Logger.d("firebaseAuthWithGoogle:" + account.id)
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
-                Log.w(TAG, "Google sign in failed", e)
+                Logger.w("Google sign in failed: $e")
             }
         }
     }
@@ -143,11 +143,13 @@ class LoginFragment : Fragment() {
 
             viewModel.createUser(idToken, email, displayName, photoUrl)
 
-            Log.i("Rita", "Sign-in success id: $idToken, displayName: $displayName" +
-                        "email: $email, photo: $photoUrl ")
+            Logger.i(
+                "Sign-in success id: $idToken, displayName: $displayName" +
+                        "email: $email, photo: $photoUrl "
+            )
 
         } catch (e: ApiException) {
-            Log.w(TAG, "signInResult failed code: " + e.statusCode)
+            Logger.w("signInResult failed code: " + e.statusCode)
         }
     }
 
@@ -158,10 +160,10 @@ class LoginFragment : Fragment() {
             .addOnCompleteListener(requireActivity()) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "signInWithCredential success")
+                    Logger.d("signInWithCredential success")
                 } else {
                     // If sign in fails, display a message to the user.
-                    Log.w(TAG, "signInWithCredential failure: ", task.exception)
+                    Logger.w("signInWithCredential failure: ${task.exception}")
                 }
             }
     }

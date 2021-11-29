@@ -1,12 +1,12 @@
 package com.rita.calendarprooo.sort
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.rita.calendarprooo.Util.Logger
 import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.databinding.ItemTodoSortBinding
 import com.rita.calendarprooo.login.UserManager
@@ -26,7 +26,7 @@ class TodoAdapter(val viewModel: HomeSortViewModel) : ListAdapter<Plan,
         adapter.notifyDataSetChanged()
 
         holder.binding.scheduleOverview.setOnClickListener {
-            Log.i("Rita", "todoOverview onclick")
+            Logger.i("todoOverview onclick")
             viewModel.changeTodoView(position)
         }
 

@@ -1,6 +1,5 @@
 package com.rita.calendarprooo.result
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -48,7 +47,7 @@ class ResultViewModel(val repository: CalendarRepository) : ViewModel() {
     var pieEntryList = MutableLiveData<MutableList<PieEntry>>()
 
 
-    fun doneReset(){
+    fun doneReset() {
         doneListReset.value = null
     }
 
@@ -128,7 +127,6 @@ class ResultViewModel(val repository: CalendarRepository) : ViewModel() {
 
 
     init {
-        Log.i("Rita", "${UserManager.user.value}")
         selectedTimeSet(getToday())
         getDone()
     }

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.rita.calendarprooo.Util.Logger
 
 class AlarmReceiver : BroadcastReceiver() {
 
@@ -17,7 +18,7 @@ class AlarmReceiver : BroadcastReceiver() {
         if (intent.getAction().equals("com.rita.calendarprooo.broadcast")) {
             val title = intent.getStringExtra("title")
             val time = intent.getStringExtra("time")
-            Log.i("Rita", "start broadcast")
+            Logger.i( "start broadcast")
 
             val notification =
                 NotificationCompat.Builder(CalendarProApplication.appContext!!, CHANNEL_ID)

@@ -1,12 +1,12 @@
 package com.rita.calendarprooo.home
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.rita.calendarprooo.Util.Logger
 import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.databinding.ItemScheduleBinding
 
@@ -25,7 +25,7 @@ class ScheduleAdapter(val viewModel: HomeViewModel) : ListAdapter<Plan,
         adapter.notifyDataSetChanged()
 
         holder.binding.scheduleOverview.setOnClickListener {
-            Log.i("Rita", "scheduleOverview onclick")
+            Logger.i("scheduleOverview onclick")
             viewModel.changeScheduleView(position)
         }
 

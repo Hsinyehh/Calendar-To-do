@@ -1,6 +1,5 @@
 package com.rita.calendarprooo.edit
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,6 +7,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.rita.calendarprooo.CalendarProApplication
 import com.rita.calendarprooo.R
+import com.rita.calendarprooo.Util.Logger
 import com.rita.calendarprooo.data.*
 import com.rita.calendarprooo.data.source.CalendarRepository
 import com.rita.calendarprooo.ext.stringToTimestamp
@@ -59,7 +59,7 @@ class EditViewModel(plan: Plan, val repository: CalendarRepository) : ViewModel(
 
     var end_time_detail = MutableLiveData<List<Int>>()
 
-    var doneConverted= MutableLiveData<Boolean?>()
+    var doneConverted = MutableLiveData<Boolean?>()
 
     var editStatus = MutableLiveData<Boolean?>()
 
@@ -103,7 +103,7 @@ class EditViewModel(plan: Plan, val repository: CalendarRepository) : ViewModel(
 
     fun checkListTextCreated() {
         val editCheckList = checkList.value
-        Log.i("Rita", "checkListTextCreated()")
+        Logger.i("checkListTextCreated()")
 
         if (planGet.value?.id.isNullOrEmpty()) {
             val newCheck = Check(
@@ -126,7 +126,7 @@ class EditViewModel(plan: Plan, val repository: CalendarRepository) : ViewModel(
     fun checkListTextRemoved(position: Int) {
         val listGet = checkList.value
         listGet?.removeAt(position)
-        Log.i("Rita", "Edit List removed: $listGet")
+        Logger.i("Edit List removed: $listGet")
         checkList.value = listGet
     }
 
@@ -158,7 +158,7 @@ class EditViewModel(plan: Plan, val repository: CalendarRepository) : ViewModel(
             collaborator = collaborator.value,
             order_id = 1
         )
-        Log.i("Rita", "new plan: $plan")
+        Logger.i("new plan: $plan")
         newPlan.value = plan
     }
 
@@ -179,7 +179,7 @@ class EditViewModel(plan: Plan, val repository: CalendarRepository) : ViewModel(
             checkList = checkList.value,
             isToDoList = isTodoList.value
         )
-        Log.i("Rita", "new plan: $plan")
+        Logger.i("new plan: $plan")
         newPlan.value = plan
     }
 
@@ -195,17 +195,17 @@ class EditViewModel(plan: Plan, val repository: CalendarRepository) : ViewModel(
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
                     loadingStatus.value = false
-                    Log.i("Rita","home VM updatePlan: $result")
+                    Logger.i("home VM updatePlan: $result")
                 }
                 is Result.Fail -> {
                     _error.value = result.error
                     _status.value = LoadApiStatus.ERROR
-                    Log.i("Rita","home VM updatePlan: $result")
+                    Logger.i("home VM updatePlan: $result")
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
                     _status.value = LoadApiStatus.ERROR
-                    Log.i("Rita","home VM updatePlan: $result")
+                    Logger.i("home VM updatePlan: $result")
                 }
                 else -> {
                     _error.value =
@@ -228,17 +228,17 @@ class EditViewModel(plan: Plan, val repository: CalendarRepository) : ViewModel(
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
                     loadingStatus.value = false
-                    Log.i("Rita","home VM createPlan: $result")
+                    Logger.i("home VM createPlan: $result")
                 }
                 is Result.Fail -> {
                     _error.value = result.error
                     _status.value = LoadApiStatus.ERROR
-                    Log.i("Rita","home VM createPlan: $result")
+                    Logger.i("home VM createPlan: $result")
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
                     _status.value = LoadApiStatus.ERROR
-                    Log.i("Rita","home VM createPlan: $result")
+                    Logger.i("home VM createPlan: $result")
                 }
                 else -> {
                     _error.value =
@@ -251,7 +251,7 @@ class EditViewModel(plan: Plan, val repository: CalendarRepository) : ViewModel(
 
 
     fun changeCategory(position: Int, lastPosition: Int) {
-        Log.i("Rita", "$lastPosition")
+        Logger.i("$lastPosition")
 
         val categoryListGet = categoryList.value
 
@@ -272,7 +272,7 @@ class EditViewModel(plan: Plan, val repository: CalendarRepository) : ViewModel(
     }
 
 
-    fun convertToTimestamp(startDateSelected: String, endDateSelected: String){
+    fun convertToTimestamp(startDateSelected: String, endDateSelected: String) {
         start_time.value = stringToTimestamp(startDateSelected)
         end_time.value = stringToTimestamp(endDateSelected)
         doneConverted.value = true
@@ -291,26 +291,26 @@ class EditViewModel(plan: Plan, val repository: CalendarRepository) : ViewModel(
     }
 
 
-    private fun getUserData(){
+    private fun getUserData() {
         updatedUser = repository.getUser(UserManager.userToken!!)
     }
 
 
     fun getCategoryFromUser() {
-        if(editStatus.value != true) {
+        if (editStatus.value != true) {
             categoryList.value = updatedUser.value?.categoryList
         }
     }
 
 
-    fun getCategoryFromPlan(plan: Plan){
+    fun getCategoryFromPlan(plan: Plan) {
         if (!plan.categoryList.isNullOrEmpty()) {
             categoryList.value = plan.categoryList
         }
     }
 
 
-    fun initPlanExtra(plan: Plan){
+    fun initPlanExtra(plan: Plan) {
         //recognize as edit rather than created a plan
         editStatus.value = true
         id.value = plan.id

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.rita.calendarprooo.NavigationDirections
 import com.rita.calendarprooo.R
+import com.rita.calendarprooo.Util.Logger
 import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.databinding.FragmentHomeSortBinding
 import com.rita.calendarprooo.ext.getVmFactory
@@ -37,13 +38,13 @@ class HomeSortFragment : Fragment() {
 
         // init plans
         viewModel.currentUser.observe(viewLifecycleOwner, {
-            Log.i("Rita", "sort currentUser observe: $it")
+            Logger.i("sort currentUser observe: $it")
             viewModel.initCategory(it)
         })
 
 
         viewModel.categoryStatus.observe(viewLifecycleOwner, {
-            Log.i("Rita", "sort categoryStatus observe: $it")
+            Logger.i("sort categoryStatus observe: $it")
             viewModel.getPlansToday()
             viewModel.getLivePlans()
         })
@@ -51,7 +52,7 @@ class HomeSortFragment : Fragment() {
 
         // read Plans when date selected changed
         viewModel.selectedEndTime.observe(viewLifecycleOwner, {
-            Log.i("Rita", "sort selectedEndTime observe: $it")
+            Logger.i("sort selectedEndTime observe: $it")
             it?.let {
                 viewModel.getPlansToday()
                 viewModel.getLivePlans()
@@ -60,7 +61,7 @@ class HomeSortFragment : Fragment() {
 
 
         viewModel.plansToday.observe(viewLifecycleOwner, {
-            Log.i("Rita", "sort plansToday observe: $it")
+            Logger.i("sort plansToday observe: $it")
             it?.let {
                 viewModel.getPlansBeforeToday()
             }
@@ -68,7 +69,7 @@ class HomeSortFragment : Fragment() {
 
 
         viewModel.plansBeforeToday.observe(viewLifecycleOwner, {
-            Log.i("Rita", "sort plansBeforeToday observe: $it")
+            Logger.i("sort plansBeforeToday observe: $it")
             it?.let {
                 viewModel.getTotalPlans()
             }
@@ -77,21 +78,21 @@ class HomeSortFragment : Fragment() {
 
         // get plans onChanged
         viewModel.livePlansReset.observe(viewLifecycleOwner, {
-            Log.i("Rita", "home livePlansReset observe: $it")
+            Logger.i("home livePlansReset observe: $it")
 
             // need to set Observer here so we can get the same reference for livedata
-            it?.let{
-                if(it){
+            it?.let {
+                if (it) {
                     viewModel.livePlansToday.observe(viewLifecycleOwner, { plans ->
-                        Log.i("Rita", "home livePlansToday observe: $plans")
+                        Logger.i("home livePlansToday observe: $plans")
                         plans?.let {
                             viewModel.getTotalLivePlans()
                             binding.viewModel = viewModel
                         }
                     })
 
-                    viewModel.livePlansBeforeToday.observe(viewLifecycleOwner, { plans->
-                        Log.i("Rita", "home livePlansBeforeToday observe: $plans")
+                    viewModel.livePlansBeforeToday.observe(viewLifecycleOwner, { plans ->
+                        Logger.i("home livePlansBeforeToday observe: $plans")
                         plans?.let {
                             viewModel.getTotalLivePlans()
                             binding.viewModel = viewModel
@@ -103,7 +104,7 @@ class HomeSortFragment : Fragment() {
 
 
         viewModel.startToGetViewList.observe(viewLifecycleOwner, {
-            Log.i("Rita", "sort startToGetViewList observe: $it")
+            Logger.i("sort startToGetViewList observe: $it")
             if (it == true) {
                 viewModel.getViewList()
                 viewModel.doneGetViewList()
@@ -138,7 +139,7 @@ class HomeSortFragment : Fragment() {
 
         // schedule adapter
         viewModel.scheduleList.observe(viewLifecycleOwner, {
-            Log.i("Rita", "sort scheduleList observe: $it")
+            Logger.i("sort scheduleList observe: $it")
             if (viewModel.getViewListAlready.value == true) {
                 createScheduleRecyclerview()
             }
@@ -147,7 +148,7 @@ class HomeSortFragment : Fragment() {
 
         // to-do adapter
         viewModel.todoList.observe(viewLifecycleOwner, {
-            Log.i("Rita", "sort todoList observe: $it")
+            Logger.i("sort todoList observe: $it")
 
             // get size again for to-do/done mode changed
             if (viewModel.startToGetViewListForTodoMode.value == true) {
@@ -163,7 +164,7 @@ class HomeSortFragment : Fragment() {
 
         // done adapter
         viewModel.doneList.observe(viewLifecycleOwner, {
-            Log.i("Rita", "doneList.observe: $it")
+            Logger.i("doneList.observe: $it")
 
             // get size again for to-do/done mode changed
             if (viewModel.startToGetViewListForDoneMode.value == true) {
@@ -195,7 +196,7 @@ class HomeSortFragment : Fragment() {
         val categoryAdapter = CategoryAdapter(viewModel)
         binding.categoryList.adapter = categoryAdapter
         viewModel.categoryList.observe(viewLifecycleOwner, {
-            Log.i("Rita", "sort categoryList observe: $it")
+            Logger.i("sort categoryList observe: $it")
             it?.let {
                 categoryAdapter.submitList(it)
                 categoryAdapter.notifyDataSetChanged()
@@ -205,16 +206,15 @@ class HomeSortFragment : Fragment() {
 
         // update Plan
         viewModel.planUpdate.observe(viewLifecycleOwner, {
-            Log.i("Rita", "home planUpdate observe: $it")
+            Logger.i("home planUpdate observe: $it")
 
-            it?.let{
-                if(viewModel.isCheckDoneChanged.value == true){
+            it?.let {
+                if (viewModel.isCheckDoneChanged.value == true) {
                     val plan = viewModel.renewCheckDoneStatus(it)
 
                     // update check - change check done status step3 - firebase update
                     viewModel.updatePlanByCheck(plan)
-                }
-                else if(viewModel.isCheckRemoved.value == true){
+                } else if (viewModel.isCheckRemoved.value == true) {
                     val plan = viewModel.renewCheckRemoval(it)
 
                     // update check - remove check step3 - firebase update
@@ -229,7 +229,7 @@ class HomeSortFragment : Fragment() {
         val plan = Plan()
         // Edit page navigation
         viewModel.navigateToEdit.observe(viewLifecycleOwner, {
-            Log.i("Rita", "sort navigateToEditn observe: $it")
+            Logger.i("sort navigateToEditn observe: $it")
             it?.let {
                 view?.findNavController()?.navigate(
                     NavigationDirections.navigateToEditFragment(
@@ -242,7 +242,7 @@ class HomeSortFragment : Fragment() {
 
 
         viewModel.navigateToEditByPlan.observe(viewLifecycleOwner, {
-            Log.i("Rita", "sort navigateToEditByPlan observe: $it")
+            Logger.i("sort navigateToEditByPlan observe: $it")
             it?.let {
                 view?.findNavController()?.navigate(
                     NavigationDirections.navigateToEditFragment(
@@ -255,7 +255,7 @@ class HomeSortFragment : Fragment() {
 
 
         viewModel.navigateToInvite.observe(viewLifecycleOwner, {
-            Log.i("Rita", "sort navigateToInvite observe: $it")
+            Logger.i("sort navigateToInvite observe: $it")
             it?.let {
                 view?.findNavController()?.navigate(
                     NavigationDirections.navigateToInviteFragment(
@@ -268,7 +268,7 @@ class HomeSortFragment : Fragment() {
 
 
         viewModel.navigateToInviteCategory.observe(viewLifecycleOwner, {
-            Log.i("Rita", "navigateToInviteCategory observe: $it")
+            Logger.i("navigateToInviteCategory observe: $it")
             it?.let {
                 view?.findNavController()?.navigate(
                     NavigationDirections.navigateToInviteCategoryDialog(
@@ -282,7 +282,7 @@ class HomeSortFragment : Fragment() {
 
 
         viewModel.navigateToAlarm.observe(viewLifecycleOwner, {
-            Log.i("Rita", "navigateToAlarm observe: $it")
+            Logger.i("navigateToAlarm observe: $it")
             it?.let {
                 view?.findNavController()?.navigate(
                     NavigationDirections.navigateToAlarmDialog(it)
@@ -310,7 +310,7 @@ class HomeSortFragment : Fragment() {
 
                 viewModel.selectedTimeSet(dateSelected)
 
-                Log.i("Rita", "Selected Day: $dateSelected")
+                Logger.i("Selected Day: $dateSelected")
             }
 
             override fun onItemClick(v: View) {}
@@ -325,7 +325,7 @@ class HomeSortFragment : Fragment() {
 
     }
 
-    private fun setupTouchHelper() : ItemTouchHelper.SimpleCallback{
+    private fun setupTouchHelper(): ItemTouchHelper.SimpleCallback {
         return object : ItemTouchHelper.SimpleCallback(
             ItemTouchHelper.UP or (ItemTouchHelper.DOWN),
             0

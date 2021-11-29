@@ -1,7 +1,6 @@
 package com.rita.calendarprooo.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +12,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.rita.calendarprooo.NavigationDirections
 import com.rita.calendarprooo.R
+import com.rita.calendarprooo.Util.Logger
 import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.databinding.FragmentHomeBinding
 import com.rita.calendarprooo.ext.getVmFactory
@@ -36,9 +36,9 @@ class HomeFragment : Fragment() {
 
 
         // get user at first to get plans
-        viewModel.currentUser.observe(viewLifecycleOwner,  {
-            Log.i("Rita", "home currentUser observe: $it")
-            it?.let{
+        viewModel.currentUser.observe(viewLifecycleOwner, {
+            Logger.i("home currentUser observe: $it")
+            it?.let {
                 // need to get plans once to create viewList, which control whether the detail hide or show
                 viewModel.getPlansToday()
 
@@ -50,7 +50,7 @@ class HomeFragment : Fragment() {
 
         // read Plans when date selected changed
         viewModel.selectedEndTime.observe(viewLifecycleOwner, {
-            Log.i("Rita", "home selectedEndTime observe: $it")
+            Logger.i("home selectedEndTime observe: $it")
             it?.let {
                 if (viewModel.currentUser.value != null) {
                     // need to get plans once to create viewList, which control whether the detail hide or show
@@ -65,34 +65,34 @@ class HomeFragment : Fragment() {
 
         // get plans once
         viewModel.plansToday.observe(viewLifecycleOwner, {
-            Log.i("Rita", "home plansToday observe: $it")
+            Logger.i("home plansToday observe: $it")
             viewModel.getPlansBeforeToday()
         })
 
 
         viewModel.plansBeforeToday.observe(viewLifecycleOwner, {
-            Log.i("Rita", "home plansBeforeToday observe: $it")
+            Logger.i("home plansBeforeToday observe: $it")
             viewModel.getTotalPlans()
         })
 
 
         // get plans onChanged
         viewModel.livePlansReset.observe(viewLifecycleOwner, {
-            Log.i("Rita", "home livePlansReset observe: $it")
+            Logger.i("home livePlansReset observe: $it")
 
             // need to set Observer here so we can get the same reference for livedata
-            it?.let{
-                if(it){
+            it?.let {
+                if (it) {
                     viewModel.livePlansToday.observe(viewLifecycleOwner, { plans ->
-                        Log.i("Rita", "home livePlansToday observe: $plans")
+                        Logger.i("home livePlansToday observe: $plans")
                         plans?.let {
                             viewModel.getTotalLivePlans()
                             binding.viewModel = viewModel
                         }
                     })
 
-                    viewModel.livePlansBeforeToday.observe(viewLifecycleOwner, { plans->
-                        Log.i("Rita", "home livePlansBeforeToday observe: $plans")
+                    viewModel.livePlansBeforeToday.observe(viewLifecycleOwner, { plans ->
+                        Logger.i("home livePlansBeforeToday observe: $plans")
                         plans?.let {
                             viewModel.getTotalLivePlans()
                             binding.viewModel = viewModel
@@ -104,10 +104,10 @@ class HomeFragment : Fragment() {
 
 
         viewModel.startToGetViewList.observe(viewLifecycleOwner, {
-            Log.i("Rita", "home startToGetViewList observe: $it")
+            Logger.i("home startToGetViewList observe: $it")
             it?.let {
-                    viewModel.getViewList()
-                    binding.viewModel = viewModel
+                viewModel.getViewList()
+                binding.viewModel = viewModel
             }
         })
 
@@ -142,7 +142,7 @@ class HomeFragment : Fragment() {
 
         // schedule adapter
         viewModel.scheduleList.observe(viewLifecycleOwner, {
-            Log.i("Rita", "home scheduleList observe: $it")
+            Logger.i("home scheduleList observe: $it")
             if (viewModel.getViewListAlready.value == true) {
                 createScheduleRecyclerview()
             }
@@ -151,7 +151,7 @@ class HomeFragment : Fragment() {
 
         // to-do adapter
         viewModel.todoList.observe(viewLifecycleOwner, {
-            Log.i("Rita", "home todoList observe: $it")
+            Logger.i("home todoList observe: $it")
 
             // get size again for to-do/done mode changed
             if (viewModel.startToGetViewListForTodoMode.value == true) {
@@ -168,7 +168,7 @@ class HomeFragment : Fragment() {
 
         // done adapter
         viewModel.doneList.observe(viewLifecycleOwner, {
-            Log.i("Rita", "home doneList observe: $it")
+            Logger.i("home doneList observe: $it")
 
             // get size again for to-do/done mode changed
             if (viewModel.startToGetViewListForDoneMode.value == true) {
@@ -178,7 +178,7 @@ class HomeFragment : Fragment() {
             }
 
             if (viewModel.getViewListAlready.value == true) {
-                Log.i("Rita", "homeVM.getViewListAlready.value == true, submit")
+                Logger.i("homeVM.getViewListAlready.value == true, submit")
                 createDoneRecyclerview()
             }
         })
@@ -186,7 +186,7 @@ class HomeFragment : Fragment() {
 
         // After the viewList is got, the recyclerView will show
         viewModel.getViewListAlready.observe(viewLifecycleOwner, {
-            Log.i("Rita", "home getViewListAlready observe: $it")
+            Logger.i("home getViewListAlready observe: $it")
             it?.let {
                 if (it) {
                     createScheduleRecyclerview()
@@ -199,16 +199,15 @@ class HomeFragment : Fragment() {
 
         // update Plan
         viewModel.planUpdate.observe(viewLifecycleOwner, {
-            Log.i("Rita", "home planUpdate observe: $it")
+            Logger.i("home planUpdate observe: $it")
 
-            it?.let{
-                if(viewModel.isCheckDoneChanged.value == true){
+            it?.let {
+                if (viewModel.isCheckDoneChanged.value == true) {
                     val plan = viewModel.renewCheckDoneStatus(it)
 
                     // update check - change check done status step3 - firebase update
                     viewModel.updatePlanByCheck(plan)
-                }
-                else if(viewModel.isCheckRemoved.value == true){
+                } else if (viewModel.isCheckRemoved.value == true) {
                     val plan = viewModel.renewCheckRemoval(it)
 
                     // update check - remove check step3 - firebase update
@@ -232,7 +231,7 @@ class HomeFragment : Fragment() {
 
 
         viewModel.navigateToEditByPlan.observe(viewLifecycleOwner, {
-            Log.i("Rita", "home navigateToEditByPlan observe: $it")
+            Logger.i("home navigateToEditByPlan observe: $it")
             it?.let {
                 view?.findNavController()?.navigate(
                     NavigationDirections.navigateToEditFragment(address, it)
@@ -243,7 +242,7 @@ class HomeFragment : Fragment() {
 
 
         viewModel.navigateToInvite.observe(viewLifecycleOwner, {
-            Log.i("Rita", "home navigateToInvite observe: $it")
+            Logger.i("home navigateToInvite observe: $it")
             it?.let {
                 view?.findNavController()?.navigate(
                     NavigationDirections.navigateToInviteFragment(it)
@@ -254,7 +253,7 @@ class HomeFragment : Fragment() {
 
 
         viewModel.navigateToAlarm.observe(viewLifecycleOwner, {
-            Log.i("Rita", "home navigateToAlarm observe: $it")
+            Logger.i("home navigateToAlarm observe: $it")
             it?.let {
                 view?.findNavController()?.navigate(
                     NavigationDirections.navigateToAlarmDialog(it)
@@ -282,7 +281,7 @@ class HomeFragment : Fragment() {
 
                 viewModel.selectedTimeSet(dateSelected)
 
-                Log.i("Rita", "home Selected Day: $dateSelected")
+                Logger.i("home Selected Day: $dateSelected")
             }
 
             override fun onItemClick(v: View) {}
@@ -297,7 +296,7 @@ class HomeFragment : Fragment() {
 
     }
 
-    private fun setupTouchHelper() : ItemTouchHelper.SimpleCallback{
+    private fun setupTouchHelper(): ItemTouchHelper.SimpleCallback {
         return object : ItemTouchHelper.SimpleCallback(
             ItemTouchHelper.UP or (ItemTouchHelper.DOWN),
             0

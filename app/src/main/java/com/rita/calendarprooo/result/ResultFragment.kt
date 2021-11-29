@@ -12,6 +12,7 @@ import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.rita.calendarprooo.R
+import com.rita.calendarprooo.Util.Logger
 import com.rita.calendarprooo.databinding.FragmentResultBinding
 import com.rita.calendarprooo.ext.getColorCode
 import com.rita.calendarprooo.ext.getVmFactory
@@ -36,12 +37,12 @@ class ResultFragment : Fragment() {
 
 
         viewModel.doneListReset.observe(viewLifecycleOwner, {
-            Log.d("Rita", "result doneListReset observe: $it")
+            Logger.d( "result doneListReset observe: $it")
 
             it?.let {
                 if (it) {
                     viewModel.doneList.observe(viewLifecycleOwner, { list ->
-                        Log.i("Rita", "result doneList observe: $list")
+                        Logger.i( "result doneList observe: $list")
                         list?.let {
                             viewModel.countForCategory(list)
                         }
@@ -57,7 +58,7 @@ class ResultFragment : Fragment() {
 
         // get Plans when date selected changed
         viewModel.selectedEndTime.observe(viewLifecycleOwner, {
-            Log.i("Rita", "result selectedEndTime observe: $it")
+            Logger.i( "result selectedEndTime observe: $it")
 
             it?.let {
                 viewModel.getDone()
@@ -67,12 +68,12 @@ class ResultFragment : Fragment() {
                 // So we need to set Observer here, getListFromToday as livedata can be observed
                 // for the same reference
                 viewModel.listToday.observe(viewLifecycleOwner, { list ->
-                    Log.i("Rita", "result getListFromToday observe: $list")
+                    Logger.i( "result getListFromToday observe: $list")
                     list?.let {
                         viewModel.getPlansBeforeToday()
 
                         viewModel.listBeforeToday.observe(viewLifecycleOwner, { list2 ->
-                            Log.i("Rita", "result getListBeforeToday observe: $list2")
+                            Logger.i( "result getListBeforeToday observe: $list2")
                             list2?.let {
                                 viewModel.getPlansInTotal()
                             }
@@ -87,7 +88,7 @@ class ResultFragment : Fragment() {
         val pieChart = binding.barPie
 
         viewModel.categoryForDoneList.observe(viewLifecycleOwner, {
-            Log.i("Rita", "result categoryForDoneList observe: $it")
+            Logger.i( "result categoryForDoneList observe: $it")
 
             it?.let {
                 val entries = mutableListOf<PieEntry>()
@@ -127,7 +128,7 @@ class ResultFragment : Fragment() {
 
 
         viewModel.pieEntryList.observe(viewLifecycleOwner, {
-            Log.i("Rita", "result pieEntryList observe: $it")
+            Logger.i( "result pieEntryList observe: $it")
             setPieChart(it)
         })
 
@@ -143,7 +144,7 @@ class ResultFragment : Fragment() {
 
                 viewModel.selectedTimeSet(dateSelected)
 
-                Log.i("Rita", "result Selected Day: $dateSelected")
+                Logger.i( "result Selected Day: $dateSelected")
             }
 
             override fun onItemClick(v: View) {}

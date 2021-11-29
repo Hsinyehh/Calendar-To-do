@@ -1,11 +1,11 @@
 package com.rita.calendarprooo.data.source.remote
 
-import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.FirebaseFirestore
 import com.rita.calendarprooo.CalendarProApplication
 import com.rita.calendarprooo.R
+import com.rita.calendarprooo.Util.Logger
 import com.rita.calendarprooo.data.*
 import com.rita.calendarprooo.data.source.CalendarDataSource
 import kotlin.coroutines.resume
@@ -27,10 +27,10 @@ object CalendarRemoteDataSource : CalendarDataSource {
             .get()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    Log.i("Rita","fb - getPlansToday result.size"+ task.result.size())
+                    Logger.i("fb - getPlansToday result.size"+ task.result.size())
                     val list = mutableListOf<Plan>()
                     for (document in task.result!!) {
-                        Log.i("Rita","fb - getPlansToday doc"+ document.id + " =>"  + document.data)
+                        Logger.i("fb - getPlansToday doc"+ document.id + " =>"  + document.data)
 
                         val plan = document.toObject(Plan::class.java)
                         list.add(plan)
@@ -38,7 +38,7 @@ object CalendarRemoteDataSource : CalendarDataSource {
                     continuation.resume(Result.Success(list))
                 } else {
                     task.exception?.let {
-                        Log.w("Rita",
+                       Logger.w(
                             "[${this::class.simpleName}] Error getting documents. ${it.message}")
                         continuation.resume(Result.Error(it))
                         return@addOnCompleteListener
@@ -60,24 +60,24 @@ object CalendarRemoteDataSource : CalendarDataSource {
                 if (task.isSuccessful) {
 
                     val list = mutableListOf<Plan>()
-                    Log.i("Rita","fb - getPlansBeforeToday result.size"+ task.result.size())
+                    Logger.i("fb - getPlansBeforeToday result.size"+ task.result.size())
 
                     for (document in task.result!!) {
                         val plan = document.toObject(Plan::class.java)
                         list.add(plan)
                     }
-                    Log.i("Rita", "fb - getPlansBeforeToday listBeforeToday:　$list")
+                    Logger.i("fb - getPlansBeforeToday listBeforeToday:　$list")
 
                     val filteredList = list
                         .filter {  it.end_time!! >= selectedStartTime}
 
-                    Log.i("Rita", "fb - getPlansBeforeToday filtered listBeforeToday:　$filteredList")
+                    Logger.i("fb - getPlansBeforeToday filtered listBeforeToday:　$filteredList")
 
                     continuation.resume(Result.Success(filteredList))
                 } else {
                     task.exception?.let {
 
-                        Log.w("Rita",
+                       Logger.w(
                             "[${this::class.simpleName}] Error getting documents. ${it.message}")
                         continuation.resume(Result.Error(it))
                         return@addOnCompleteListener
@@ -96,20 +96,19 @@ object CalendarRemoteDataSource : CalendarDataSource {
             .whereGreaterThanOrEqualTo("start_time", selectedStartTime)
             .whereLessThanOrEqualTo("start_time", selectedEndTime)
             .addSnapshotListener { snapshot, e ->
-                Log.i("Rita", "Today SnapshotListener user email:${user.email} ")
+                Logger.i("Today SnapshotListener user email:${user.email} ")
                 e?.let {
-                    Log.i(
-                        "Rita",
+                    Logger.w(
                         "[${this::class.simpleName}] Error getting documents. ${it.message}"
                     )
                 }
                 val list = mutableListOf<Plan>()
                 for (item in snapshot!!) {
-                    Log.i("Rita", "plan:　${item.data}")
+                    Logger.i("plan:　${item.data}")
                     val plan = item.toObject(Plan::class.java)
                     list.add(plan)
                 }
-                Log.i("Rita", "list onChanged:　$list")
+                Logger.i("list onChanged:　$list")
                 livedata.value = list
             }
         return livedata
@@ -123,11 +122,10 @@ object CalendarRemoteDataSource : CalendarDataSource {
             .whereArrayContains("collaborator", user.email)
             .whereLessThanOrEqualTo("start_time", selectedStartTime)
             .addSnapshotListener { snapshot, e ->
-                Log.i("Rita", "Before SnapshotListener user email:${user.email} ")
+                Logger.i("Before SnapshotListener user email:${user.email} ")
 
                 e?.let {
-                    Log.i(
-                        "Rita",
+                    Logger.w(
                         "[${this::class.simpleName}] Error getting documents. ${it.message}"
                     )
                 }
@@ -136,7 +134,7 @@ object CalendarRemoteDataSource : CalendarDataSource {
                     val plan = item.toObject(Plan::class.java)
                     list.add(plan)
                 }
-                Log.i("Rita", "list onChanged:　$list")
+                Logger.i("list onChanged:　$list")
                 val filteredList = list.filter { it.end_time!! >= selectedStartTime }
                 livedata.value = filteredList
             }
@@ -154,11 +152,11 @@ object CalendarRemoteDataSource : CalendarDataSource {
                     "done_time", plan.done_time,
                     "doner", plan.doner)
                 .addOnSuccessListener {
-                    Log.d(TAG, "DocumentSnapshot successfully updated!")
+                    Logger.d( "DocumentSnapshot successfully updated!")
                     continuation.resume(Result.Success(true))
                 }
                 .addOnFailureListener {
-                    Log.w(TAG, "Error updating document", it)
+                    Logger.w( "Error updating document: $it")
                     continuation.resume(Result.Error(it))
                 }
         }
@@ -174,11 +172,11 @@ object CalendarRemoteDataSource : CalendarDataSource {
         planRef!!
             .update("checkList", checkList.value)
             .addOnSuccessListener {
-                Log.d(TAG, "DocumentSnapshot successfully updated!")
+                Logger.d( "DocumentSnapshot successfully updated!")
                 continuation.resume(Result.Success(true))
             }
             .addOnFailureListener {
-                Log.w(TAG, "Error updating document", it)
+                Logger.w( "Error updating document: $it")
                 continuation.resume(Result.Error(it))
             }
     }
@@ -186,7 +184,7 @@ object CalendarRemoteDataSource : CalendarDataSource {
     override suspend fun getPlanByCheck(check: Check):
             Result<Plan> = suspendCoroutine { continuation ->
 
-        Log.i("Rita","fb - getPlanByCheck check: $check")
+        Logger.i("fb - getPlanByCheck check: $check")
 
         val planRef = check.plan_id?.let {
             FirebaseFirestore.getInstance().collection(PATH_PLAN).document(it)
@@ -195,7 +193,7 @@ object CalendarRemoteDataSource : CalendarDataSource {
         planRef!!.get()
             .addOnSuccessListener { document ->
                 val plan : Plan?
-                Log.i("Rita","fb - getPlanByCheck doc"+ document.data)
+                Logger.i("fb - getPlanByCheck doc"+ document.data)
                 if (document != null) {
                     plan = document.toObject(Plan::class.java)
                     if(plan != null) {
@@ -204,7 +202,7 @@ object CalendarRemoteDataSource : CalendarDataSource {
                 }
             }
             .addOnFailureListener { exception ->
-                Log.d(TAG, "get failed with ", exception)
+                Logger.d( "get failed with: $exception")
                 continuation.resume(Result.Error(exception))
             }
     }
@@ -220,20 +218,19 @@ object CalendarRemoteDataSource : CalendarDataSource {
             .whereGreaterThanOrEqualTo("start_time", selectedStartTime)
             .whereLessThanOrEqualTo("start_time", selectedEndTime)
             .addSnapshotListener { snapshot, e ->
-                Log.i("Rita", "Today SnapshotListener user email:${user.email} ")
+                Logger.i("Today SnapshotListener user email:${user.email} ")
                 e?.let {
-                    Log.i(
-                        "Rita",
+                    Logger.w(
                         "[${this::class.simpleName}] Error getting documents. ${it.message}"
                     )
                 }
                 val list = mutableListOf<Plan>()
                 for (item in snapshot!!) {
-                    Log.i("Rita", "plan:　${item.data}")
+                    Logger.i("plan:　${item.data}")
                     val plan = item.toObject(Plan::class.java)
                     list.add(plan)
                 }
-                Log.i("Rita", "list onChanged:　$list")
+                Logger.i("list onChanged:　$list")
                 livedata.value = list
             }
         return livedata
@@ -248,11 +245,10 @@ object CalendarRemoteDataSource : CalendarDataSource {
             .whereEqualTo("category", category)
             .whereLessThanOrEqualTo("start_time", selectedStartTime)
             .addSnapshotListener { snapshot, e ->
-                Log.i("Rita", "Before SnapshotListener user email:${user.email} ")
+                Logger.i("Before SnapshotListener user email:${user.email} ")
 
                 e?.let {
-                    Log.i(
-                        "Rita",
+                    Logger.w(
                         "[${this::class.simpleName}] Error getting documents. ${it.message}"
                     )
                 }
@@ -261,7 +257,7 @@ object CalendarRemoteDataSource : CalendarDataSource {
                     val plan = item.toObject(Plan::class.java)
                     list.add(plan)
                 }
-                Log.i("Rita", "list onChanged:　$list")
+                Logger.i("list onChanged:　$list")
                 val filteredList = list.filter { it.end_time!! >= selectedStartTime }
                 livedata.value = filteredList
             }
@@ -277,11 +273,11 @@ object CalendarRemoteDataSource : CalendarDataSource {
             newPlanRef!!
                 .set(plan)
                 .addOnSuccessListener {
-                    Log.d(TAG, "DocumentSnapshot added with ID: $newPlanRef.id")
+                    Logger.d( "DocumentSnapshot added with ID: $newPlanRef.id")
                     continuation.resume(Result.Success(true))
                 }
                 .addOnFailureListener {
-                    Log.w(TAG, "Error adding document", it)
+                    Logger.w( "Error adding document: $it")
                     continuation.resume(Result.Error(it))
                 }
         }
@@ -307,11 +303,11 @@ object CalendarRemoteDataSource : CalendarDataSource {
                     "checkList", plan.checkList,
                     "toDoList", plan.isToDoList)
                 .addOnSuccessListener {
-                    Log.d(TAG, "DocumentSnapshot successfully updated!")
+                    Logger.d( "DocumentSnapshot successfully updated!")
                     continuation.resume(Result.Success(true))
                 }
                 .addOnFailureListener {
-                    Log.w(TAG, "Error updating document", it)
+                    Logger.w( "Error updating document: $it")
                     continuation.resume(Result.Error(it))
                 }
         }
@@ -327,11 +323,11 @@ object CalendarRemoteDataSource : CalendarDataSource {
                 "categoryList", plan.categoryList,
                     "collaborator", plan.collaborator)
                 .addOnSuccessListener {
-                    Log.d(TAG, "DocumentSnapshot successfully updated!")
+                    Logger.d( "DocumentSnapshot successfully updated!")
                     continuation.resume(Result.Success(true))
                 }
                 .addOnFailureListener {
-                    Log.w(TAG, "Error updating document", it)
+                    Logger.w( "Error updating document: $it")
                     continuation.resume(Result.Error(it))
                 }
     }
@@ -341,18 +337,18 @@ object CalendarRemoteDataSource : CalendarDataSource {
             val userRef = user.email.let {
                 FirebaseFirestore.getInstance().collection(PATH_USER).document(it)
             }
-            Log.i("Rita", "updateUser - user: $user")
-            Log.i("Rita", "updateUser - userRef: $userRef")
+            Logger.i("updateUser - user: $user")
+            Logger.i("updateUser - userRef: $userRef")
 
             userRef
                 .update("invitationList", user.invitationList,
                     "categoryList", user.categoryList)
                 .addOnSuccessListener {
-                    Log.d(TAG, "DocumentSnapshot successfully updated!")
+                    Logger.d( "DocumentSnapshot successfully updated!")
                     continuation.resume(Result.Success(true))
                 }
                 .addOnFailureListener {
-                    Log.w(TAG, "Error updating document", it)
+                    Logger.w( "Error updating document: $it")
                     continuation.resume(Result.Error(it))
                 }
 
@@ -361,13 +357,13 @@ object CalendarRemoteDataSource : CalendarDataSource {
     override suspend fun getUserByEmail(email: String): Result<User> =
         suspendCoroutine { continuation ->
 
-        Log.i("Rita","fb - getUserByEmail email: $email")
+        Logger.i("fb - getUserByEmail email: $email")
 
         val userRef = FirebaseFirestore.getInstance().collection(PATH_USER).document(email)
 
         userRef.get()
             .addOnSuccessListener { document ->
-                Log.i("Rita","fb - getUserByEmail doc "+ document.data)
+                Logger.i("fb - getUserByEmail doc "+ document.data)
                 if (document != null) {
                     val user = document.toObject(User::class.java)
                     if(user != null) {
@@ -379,7 +375,7 @@ object CalendarRemoteDataSource : CalendarDataSource {
                 }
             }
             .addOnFailureListener { exception ->
-                Log.d(TAG, "get failed with ", exception)
+                Logger.d( "get failed with: $exception")
                 continuation.resume(Result.Error(exception))
             }
     }
@@ -391,36 +387,34 @@ object CalendarRemoteDataSource : CalendarDataSource {
             .collection(PATH_USER)
             .whereEqualTo("id", id)
             .addSnapshotListener { snapshot, exception ->
-                Log.d(TAG, "getUser snapshot ${snapshot!!.documents}")
+                Logger.i("getUser snapshot ${snapshot!!.documents}")
                 exception?.let {
-                    Log.d(TAG, "[${this::class.simpleName}] Error getting documents. ${it.message}")
+                    Logger.w( "[${this::class.simpleName}] Error getting documents. ${it.message}")
                 }
                 for (document in snapshot) {
                     val user = document.toObject(User::class.java)
                     liveData.value = user
                 }
             }
-        Log.i("Rita", "getUser: ${liveData.value}")
+        Logger.i("getUser: ${liveData.value}")
         return liveData
     }
 
     override suspend fun createUser(newUser: User): Result<Boolean> =
         suspendCoroutine { continuation ->
             val db = FirebaseFirestore.getInstance()
-            Log.i("Rita", "createUser - newUser: $newUser")
-            Log.i("Rita", "createUser - ref: ${db.collection(PATH_USER).document(newUser.email)}")
+            Logger.i("createUser - newUser: $newUser")
+            Logger.i("createUser - ref: ${db.collection(PATH_USER).document(newUser.email)}")
 
             db.collection(PATH_USER).document(newUser.email)
                 .set(newUser)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        Log.i("Rita", "createUser Success Task $newUser")
+                        Logger.i("createUser Success Task $newUser")
                         continuation.resume(Result.Success(true))
                     } else {
                         task.exception?.let {
-
-                            Log.i(
-                                "Rita",
+                            Logger.w(
                                 "[${this::class.simpleName}] Error getting documents. ${it.message}"
                             )
                             continuation.resume(Result.Error(it))
@@ -436,18 +430,18 @@ object CalendarRemoteDataSource : CalendarDataSource {
         val userRef = user.email.let {
             FirebaseFirestore.getInstance().collection(PATH_USER).document(it)
         }
-        Log.i("Rita", "updateUser - user: $user")
-        Log.i("Rita", "updateUser - userRef: $userRef")
+        Logger.i("updateUser - user: $user")
+        Logger.i("updateUser - userRef: $userRef")
 
         userRef
             .update("id", user.id,
                 "photo",user.photo, "name",user.name)
             .addOnSuccessListener {
-                Log.d(TAG, "DocumentSnapshot successfully updated!")
+                Logger.d( "DocumentSnapshot successfully updated!")
                 continuation.resume(Result.Success(true))
             }
             .addOnFailureListener {
-                Log.w(TAG, "Error updating document", it)
+                Logger.w( "Error updating document: $it")
                 continuation.resume(Result.Error(it))
             }
     }
@@ -460,7 +454,7 @@ object CalendarRemoteDataSource : CalendarDataSource {
             .get()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    Log.i("Rita","checkUserCreated size: ${task.result.size()}")
+                    Logger.i("checkUserCreated size: ${task.result.size()}")
 
                     val list = mutableListOf<User>()
                     for (document in task.result!!) {
@@ -474,14 +468,14 @@ object CalendarRemoteDataSource : CalendarDataSource {
                         isUserExisted = true
                     } else {
                         isUserExisted = false
-                        Log.d(TAG, "No such document")
+                        Logger.d( "No such document")
                     }
-                    Log.i("Rita","checkUserCreated - $isUserExisted")
+                    Logger.i("checkUserCreated - $isUserExisted")
 
                     continuation.resume(Result.Success(isUserExisted))
                 } else {
                     task.exception?.let {
-                        Log.d(TAG, "[${this::class.simpleName}] Error getting documents. ${it.message}")
+                        Logger.d( "[${this::class.simpleName}] Error getting documents. ${it.message}")
                         continuation.resume(Result.Error(it))
                         return@addOnCompleteListener
                     }
@@ -500,25 +494,24 @@ object CalendarRemoteDataSource : CalendarDataSource {
             .whereGreaterThanOrEqualTo("done_time", selectedStartTime)
             .whereLessThanOrEqualTo("done_time", selectedEndTime)
             .addSnapshotListener { snapshot, e ->
-                Log.i("Rita", "Today SnapshotListener user email:${user.email} ")
+                Logger.i("Today SnapshotListener user email:${user.email} ")
                 e?.let {
-                    Log.i(
-                        "Rita",
+                    Logger.w(
                         "[${this::class.simpleName}] Error getting documents. ${it.message}"
                     )
                 }
                 val list = mutableListOf<Plan>()
                 if (snapshot != null) {
                     for (item in snapshot) {
-                        Log.i("Rita", "plan:　${item.data}")
+                        Logger.i("plan:　${item.data}")
                         val plan = item.toObject(Plan::class.java)
                         list.add(plan)
                     }
                 }
-                Log.i("Rita", "list onChanged:　$list")
+                Logger.i("list onChanged:　$list")
                 livedata.value = list
             }
-        Log.i("Rita", "livedata:　${livedata.value}")
+        Logger.i("livedata:　${livedata.value}")
         return livedata
     }
 
@@ -530,8 +523,7 @@ object CalendarRemoteDataSource : CalendarDataSource {
             .whereArrayContains("invitation", user.email)
             .addSnapshotListener { snapshot, e ->
                 e?.let {
-                    Log.i(
-                        "Rita",
+                    Logger.w(
                         "[${this::class.simpleName}] Error getting documents. ${it.message}"
                     )
                 }
@@ -541,11 +533,11 @@ object CalendarRemoteDataSource : CalendarDataSource {
                         val plan = item.toObject(Plan::class.java)
                         list.add(plan)
                     }
-                    Log.i("Rita", "Invitation list onChanged:　$list")
+                    Logger.i("Invitation list onChanged:　$list")
                     livedata.value = list
                 } else {
                     val nullList = mutableListOf<Plan>()
-                    Log.d(TAG, "Current data: null: $nullList")
+                    Logger.d( "Current data: null: $nullList")
                     livedata.value = nullList
                 }
             }
@@ -562,10 +554,10 @@ object CalendarRemoteDataSource : CalendarDataSource {
             .get()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    Log.i("Rita","fb - getPlansByInvitation result.size"+ task.result.size())
+                    Logger.i("fb - getPlansByInvitation result.size"+ task.result.size())
                     val list = mutableListOf<Plan>()
                     for (document in task.result!!) {
-                        Log.i("Rita","fb - getPlansByInvitation doc"+ document.id + " =>"  + document.data)
+                        Logger.i("fb - getPlansByInvitation doc"+ document.id + " =>"  + document.data)
 
                         val plan = document.toObject(Plan::class.java)
                         list.add(plan)
@@ -573,7 +565,7 @@ object CalendarRemoteDataSource : CalendarDataSource {
                     continuation.resume(Result.Success(list))
                 } else {
                     task.exception?.let {
-                        Log.w("Rita",
+                       Logger.w(
                             "[${this::class.simpleName}] Error getting documents. ${it.message}")
                         continuation.resume(Result.Error(it))
                         return@addOnCompleteListener

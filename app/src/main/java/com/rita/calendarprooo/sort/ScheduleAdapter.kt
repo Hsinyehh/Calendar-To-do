@@ -7,6 +7,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.rita.calendarprooo.Util.Logger
 import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.databinding.ItemScheduleSortBinding
 
@@ -26,7 +27,7 @@ class ScheduleAdapter(val viewModel: HomeSortViewModel) : ListAdapter<Plan,
         adapter.notifyDataSetChanged()
 
         holder.binding.scheduleOverview.setOnClickListener {
-            Log.i("Rita", "scheduleOverview onclick")
+            Logger.i( "scheduleOverview onclick")
             viewModel.changeScheduleView(position)
         }
 

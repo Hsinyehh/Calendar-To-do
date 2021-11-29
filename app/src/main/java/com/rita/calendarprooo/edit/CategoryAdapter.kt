@@ -1,11 +1,11 @@
 package com.rita.calendarprooo.edit
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.rita.calendarprooo.Util.Logger
 import com.rita.calendarprooo.data.Category
 import com.rita.calendarprooo.databinding.ItemCategoryBinding
 
@@ -18,13 +18,8 @@ class CategoryAdapter(val viewModel: EditViewModel) : ListAdapter<Category,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
         holder.binding.categoryView.setOnClickListener {
-            Log.i("Rita", "$selectedItemPosition")
-            /*viewModel.categoryStatus.value = item
-            if(selectedItemPosition!=-1){
-                val lastSelectedItem=getItem(selectedItemPosition)
-                lastSelectedItem.isSelected=false
-            }
-            item.isSelected=true*/
+            Logger.i("$selectedItemPosition")
+
             viewModel.changeCategory(position, selectedItemPosition)
             selectedItemPosition = position
             notifyDataSetChanged()

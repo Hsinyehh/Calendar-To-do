@@ -1,12 +1,12 @@
 package com.rita.calendarprooo.login
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.rita.calendarprooo.CalendarProApplication
 import com.rita.calendarprooo.R
+import com.rita.calendarprooo.Util.Logger
 import com.rita.calendarprooo.data.Category
 import com.rita.calendarprooo.data.Result
 import com.rita.calendarprooo.data.User
@@ -66,7 +66,7 @@ class LoginViewModel(val repository: CalendarRepository) : ViewModel() {
             categoryList = createCollaborator(email),
             email = email, name = name, photo = photo.toString()
         )
-        Log.i("Rita", "new user: $user")
+        Logger.i("new user: $user")
         newUser.value = user
         UserManager.user.value = user
     }
@@ -111,7 +111,7 @@ class LoginViewModel(val repository: CalendarRepository) : ViewModel() {
             when (val result = repository.updateUser(user)) {
                 is Result.Success -> {
                     getUserData(user.id)
-                    Log.i("Rita", "${UserManager.user.value}")
+                    Logger.i("${UserManager.user.value}")
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
                 }
@@ -134,20 +134,20 @@ class LoginViewModel(val repository: CalendarRepository) : ViewModel() {
 
 
     fun checkUserCreated(user: User) {
-        Log.i("Rita", "checkUserCreated")
+        Logger.i("checkUserCreated")
 
         coroutineScope.launch {
 
             _status.value = LoadApiStatus.LOADING
 
             val result = repository.checkUserCreated(user)
-            Log.i("Rita", "checkUserCreated result: $result")
+            Logger.i("checkUserCreated result: $result")
 
             isUserCreated.value = when (result) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    Log.i("Rita", "checkUserCreated result.data: ${result.data}")
+                    Logger.i("checkUserCreated result.data: ${result.data}")
                     result.data
                 }
                 is Result.Fail -> {
@@ -167,7 +167,7 @@ class LoginViewModel(val repository: CalendarRepository) : ViewModel() {
                 }
             }
             isUserCreated.value = isUserCreated.value
-            Log.i("Rita", "checkUserCreated - ${isUserCreated.value}")
+            Logger.i("checkUserCreated - ${isUserCreated.value}")
             _refreshStatus.value = false
         }
     }
