@@ -1,4 +1,4 @@
-# Calendar-to-do
+# Calendar-To-do
 
 ![Firebase](https://img.shields.io/badge/firebase-%23039BE5.svg?style=for-the-badge&logo=firebase)   ![Kotlin](https://img.shields.io/badge/kotlin-%230095D5.svg?style=for-the-badge&logo=kotlin&logoColor=white)
 
@@ -11,7 +11,7 @@ and co-workers.
 
 ## Features
 - Check your plans today, tomorrow, or next week
-- Check off your tasks when you accomplish them
+- Check off your task when you accomplish it
 - Keep track of your daily life by Pie-Chart
 - Edit your plans; you can switch between To-do list and Schedule mode
 - Co-work the plans with your partners by sending emails
@@ -29,10 +29,10 @@ and co-workers.
 
 ## Support
 - Programming Language: Kotlin
-- Android Jetpack Library (Data binding, Navigation, Livedata...)
 - Design pattern: Object-Oriented Programming, Model-View-ViewModel, Observer
-- Data management: Firestore, Firebase Authentication, Crashlytics
-- Third-party SDK: Facebook SDK, Google SDK (Google Login API, Google Map API, Google Place API)
+- Android Jetpack Library: Data binding, Navigation, Livedata...
+- Firebase: Firestore, Firebase Authentication, Crashlytics
+- Google SDK: Google Login API, Google Map API, Google Place API
 - Github open source: Collapsible-Calendar-View, MPAndroidChart
 - Animation: Lottie
 
@@ -41,4 +41,4 @@ and co-workers.
 - Android SDK 29+
 
 ## Contact 
-Rita Yeh: rita.yeh0617@gmail.com
+- Rita Yeh: rita.yeh0617@gmail.com
