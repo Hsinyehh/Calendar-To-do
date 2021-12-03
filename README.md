@@ -1,6 +1,6 @@
 # Calendar-to-do
 A Calendar App combined with To-do List that helps you time management with your friends, family, and co-workers.
-<img src="google-play-badge.png">
+<img src="doc/google-play-badge.png">
 
 ## Features
 - Check your plans today, tomorrow, or next week
