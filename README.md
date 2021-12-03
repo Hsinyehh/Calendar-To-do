@@ -1,8 +1,14 @@
 # Calendar-to-do
-A Calendar App combined with To-do List that helps you time management with your friends, family, 
+
+![Firebase](https://img.shields.io/badge/firebase-%23039BE5.svg?style=for-the-badge&logo=firebase)   ![Kotlin]
+(https://img.shields.io/badge/kotlin-%230095D5.svg?style=for-the-badge&logo=kotlin&logoColor=white)
+
+>A Calendar App combined with To-do List that helps you time management with your friends, family, 
 and co-workers.
 
-<img src="doc/google-play-badge.png" width="230" height="90">
+<a href="https://play.google.com/store/apps/details?id=com.rita.calendarprooo">
+<img src="doc/google-play-badge.png" width="230" height="90"></a>
+
 
 ## Features
 - Check your plans today, tomorrow, or next week
@@ -32,5 +38,8 @@ and co-workers.
 - Animation: Lottie
 
 ## Requirement
-- Android Studio Artic Fox | 2020.3.1
+- Android Studio Arctic Fox | 2020.3.1
 - Android SDK 29+
+
+## Contact 
+Rita Yeh: rita.yeh0617@gmail.com
