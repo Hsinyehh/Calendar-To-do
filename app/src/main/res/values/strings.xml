@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Calendar-To-Do</string>
+    <string name="app_name">Calendar-To-do</string>
     <!--home-->
     <string name="calendar">Calendar</string>
     <string name="schedule">Schedule</string>
@@ -38,7 +38,7 @@
     <string name="category_hint">Enter the Category</string>
     <string name="submit">Submit</string>
     <!--login-->
-    <string name="login_title">Calendar-to-do</string>
+    <string name="login_title">Calendar-To-do</string>
     <string name="Error">Error</string>
     <!--result-->
     <string name="to_do_task">To-do Task</string>
