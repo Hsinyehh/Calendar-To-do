@@ -10,7 +10,13 @@ A Calendar App combined with To-do List that helps you time management with your
 - Keep track of your daily life!
 
 ## More introduction about Features
-![GITHUB](https://imgur.com/GvstN78)
+<img src="doc/0.png">
+<img src="doc/1.png">
+<img src="doc/2.png">
+<img src="doc/3.png">
+<img src="doc/4.png">
+<img src="doc/5.png">
+<img src="doc/6.png">
 
 ## Support
 - Programming Language: Kotlin
