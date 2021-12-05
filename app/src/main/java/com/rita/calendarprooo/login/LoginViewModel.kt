@@ -111,7 +111,6 @@ class LoginViewModel(val repository: CalendarRepository) : ViewModel() {
             when (val result = repository.updateUser(user)) {
                 is Result.Success -> {
                     getUserData(user.id)
-                    Logger.i("${UserManager.user.value}")
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
                 }

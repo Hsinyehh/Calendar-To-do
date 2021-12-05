@@ -92,12 +92,9 @@ class MainActivity : AppCompatActivity() {
 
         auth = Firebase.auth
         val currentUser = auth.currentUser
-        Log.i(
-            "Rita",
-            "MainActivity currentUser: $currentUser , userToken: ${UserManager.userToken}"
-        )
+        Logger.i("MainActivity currentUser: $currentUser , userToken: ${UserManager.userToken}")
         if (currentUser == null) {
-            //login first
+            // login first
             if (!UserManager.isLoggedIn) {
                 viewModel.navigateToLogin.value = true
             } else {

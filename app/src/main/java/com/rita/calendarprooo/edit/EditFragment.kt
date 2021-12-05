@@ -59,12 +59,12 @@ class EditFragment : Fragment() {
         })
 
 
-        val adapter = CategoryAdapter(viewModel)
-        binding.categoryList.adapter = adapter
+        val categoryAdapter = CategoryAdapter(viewModel)
+        binding.categoryList.adapter = categoryAdapter
         viewModel.categoryList.observe(viewLifecycleOwner, {
             Logger.i("categoryList observe: $it")
-            adapter.submitList(it)
-            adapter.notifyDataSetChanged()
+            categoryAdapter.submitList(it)
+            categoryAdapter.notifyDataSetChanged()
         })
 
 

@@ -319,7 +319,7 @@ class HomeFragment : Fragment() {
                 val startPosition = viewHolder.adapterPosition
                 val endPosition = target.adapterPosition
 
-                //swap position
+                // swap position
                 viewModel.swapCheckListItem(startPosition, endPosition)
                 recyclerView.adapter?.notifyItemMoved(startPosition, endPosition)
                 return true

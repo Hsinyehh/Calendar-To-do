@@ -15,8 +15,8 @@ android {
         applicationId "com.rita.calendarprooo"
         minSdk 29
         targetSdk 31
-        versionCode 9
-        versionName "3.3.0"
+        versionCode 10
+        versionName "3.4.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -63,35 +63,34 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:2.3.5")
     implementation("androidx.navigation:navigation-ui-ktx:2.3.5")
 
-    //collapsible calendar
+    // collapsible calendar
     implementation 'com.github.shrikanth7698:Collapsible-Calendar-View-Android:v1.0.3'
 
-    //google map
+    // google map
     implementation 'com.google.android.gms:play-services-maps:17.0.1'
 
-    //firebase
-
+    // firebase
     // Import the BoM for the Firebase platform
     implementation platform('com.google.firebase:firebase-bom:29.0.0')
 
-    //implementation platform('com.google.firebase:firebase-bom:28.4.2')
+    // implementation platform('com.google.firebase:firebase-bom:28.4.2')
     implementation 'com.google.firebase:firebase-analytics'
 
-    //google sign-in
+    // google sign-in
     implementation 'com.google.android.gms:play-services-auth:19.2.0'
 
     // Declare the dependency for the Firebase Authentication library
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation 'com.google.firebase:firebase-auth-ktx'
 
-    //Glide
+    // Glide
     implementation "com.github.bumptech.glide:glide:4.12.0"
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 
-    //pie Chart
+    // pie Chart
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
-    //google place api
+    // google place api
     implementation 'com.google.android.libraries.places:places:2.5.0'
 
     // lottie

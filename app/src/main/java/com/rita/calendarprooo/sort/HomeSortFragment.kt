@@ -299,7 +299,7 @@ class HomeSortFragment : Fragment() {
         itemTouchHelper.attachToRecyclerView(toToListRecyclerView)
 
 
-        //calendar
+        // calendar
         val collapsibleCalendar: CollapsibleCalendar = binding.calendarView
         collapsibleCalendar.setCalendarListener(object : CollapsibleCalendar.CalendarListener {
             override fun onDayChanged() {}
@@ -348,7 +348,7 @@ class HomeSortFragment : Fragment() {
                 val startPosition = viewHolder.adapterPosition
                 val endPosition = target.adapterPosition
 
-                //swap position
+                // swap position
                 viewModel.swapCheckListItem(startPosition, endPosition)
                 recyclerView.adapter?.notifyItemMoved(startPosition, endPosition)
                 return true
