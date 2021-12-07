@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-kapt'
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
+    id 'kotlin-parcelize'
 }
 
 apply plugin: 'androidx.navigation.safeargs'
@@ -15,8 +16,8 @@ android {
         applicationId "com.rita.calendarprooo"
         minSdk 29
         targetSdk 31
-        versionCode 10
-        versionName "3.4.0"
+        versionCode 11
+        versionName "3.5.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

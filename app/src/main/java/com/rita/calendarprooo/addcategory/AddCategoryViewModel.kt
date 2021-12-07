@@ -160,32 +160,35 @@ class AddCategoryViewModel(val repository: CalendarRepository) : ViewModel() {
 
         // update plan for categoryList
         val planRenewal = planGet.value
-        planRenewal!!.categoryList = categoryList.value
+        if (planRenewal != null) {
+            planRenewal.categoryList = categoryList.value
 
-        coroutineScope.launch {
 
-            _status.value = LoadApiStatus.LOADING
+            coroutineScope.launch {
 
-            when (val result = repository.updatePlanExtra(planRenewal)) {
-                is Result.Success -> {
-                    _error.value = null
-                    _status.value = LoadApiStatus.DONE
-                    Logger.i("add VM updatePlan: $result")
-                }
-                is Result.Fail -> {
-                    _error.value = result.error
-                    _status.value = LoadApiStatus.ERROR
-                    Logger.i("add VM updatePlan: $result")
-                }
-                is Result.Error -> {
-                    _error.value = result.exception.toString()
-                    _status.value = LoadApiStatus.ERROR
-                    Logger.i("add VM updatePlan: $result")
-                }
-                else -> {
-                    _error.value =
-                        CalendarProApplication.instance.getString(R.string.Error)
-                    _status.value = LoadApiStatus.ERROR
+                _status.value = LoadApiStatus.LOADING
+
+                when (val result = repository.updatePlanExtra(planRenewal)) {
+                    is Result.Success -> {
+                        _error.value = null
+                        _status.value = LoadApiStatus.DONE
+                        Logger.i("add VM updatePlan: $result")
+                    }
+                    is Result.Fail -> {
+                        _error.value = result.error
+                        _status.value = LoadApiStatus.ERROR
+                        Logger.i("add VM updatePlan: $result")
+                    }
+                    is Result.Error -> {
+                        _error.value = result.exception.toString()
+                        _status.value = LoadApiStatus.ERROR
+                        Logger.i("add VM updatePlan: $result")
+                    }
+                    else -> {
+                        _error.value =
+                            CalendarProApplication.instance.getString(R.string.Error)
+                        _status.value = LoadApiStatus.ERROR
+                    }
                 }
             }
         }
