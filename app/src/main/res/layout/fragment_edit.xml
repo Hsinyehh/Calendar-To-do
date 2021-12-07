@@ -256,7 +256,6 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="2dp"
                     android:layout_marginEnd="16dp"
-                    android:ems="30"
                     android:inputType="textPersonName"
                     android:maxLength="100"
                     android:text="@={viewModel.location}"
