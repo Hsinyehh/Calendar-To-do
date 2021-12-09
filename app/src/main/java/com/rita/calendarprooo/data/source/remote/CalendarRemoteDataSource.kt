@@ -29,12 +29,16 @@ object CalendarRemoteDataSource : CalendarDataSource {
                 if (task.isSuccessful) {
                     Logger.i("fb - getPlansToday result.size" + task.result.size())
                     val list = mutableListOf<Plan>()
-                    for (document in task.result!!) {
-                        Logger.i("fb - getPlansToday doc" + document.id + " =>" + document.data)
 
-                        val plan = document.toObject(Plan::class.java)
-                        list.add(plan)
+                    task.result?.let {
+                        for (document in it) {
+                            Logger.i("fb - getPlansToday doc" + document.id + " =>" + document.data)
+
+                            val plan = document.toObject(Plan::class.java)
+                            list.add(plan)
+                        }
                     }
+
                     continuation.resume(Result.Success(list))
                 } else {
                     task.exception?.let {
@@ -59,14 +63,16 @@ object CalendarRemoteDataSource : CalendarDataSource {
             .get()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-
                     val list = mutableListOf<Plan>()
                     Logger.i("fb - getPlansBeforeToday result.size" + task.result.size())
 
-                    for (document in task.result!!) {
-                        val plan = document.toObject(Plan::class.java)
-                        list.add(plan)
+                    task.result?.let {
+                        for (document in it) {
+                            val plan = document.toObject(Plan::class.java)
+                            list.add(plan)
+                        }
                     }
+
                     Logger.i("fb - getPlansBeforeToday listBeforeToday:　$list")
 
                     val filteredList = list
@@ -105,11 +111,15 @@ object CalendarRemoteDataSource : CalendarDataSource {
                     )
                 }
                 val list = mutableListOf<Plan>()
-                for (item in snapshot!!) {
-                    Logger.i("plan:　${item.data}")
-                    val plan = item.toObject(Plan::class.java)
-                    list.add(plan)
+
+                snapshot?.let {
+                    for (item in it) {
+                        Logger.i("plan:　${item.data}")
+                        val plan = item.toObject(Plan::class.java)
+                        list.add(plan)
+                    }
                 }
+
                 Logger.i("list onChanged:　$list")
                 livedata.value = list
             }
@@ -132,10 +142,14 @@ object CalendarRemoteDataSource : CalendarDataSource {
                     )
                 }
                 val list = mutableListOf<Plan>()
-                for (item in snapshot!!) {
-                    val plan = item.toObject(Plan::class.java)
-                    list.add(plan)
+
+                snapshot?.let {
+                    for (item in it) {
+                        val plan = item.toObject(Plan::class.java)
+                        list.add(plan)
+                    }
                 }
+
                 Logger.i("list onChanged:　$list")
 
                 val filteredList = list.filter { it.end_time!! >= selectedStartTime }
@@ -225,11 +239,15 @@ object CalendarRemoteDataSource : CalendarDataSource {
                     )
                 }
                 val list = mutableListOf<Plan>()
-                for (item in snapshot!!) {
-                    Logger.i("plan:　${item.data}")
-                    val plan = item.toObject(Plan::class.java)
-                    list.add(plan)
+
+                snapshot?.let {
+                    for (item in it) {
+                        Logger.i("plan:　${item.data}")
+                        val plan = item.toObject(Plan::class.java)
+                        list.add(plan)
+                    }
                 }
+
                 Logger.i("list onChanged:　$list")
                 livedata.value = list
             }
@@ -253,10 +271,14 @@ object CalendarRemoteDataSource : CalendarDataSource {
                     )
                 }
                 val list = mutableListOf<Plan>()
-                for (item in snapshot!!) {
-                    val plan = item.toObject(Plan::class.java)
-                    list.add(plan)
+
+                snapshot?.let {
+                    for (item in it) {
+                        val plan = item.toObject(Plan::class.java)
+                        list.add(plan)
+                    }
                 }
+
                 Logger.i("list onChanged:　$list")
                 val filteredList = list.filter { it.end_time!! >= selectedStartTime }
                 livedata.value = filteredList
@@ -383,14 +405,17 @@ object CalendarRemoteDataSource : CalendarDataSource {
             .collection(PATH_USER)
             .whereEqualTo("id", id)
             .addSnapshotListener { snapshot, exception ->
-                Logger.i("getUser snapshot ${snapshot!!.documents}")
                 exception?.let {
                     Logger.w("[${this::class.simpleName}] Error getting documents. ${it.message}")
                 }
-                for (document in snapshot) {
-                    val user = document.toObject(User::class.java)
-                    liveData.value = user
+
+                snapshot?.let {
+                    for (document in it) {
+                        val user = document.toObject(User::class.java)
+                        liveData.value = user
+                    }
                 }
+
             }
         Logger.i("getUser: ${liveData.value}")
         return liveData
@@ -455,10 +480,13 @@ object CalendarRemoteDataSource : CalendarDataSource {
                         Logger.i("checkUserCreated size: ${task.result.size()}")
 
                         val list = mutableListOf<User>()
-                        for (document in task.result!!) {
-                            Log.d("Rita", document.id + " => " + document.data)
-                            val userGet = document.toObject(User::class.java)
-                            list.add(userGet)
+
+                        task.result?.let {
+                            for (document in it) {
+                                Log.d("Rita", document.id + " => " + document.data)
+                                val userGet = document.toObject(User::class.java)
+                                list.add(userGet)
+                            }
                         }
 
                         val isUserExisted: Boolean?
@@ -554,12 +582,14 @@ object CalendarRemoteDataSource : CalendarDataSource {
                 if (task.isSuccessful) {
                     Logger.i("fb - getPlansByInvitation result.size" + task.result.size())
                     val list = mutableListOf<Plan>()
-                    for (document in task.result!!) {
-                        Logger.i("fb - getPlansByInvitation doc" + document.id + " =>" + document.data)
 
-                        val plan = document.toObject(Plan::class.java)
-                        list.add(plan)
+                    task.result?.let {
+                        for (document in it) {
+                            val plan = document.toObject(Plan::class.java)
+                            list.add(plan)
+                        }
                     }
+
                     continuation.resume(Result.Success(list))
                 } else {
                     task.exception?.let {

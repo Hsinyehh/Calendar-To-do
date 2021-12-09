@@ -55,7 +55,7 @@
                     android:fontFamily="@font/noto_sans"
                     android:text="@string/plan"
                     android:textColor="@color/black_3f3a3a"
-                    android:textSize="20sp"
+                    android:textSize="20dp"
                     android:visibility="@{viewModel.invitationListSize>0? view.VISIBLE:view.GONE}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -82,7 +82,7 @@
                     android:fontFamily="@font/noto_sans"
                     android:text="@string/category"
                     android:textColor="@color/black_3f3a3a"
-                    android:textSize="20sp"
+                    android:textSize="20dp"
                     android:visibility="@{viewModel.invitationForCategoryListSize>0? view.VISIBLE:view.GONE}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/invitation_list" />
@@ -128,7 +128,7 @@
                 android:fontFamily="@font/noto_sans"
                 android:text="@string/no_invitation"
                 android:textColor="@color/gray_808080"
-                android:textSize="22sp"
+                android:textSize="22dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/animationView" />

@@ -5,8 +5,6 @@
         <item name="colorPrimary">@color/pink_F2E5D9</item>
         <item name="colorPrimaryVariant">@color/pink_F2E5D9</item>
         <item name="colorOnPrimary">@color/white</item>
-        <!-- close night mode -->
-        <!--<item name="android:forceDarkAllowed">false</item> -->
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/red_DDA098</item>
         <item name="colorSecondaryVariant">@color/red_DDA098</item>

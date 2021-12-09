@@ -5,33 +5,33 @@
         <item name="android:fontFamily">@font/noto_sans</item>
         <item name="android:layout_marginTop">4dp</item>
         <item name="android:textColor">@color/black_3f3a3a</item>
-        <item name="android:textSize">15sp</item>
+        <item name="android:textSize">15dp</item>
     </style>
 
     <style name="plan_time_list">
         <item name="android:fontFamily">@font/noto_sans</item>
         <item name="android:layout_marginTop">4dp</item>
         <item name="android:textColor">@color/black_3f3a3a</item>
-        <item name="android:textSize">13sp</item>
+        <item name="android:textSize">13dp</item>
     </style>
 
     <style name="check_list">
         <item name="android:fontFamily">@font/noto_sans</item>
         <item name="android:layout_marginTop">6dp</item>
         <item name="android:textColor">@color/black_3f3a3a</item>
-        <item name="android:textSize">15sp</item>
+        <item name="android:textSize">15dp</item>
     </style>
 
     <style name="edit">
         <item name="android:fontFamily">@font/noto_sans</item>
         <item name="android:textColor">@color/black_3f3a3a</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">14dp</item>
     </style>
 
     <style name="invitation_list">
         <item name="android:fontFamily">@font/noto_sans</item>
         <item name="android:textColor">@color/black_3f3a3a</item>
-        <item name="android:textSize">15sp</item>
+        <item name="android:textSize">15dp</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
@@ -44,7 +44,7 @@
     <style name="result_title">
         <item name="android:fontFamily">@font/noto_sans</item>
         <item name="android:textColor">@color/black_3f3a3a</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">14dp</item>
     </style>
 
     <style name="result_num" >
@@ -52,8 +52,22 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">20dp</item>
         <item name="android:textColor">@color/black_3f3a3a</item>
-        <item name="android:textSize">28sp</item>
+        <item name="android:textSize">28dp</item>
     </style>
 
+    <style name="home_title">
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:textColor">@color/black_3f3a3a</item>
+        <item name="android:textSize">15dp</item>
+    </style>
+
+    <style name="home_sort_title">
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:textColor">@color/black_3f3a3a</item>
+        <item name="android:textSize">15dp</item>
+    </style>
 
 </resources>

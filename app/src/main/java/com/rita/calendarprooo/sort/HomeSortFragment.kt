@@ -118,6 +118,7 @@ class HomeSortFragment : Fragment() {
             binding.homeScheduleList.adapter = adapter
             adapter.submitList(viewModel.scheduleList.value)
             adapter.notifyDataSetChanged()
+            viewModel.loadingStatus.value = false
         }
 
 
@@ -126,6 +127,7 @@ class HomeSortFragment : Fragment() {
             binding.homeTodoList.adapter = todoAdapter
             todoAdapter.submitList(viewModel.todoList.value)
             todoAdapter.notifyDataSetChanged()
+            viewModel.loadingStatus.value = false
         }
 
 
@@ -134,6 +136,7 @@ class HomeSortFragment : Fragment() {
             binding.homeDoneList.adapter = doneAdapter
             doneAdapter.submitList(viewModel.doneList.value)
             doneAdapter.notifyDataSetChanged()
+            viewModel.loadingStatus.value = false
         }
 
 

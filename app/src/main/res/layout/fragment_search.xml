@@ -57,7 +57,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_centerVertical="true"
-                android:textSize="15sp"
+                android:textSize="15dp"
                 android:hint="Please enter City, Address or Zip code."
                 android:background="@null"
                 android:layout_marginStart="10dp"

@@ -53,7 +53,7 @@
                     android:layout_marginTop="30dp"
                     android:onClick="@{()->viewModel.toToListModeChanged()}"
                     android:src="@{viewModel.isTodoList==true? @drawable/check:@drawable/uncheck}"
-                    android:textSize="15sp"
+                    android:textSize="15dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -67,7 +67,7 @@
                     android:fontFamily="@font/noto_sans"
                     android:text="@string/todo_list_mode"
                     android:textColor="@color/black_3f3a3a"
-                    android:textSize="12sp"
+                    android:textSize="12dp"
                     app:layout_constraintStart_toEndOf="@id/image_todolist_mode"
                     app:layout_constraintTop_toTopOf="parent" />
 
