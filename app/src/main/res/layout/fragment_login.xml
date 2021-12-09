@@ -47,7 +47,7 @@
                     android:fontFamily="@font/henny_penny"
                     android:text="@string/login_title"
                     android:textColor="@color/black_3f3a3a"
-                    android:textSize="40sp"
+                    android:textSize="40dp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
