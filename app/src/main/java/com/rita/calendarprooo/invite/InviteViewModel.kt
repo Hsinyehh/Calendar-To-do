@@ -17,17 +17,17 @@ import kotlinx.coroutines.launch
 
 class InviteViewModel(val repository: CalendarRepository) : ViewModel() {
 
-    var plan = MutableLiveData<Plan>()
+    val plan = MutableLiveData<Plan>()
 
-    var email = MutableLiveData<String>()
+    val email = MutableLiveData<String>()
 
-    var invitation = MutableLiveData<MutableList<String>>()
+    val invitation = MutableLiveData<MutableList<String>>()
 
-    var isInvited = MutableLiveData<Boolean>()
+    val isInvited = MutableLiveData<Boolean>()
 
-    var isCollaborator = MutableLiveData<Boolean>()
+    val isCollaborator = MutableLiveData<Boolean>()
 
-    var updateSuccess = MutableLiveData<Boolean>()
+    val updateSuccess = MutableLiveData<Boolean>()
 
     // status: The internal MutableLiveData that stores the status of the most recent request
     private val _status = MutableLiveData<LoadApiStatus>()

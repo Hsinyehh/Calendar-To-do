@@ -23,26 +23,26 @@ class AddCategoryViewModel(val repository: CalendarRepository) : ViewModel() {
 
     var currentUser = MutableLiveData<User>()
 
-    var categoryListForAutoInput = MutableLiveData<MutableList<String>>()
+    val categoryListForAutoInput = MutableLiveData<MutableList<String>>()
 
-    var categoryList = MutableLiveData<MutableList<Category>>()
+    val categoryList = MutableLiveData<MutableList<Category>>()
 
-    var categoryAdded = MutableLiveData<String>()
+    val categoryAdded = MutableLiveData<String>()
 
-    var planGet = MutableLiveData<Plan>()
+    val planGet = MutableLiveData<Plan>()
 
-    private var userUpdate = MutableLiveData<User>()
+    private val userUpdate = MutableLiveData<User>()
 
     // check if the plan is created or edited
-    var isPlanCreated = MutableLiveData<Boolean>()
+    val isPlanCreated = MutableLiveData<Boolean>()
 
-    var startToCreate = MutableLiveData<Boolean>()
+    val startToCreate = MutableLiveData<Boolean>()
 
-    var startToPrepare = MutableLiveData<Boolean>()
+    val startToPrepare = MutableLiveData<Boolean>()
 
-    var startToUpdate = MutableLiveData<Boolean>()
+    val startToUpdate = MutableLiveData<Boolean>()
 
-    var startToNavigate = MutableLiveData<Boolean>()
+    val startToNavigate = MutableLiveData<Boolean>()
 
     // status: The internal MutableLiveData that stores the status of the most recent request
     private val _status = MutableLiveData<LoadApiStatus>()

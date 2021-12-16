@@ -6,7 +6,6 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.rita.calendarprooo.CalendarProApplication
 import com.rita.calendarprooo.R
-import com.rita.calendarprooo.Util.Logger
 import com.rita.calendarprooo.data.*
 import com.rita.calendarprooo.data.source.CalendarRepository
 import com.rita.calendarprooo.login.UserManager
@@ -26,14 +25,14 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
     // Plan
     var invitationList = MutableLiveData<List<Plan>>()
 
-    var invitationListReset = MutableLiveData<Boolean>()
+    val invitationListReset = MutableLiveData<Boolean>()
 
-    var invitationForCategoryList = MutableLiveData<MutableList<Invitation>>()
+    val invitationForCategoryList = MutableLiveData<MutableList<Invitation>>()
 
     var invitationListSize = MutableLiveData<Int>()
 
     // Category
-    var invitationForCategoryListSize: LiveData<Int> =
+    val invitationForCategoryListSize: LiveData<Int> =
         Transformations.map(invitationForCategoryList) {
             var size = 0
             if (!it.isNullOrEmpty()) {
@@ -42,17 +41,17 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
             size
         }
 
-    var isAccepted = MutableLiveData<Boolean>()
+    val isAccepted = MutableLiveData<Boolean>()
 
-    var invitationAccepted = MutableLiveData<Invitation>()
+    val invitationAccepted = MutableLiveData<Invitation>()
 
-    var invitationListUpdated = MutableLiveData<MutableList<Invitation>>()
+    val invitationListUpdated = MutableLiveData<MutableList<Invitation>>()
 
-    var plans = MutableLiveData<MutableList<Plan>>()
+    val plans = MutableLiveData<MutableList<Plan>>()
 
-    var plansUpdate = MutableLiveData<MutableList<Plan>>()
+    val plansUpdate = MutableLiveData<MutableList<Plan>>()
 
-    var startToUpdate = MutableLiveData<Boolean>()
+    val startToUpdate = MutableLiveData<Boolean>()
 
     val categoryListTobeUpdated = MutableLiveData<MutableList<Category>>()
 
@@ -60,7 +59,7 @@ class InvitationViewModel(val repository: CalendarRepository) : ViewModel() {
 
     val updateCategoriesForUser = MutableLiveData<Boolean>()
 
-    var updateSuccess = MutableLiveData<Boolean>()
+    val updateSuccess = MutableLiveData<Boolean>()
 
     // status: The internal MutableLiveData that stores the status of the most recent request
     private val _status = MutableLiveData<LoadApiStatus>()

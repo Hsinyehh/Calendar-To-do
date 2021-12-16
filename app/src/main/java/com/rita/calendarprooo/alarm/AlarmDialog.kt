@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -126,7 +127,8 @@ class AlarmDialog : DialogFragment() {
         intent.putExtra("title", "${plan.title}")
         intent.putExtra("time", timeShowed)
 
-        val pendingIntent = PendingIntent.getBroadcast(requireContext(), 0, intent, 0)
+        val pendingIntent = PendingIntent.getBroadcast(requireContext(), 0, intent,
+            FLAG_IMMUTABLE)
         val alarmManager = requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent)
