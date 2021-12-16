@@ -30,75 +30,75 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
 
     var currentUser = MutableLiveData<User>()
 
-    private var _navigateToEdit = MutableLiveData<Boolean>()
+    private val _navigateToEdit = MutableLiveData<Boolean>()
     val navigateToEdit: LiveData<Boolean>
         get() = _navigateToEdit
 
-    private var _navigateToEditByPlan = MutableLiveData<Plan>()
+    private val _navigateToEditByPlan = MutableLiveData<Plan>()
     val navigateToEditByPlan: LiveData<Plan>
         get() = _navigateToEditByPlan
 
-    private var _navigateToInvite = MutableLiveData<Plan>()
+    private val _navigateToInvite = MutableLiveData<Plan>()
     val navigateToInvite: LiveData<Plan>
         get() = _navigateToInvite
 
-    private var _navigateToAlarm = MutableLiveData<Plan>()
+    private val _navigateToAlarm = MutableLiveData<Plan>()
     val navigateToAlarm: LiveData<Plan>
         get() = _navigateToAlarm
 
-    private var _scheduleList = MutableLiveData<List<Plan>>()
+    private val _scheduleList = MutableLiveData<List<Plan>>()
     val scheduleList: LiveData<List<Plan>>
         get() = _scheduleList
 
-    private var _todoList = MutableLiveData<List<Plan>>()
+    private val _todoList = MutableLiveData<List<Plan>>()
     val todoList: LiveData<List<Plan>>
         get() = _todoList
 
-    private var _doneList = MutableLiveData<List<Plan>>()
+    private val _doneList = MutableLiveData<List<Plan>>()
     val doneList: LiveData<List<Plan>>
         get() = _doneList
 
-    var selectedStartTime = MutableLiveData<Long>()
+    val selectedStartTime = MutableLiveData<Long>()
 
-    var selectedEndTime = MutableLiveData<Long>()
+    val selectedEndTime = MutableLiveData<Long>()
 
-    var plansToday = MutableLiveData<List<Plan>>()
+    val plansToday = MutableLiveData<List<Plan>>()
 
-    var plansBeforeToday = MutableLiveData<List<Plan>>()
+    val plansBeforeToday = MutableLiveData<List<Plan>>()
 
     var livePlansToday = MutableLiveData<List<Plan>>()
 
     var livePlansBeforeToday = MutableLiveData<List<Plan>>()
 
-    var livePlansReset = MutableLiveData<Boolean>()
+    val livePlansReset = MutableLiveData<Boolean>()
 
-    var scheduleViewList = MutableLiveData<MutableList<Boolean>>()
+    val scheduleViewList = MutableLiveData<MutableList<Boolean>>()
 
-    var todoViewList = MutableLiveData<MutableList<Boolean>>()
+    val todoViewList = MutableLiveData<MutableList<Boolean>>()
 
-    var doneViewList = MutableLiveData<MutableList<Boolean>>()
+    val doneViewList = MutableLiveData<MutableList<Boolean>>()
 
-    var startToGetViewList = MutableLiveData<Boolean>()
+    val startToGetViewList = MutableLiveData<Boolean>()
 
-    var startToGetViewListForTodoMode = MutableLiveData<Boolean>()
+    val startToGetViewListForTodoMode = MutableLiveData<Boolean>()
 
-    var startToGetViewListForDoneMode = MutableLiveData<Boolean>()
+    val startToGetViewListForDoneMode = MutableLiveData<Boolean>()
 
     // the variable is used after viewList is created so that the recyclerView can show
-    var getViewListAlready = MutableLiveData<Boolean>()
+    val getViewListAlready = MutableLiveData<Boolean>()
 
     // update
-    private var checkListUpdate = MutableLiveData<MutableList<Check>>()
+    private val checkListUpdate = MutableLiveData<MutableList<Check>>()
 
-    private var checkUpdate = MutableLiveData<Check>()
+    private val checkUpdate = MutableLiveData<Check>()
 
-    private var positionUpdate = MutableLiveData<Int>()
+    private val positionUpdate = MutableLiveData<Int>()
 
-    var planUpdate = MutableLiveData<Plan>()
+    val planUpdate = MutableLiveData<Plan>()
 
-    var isCheckDoneChanged = MutableLiveData<Boolean>()
+    val isCheckDoneChanged = MutableLiveData<Boolean>()
 
-    var isCheckRemoved = MutableLiveData<Boolean>()
+    val isCheckRemoved = MutableLiveData<Boolean>()
 
     // status: The internal MutableLiveData that stores the status of the most recent request
     private val _status = MutableLiveData<LoadApiStatus>()
@@ -306,38 +306,48 @@ class HomeViewModel(val repository: CalendarRepository) : ViewModel() {
     // change detail showing/hiding status
     fun changeScheduleView(position: Int) {
         val list = scheduleViewList.value
-        var status = list?.get(position)
+        if (list != null) {
+            if(list.lastIndex >= position ) {
+                var status = list.get(position)
 
-        status = status != true
-        list?.set(position, status)
+                status = status != true
+                list.set(position, status)
 
-        scheduleViewList.value = list
-
+                scheduleViewList.value = list
+            }
+        }
     }
 
 
     fun changeTodoView(position: Int) {
         val list = todoViewList.value
-        var status = list?.get(position)
+        if (list != null) {
+            if (list.lastIndex >= position) {
+                var status = list.get(position)
 
-        status = status != true
-        list?.set(position, status)
+                status = status != true
+                list.set(position, status)
 
-        todoViewList.value = list
-        Logger.i("todoViewList changed- ${todoViewList.value}")
+                todoViewList.value = list
+                Logger.i("todoViewList changed- ${todoViewList.value}")
+            }
+        }
     }
 
 
     fun changeDoneView(position: Int) {
         val list = doneViewList.value
-        var status = list?.get(position)
+        if (list != null) {
+            if (list.lastIndex >= position) {
+                var status = list.get(position)
 
-        status = status != true
-        list?.set(position, status)
+                status = status != true
+                list.set(position, status)
 
-        doneViewList.value = list
-        Logger.i("doneViewList changed- ${doneViewList.value}")
-
+                doneViewList.value = list
+                Logger.i("doneViewList changed- ${doneViewList.value}")
+            }
+        }
     }
 
 

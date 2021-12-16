@@ -23,47 +23,47 @@ class EditViewModel(plan: Plan, val repository: CalendarRepository) : ViewModel(
 
     val loadingStatus = MutableLiveData<Boolean?>()
 
-    var currentUser = UserManager.user
+    val currentUser = UserManager.user
 
     var updatedUser = MutableLiveData<User>()
 
-    var planGet = MutableLiveData<Plan?>()
+    val planGet = MutableLiveData<Plan?>()
 
-    var categoryStatus = MutableLiveData<Category?>()
+    val categoryStatus = MutableLiveData<Category?>()
 
-    var categoryPosition = MutableLiveData<Int?>()
+    val categoryPosition = MutableLiveData<Int?>()
 
-    var categoryList = MutableLiveData<MutableList<Category>?>()
+    val categoryList = MutableLiveData<MutableList<Category>?>()
 
-    var checkText = MutableLiveData<String?>()
+    val checkText = MutableLiveData<String?>()
 
-    var id = MutableLiveData<String?>()
+    val id = MutableLiveData<String?>()
 
-    var title = MutableLiveData<String?>()
+    val title = MutableLiveData<String?>()
 
-    var description = MutableLiveData<String?>()
+    val description = MutableLiveData<String?>()
 
-    var location = MutableLiveData<String?>()
+    val location = MutableLiveData<String?>()
 
-    var newPlan = MutableLiveData<Plan?>()
+    val newPlan = MutableLiveData<Plan?>()
 
-    var isTodoList = MutableLiveData<Boolean?>()
+    val isTodoList = MutableLiveData<Boolean?>()
 
-    var checkList = MutableLiveData<MutableList<Check>?>()
+    val checkList = MutableLiveData<MutableList<Check>?>()
 
-    var start_time = MutableLiveData<Long>()
+    val start_time = MutableLiveData<Long>()
 
-    var end_time = MutableLiveData<Long>()
+    val end_time = MutableLiveData<Long>()
 
-    var start_time_detail = MutableLiveData<List<Int>>()
+    val start_time_detail = MutableLiveData<List<Int>>()
 
-    var end_time_detail = MutableLiveData<List<Int>>()
+    val end_time_detail = MutableLiveData<List<Int>>()
 
-    var doneConverted = MutableLiveData<Boolean?>()
+    val doneConverted = MutableLiveData<Boolean?>()
 
-    var editStatus = MutableLiveData<Boolean?>()
+    val editStatus = MutableLiveData<Boolean?>()
 
-    var collaborator = MutableLiveData<MutableList<String>>()
+    val collaborator = MutableLiveData<MutableList<String>>()
 
     private val db = Firebase.firestore
 
@@ -105,21 +105,23 @@ class EditViewModel(plan: Plan, val repository: CalendarRepository) : ViewModel(
         val editCheckList = checkList.value
         Logger.i("checkListTextCreated()")
 
-        if (planGet.value?.id.isNullOrEmpty()) {
-            val newCheck = Check(
-                checkText.value, false, 0, "", "", 1,
-                newPlanRef.id
-            )
-            editCheckList?.add(newCheck)
-        } else {
-            val newCheck = Check(
-                checkText.value, false, 0, "", "", 1,
-                planGet.value!!.id
-            )
-            editCheckList?.add(newCheck)
-        }
+        if(!checkText.value.isNullOrBlank()) {
+            if (planGet.value?.id.isNullOrEmpty()) {
+                val newCheck = Check(
+                    checkText.value, false, 0, "", "", 1,
+                    newPlanRef.id
+                )
+                editCheckList?.add(newCheck)
+            } else {
+                val newCheck = Check(
+                    checkText.value, false, 0, "", "", 1,
+                    planGet.value!!.id
+                )
+                editCheckList?.add(newCheck)
+            }
 
-        checkList.value = editCheckList
+            checkList.value = editCheckList
+        }
     }
 
 

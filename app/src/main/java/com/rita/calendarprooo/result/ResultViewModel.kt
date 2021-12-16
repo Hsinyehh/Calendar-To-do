@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.github.mikephil.charting.data.PieEntry
+import com.rita.calendarprooo.Util.Logger
 import com.rita.calendarprooo.data.Plan
 import com.rita.calendarprooo.data.User
 import com.rita.calendarprooo.data.source.CalendarRepository
@@ -14,17 +15,17 @@ import com.rita.calendarprooo.login.UserManager
 
 class ResultViewModel(val repository: CalendarRepository) : ViewModel() {
 
-    var currentUser = MutableLiveData<User>()
+    val currentUser = MutableLiveData<User>()
 
     var listToday = MutableLiveData<List<Plan>>()
 
     var listBeforeToday = MutableLiveData<List<Plan>>()
 
-    var selectedStartTime = MutableLiveData<Long>()
+    val selectedStartTime = MutableLiveData<Long>()
 
-    var selectedEndTime = MutableLiveData<Long>()
+    val selectedEndTime = MutableLiveData<Long>()
 
-    private var _todoList = MutableLiveData<List<Plan>>()
+    private val _todoList = MutableLiveData<List<Plan>>()
     val todoList: LiveData<List<Plan>>
         get() = _todoList
 
@@ -40,11 +41,11 @@ class ResultViewModel(val repository: CalendarRepository) : ViewModel() {
     val doneList: LiveData<List<Plan>>
         get() = _doneList
 
-    var doneListReset = MutableLiveData<Boolean>()
+    val doneListReset = MutableLiveData<Boolean>()
 
-    var categoryForDoneList = MutableLiveData<MutableMap<String, Float>>()
+    val categoryForDoneList = MutableLiveData<MutableMap<String, Float>>()
 
-    var pieEntryList = MutableLiveData<MutableList<PieEntry>>()
+    val pieEntryList = MutableLiveData<MutableList<PieEntry>>()
 
 
     fun doneReset() {
@@ -101,18 +102,27 @@ class ResultViewModel(val repository: CalendarRepository) : ViewModel() {
     fun countForCategory(list: List<Plan>) {
         val categoryMap = mutableMapOf<String, Float>()
 
+        Logger.i("countForCategory list: $list")
+
         if (!list.isNullOrEmpty()) {
             for (item in list) {
                 if (!categoryMap.containsKey(item.category)) {
                     categoryMap["${item.category}"] = 1F
+
+                    Logger.i("countForCategory count: ${categoryMap["${item.category}"]}")
                 } else {
-                    val count = categoryMap["${item.category}"]
-                    count!!.plus(1F)
+                    var count = categoryMap["${item.category}"]!!.toInt()
+                    count += 1
+                    categoryMap["${item.category}"] = count.toFloat()
+
+                    Logger.i("countForCategory count - contain: ${categoryMap["${item.category}"]}")
                 }
             }
         } else {
             categoryMap["No Done Task"] = 1F
         }
+
+        Logger.i("countForCategory map: $categoryMap")
 
         categoryForDoneList.value = categoryMap
 

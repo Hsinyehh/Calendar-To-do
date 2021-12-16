@@ -6,13 +6,13 @@ import androidx.lifecycle.ViewModel
 
 class SearchViewModel : ViewModel() {
 
-    var searchText = MutableLiveData<String?>()
+    val searchText = MutableLiveData<String?>()
 
-    var searchResultName = MutableLiveData<String?>()
+    val searchResultName = MutableLiveData<String?>()
 
-    var searchResultAddress = MutableLiveData<String?>()
+    val searchResultAddress = MutableLiveData<String?>()
 
-    private var _navigateToEdit = MutableLiveData<Boolean>()
+    private val _navigateToEdit = MutableLiveData<Boolean>()
     val navigateToEdit: LiveData<Boolean>
         get() = _navigateToEdit
 
